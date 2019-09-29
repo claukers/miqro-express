@@ -1,0 +1,15 @@
+node_modules/
+docs/
+coverage/
+.nyc_output/
+npm-debug.log
+bla.sh
+log.txt
+dist/
+old/
+test/data/bla.log
+.idea
+query.js
+apidoc/
+.vscode/
+/nbproject/private/

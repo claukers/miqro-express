@@ -1,0 +1,15 @@
+{
+  "check-coverage": false,
+  "lines": 10,
+  "statements": 30,
+  "functions": 10,
+  "branches": 10,
+  "all": true,
+  "include": ["src/*"],
+  "exclude": ["src/index.ts", "**/*.d.ts"],
+  "extension": [".ts"],
+  "reporter": ["html", "lcov", "text"],
+  "sourceMap": true,
+  "require": ["ts-node/register"],
+  "instrument": true
+}
