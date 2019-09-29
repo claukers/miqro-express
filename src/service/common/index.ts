@@ -1,5 +1,5 @@
-import { IAPIRequest } from "../../route";
 import { ISimpleMap } from "miqro-core";
+import { IAPIRequest } from "../../route";
 
 export * from "./notimplemented";
 

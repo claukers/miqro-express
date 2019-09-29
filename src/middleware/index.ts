@@ -1,6 +1,6 @@
 import * as bodyParser from "body-parser";
-import * as morgan from "morgan";
 import { Util } from "miqro-core";
+import * as morgan from "morgan";
 
 export const setupMiddleware = async (app, logger) => {
   app.disable("x-powered-by");
