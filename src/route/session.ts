@@ -31,7 +31,7 @@ export class SessionRoute extends ServiceRoute {
       this.middlewareSetupDone = true;
       this.router.use(async (req: IAPIRequest, res, next) => {
         try {
-          const token = req.headers[process.env.TOKEN_HEADER];
+          const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()];
           if (!token) {
             await new BadRequestResponse(`No token provided!`).send(res);
           } else {
