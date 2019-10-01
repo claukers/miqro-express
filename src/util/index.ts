@@ -1,5 +1,5 @@
 import { ParseOptionsError, Util } from "miqro-core";
-import { IServiceArgs, ISession } from "./service/common";
+import { ISession } from "../service";
 
 export type IGroupPolicy = "at_leats_one" | "all";
 
@@ -20,11 +20,11 @@ export abstract class GroupPolicy {
       case "at_leats_one":
         ret = false;
         for (const group of session.groups) {
-            if (options.groups.indexOf(group) !== -1) {
-              ret = true;
-              break;
-            }
+          if (options.groups.indexOf(group) !== -1) {
+            ret = true;
+            break;
           }
+        }
         break;
       case "all":
         ret = true;
@@ -36,15 +36,15 @@ export abstract class GroupPolicy {
         }
         break;
       default:
-        this.logger.error(`policy [${options.groupPolicy}] not implemented!!`);
+        logger.error(`policy [${options.groupPolicy}] not implemented!!`);
         throw new ParseOptionsError(`policy not implemented!`);
     }
     if (!ret) {
-      this.logger.warn(`unauthorized token[${session.token}] with groups[${session.groups.toString()}]` +
+      logger.warn(`unauthorized token[${session.token}] with groups[${session.groups.toString()}]` +
         ` not on correct groups [${options.groups.toString()}] with policy [${options.groupPolicy}]`);
       throw new ParseOptionsError(`Not on the correct groups!`);
     } else {
-      this.logger.debug(`authorized token[${session.token}] with groups[${session.groups.toString()}]` +
+      logger.debug(`authorized token[${session.token}] with groups[${session.groups.toString()}]` +
         ` on correct groups [${options.groups.toString()}] with policy [${options.groupPolicy}]`);
     }
   }
