@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { ISimpleMap } from "miqro-core";
-import { ISession } from "../../service";
+import { ISession, ISimpleMap } from "miqro-core";
 
 export interface IAPIRequest extends Request {
   session: ISession;

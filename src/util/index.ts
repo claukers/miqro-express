@@ -1,5 +1,4 @@
-import { ParseOptionsError, Util } from "miqro-core";
-import { ISession } from "../service";
+import { ISession, ParseOptionsError, Util } from "miqro-core";
 
 export type IGroupPolicy = "at_leats_one" | "all";
 

@@ -1,5 +1,4 @@
-import { Util } from "miqro-core";
-import { ISession } from "../service";
+import { ISession, Util } from "miqro-core";
 import { IServiceRouteOptions } from "./common";
 import { BadRequestResponse, IAPIRequest } from "./response";
 import { ServiceRoute } from "./service";

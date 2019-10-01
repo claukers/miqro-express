@@ -1,25 +1,5 @@
-import { ISimpleMap } from "miqro-core";
+import { IServiceArgs, ISession, ISimpleMap } from "miqro-core";
 import { IAPIRequest } from "../../route";
-
-export * from "./notimplemented";
-
-export interface INoTokenSession {
-  account: string;
-  username: string;
-  groups: string[];
-}
-
-export interface ISession extends INoTokenSession {
-  token: string;
-}
-
-export interface IServiceArgs extends ISimpleMap<any> {
-  session: ISession;
-  params: ISimpleMap<any>;
-  query: ISimpleMap<any>;
-  body: ISimpleMap<any>;
-  headers: ISimpleMap<any>;
-}
 
 export class ServiceArg implements IServiceArgs {
   public session: ISession;
