@@ -1,8 +1,8 @@
 import { Util } from "miqro-core";
-import { BadRequestResponse, IAPIRequest } from "./response";
 import { ISession } from "../service";
-import { ServiceRoute } from "./service";
 import { IServiceRouteOptions } from "./common";
+import { BadRequestResponse, IAPIRequest } from "./response";
+import { ServiceRoute } from "./service";
 
 let logger = null;
 
@@ -11,7 +11,7 @@ export interface ISessionRouteOptions extends IServiceRouteOptions {
 }
 
 export interface IVerifyTokenService {
-  verify(args: { token: string }): Promise<ISession>
+  verify(args: { token: string }): Promise<ISession>;
 }
 
 export class SessionRoute extends ServiceRoute {
