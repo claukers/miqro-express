@@ -19,7 +19,7 @@
   "author": "claukers",
   "license": "ISC",
   "dependencies": {
-    "miqro-core": "^0.1.2",
+    "miqro-core": "^0.1.4",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1"
