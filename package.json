@@ -5,10 +5,9 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/claukers/miqro-core.git"
+    "url": "https://github.com/claukers/miqro-express.git"
   },
   "scripts": {
-    "miqro": "node dist/cli/cli.js",
     "prepare": "npm run build",
     "build": "rimraf dist/ && tsc",
     "test": "NODE_ENV=test nyc mocha test/*.test.ts",
