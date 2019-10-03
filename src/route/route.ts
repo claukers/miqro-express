@@ -6,28 +6,28 @@ export class Route {
   constructor(public options?: IServiceRouteOptions) {
     this.router = options && options.router ? options.router : Router();
   }
-  public get(route: string | string[], handler: IServiceHandler) {
+  public get(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute("get", route, handler);
   }
-  public post(route: string | string[], handler: IServiceHandler) {
+  public post(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute("post", route, handler);
   }
-  public delete(route: string | string[], handler: IServiceHandler) {
+  public delete(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute("delete", route, handler);
   }
-  public patch(route: string | string[], handler: IServiceHandler) {
+  public patch(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute("patch", route, handler);
   }
-  public put(route: string | string[], handler: IServiceHandler) {
+  public put(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute("put", route, handler);
   }
-  public use(route: string | string[], handler: IServiceHandler) {
+  public use(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute(null, route, handler);
   }
   public routes(): Router {
     return this.router;
   }
-  protected addRoute(method: string, route: string | string[], handler: IServiceHandler) {
+  protected addRoute(method: string, route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     const renderRoute = (r: string): string => {
       return `${this.options && this.options.preRoute ? this.options.preRoute : ""}` +
         `${r}${this.options && this.options.postRoute ? this.options.postRoute : ""}`;
