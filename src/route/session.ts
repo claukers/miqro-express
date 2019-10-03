@@ -1,12 +1,12 @@
-import { ISession, Util, IVerifyTokenService } from "miqro-core";
+import { ISession, IVerifyTokenService, Util } from "miqro-core";
+import { GroupPolicy, IGroupPolicyOptions } from "../util";
 import { IServiceHandler, IServiceRouteOptions } from "./common";
-import { BadRequestResponse, IAPIRequest, UnAuthorizedResponse } from "./response";
+import { BadRequestResponse, ForbidenResponse, IAPIRequest, UnAuthorizedResponse } from "./response";
 import { ServiceRoute } from "./service";
-
-let logger = null;
 
 export interface ISessionRouteOptions extends IServiceRouteOptions {
   authService: IVerifyTokenService;
+  groupPolicy?: IGroupPolicyOptions;
 }
 
 export const createSessionHandler = (authService: IVerifyTokenService, logger): IServiceHandler =>
@@ -15,13 +15,18 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger): 
       Util.checkEnvVariables(["TOKEN_HEADER"]);
       const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()];
       if (!token) {
-        await new BadRequestResponse(`No token provided!`).send(res);
+        const message = `No token provided!`;
+        logger.error(message);
+        await new BadRequestResponse(message).send(res);
       } else {
         const session: ISession = await authService.verify({ token });
         if (!session) {
-          await new UnAuthorizedResponse(`Fail to authenticate token!`).send(res);
+          const message = `Fail to authenticate token [${token}]!`;
+          logger.warn(message);
+          await new UnAuthorizedResponse(`Fail to authenticate token`).send(res);
         } else {
           req.session = session;
+          logger.info(`Token [${token}] authenticated!`);
           next();
         }
       }
@@ -31,14 +36,35 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger): 
     }
   };
 
+export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger): IServiceHandler =>
+  async (req: IAPIRequest, res, next) => {
+    try {
+      if (!req.session) {
+        await new BadRequestResponse(`No Session!`).send(res);
+      }
+      const result = await GroupPolicy.validateSession(req.session, options);
+      if (result) {
+        logger.info(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
+        next();
+      } else {
+        logger.warn(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
+        await new UnAuthorizedResponse(`Fail to validate session!`).send(res);
+      }
+    } catch (e) {
+      logger.warn(e);
+      await new ForbidenResponse(`Fail to validate session!`).send(res);
+    }
+  };
+
 export class SessionRoute extends ServiceRoute {
   protected authService: IVerifyTokenService;
-  constructor(options?: ISessionRouteOptions) {
+  constructor(options: ISessionRouteOptions) {
     super(options);
-    if (!logger) {
-      logger = Util.getLogger("SessionRoute");
-    }
+    const logger = Util.getLogger("SessionRoute");
     this.authService = options.authService;
     this.router.use(createSessionHandler(options.authService, logger));
+    if (options.groupPolicy) {
+      this.router.use(createGroupPolicyHandler(options.groupPolicy, logger));
+    }
   }
 }

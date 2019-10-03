@@ -9,7 +9,7 @@ export interface IGroupPolicyOptions {
 }
 
 export abstract class GroupPolicy {
-  public static async validateSession(session: ISession, options: IGroupPolicyOptions) {
+  public static async validateSession(session: ISession, options: IGroupPolicyOptions): Promise<boolean> {
     const logger = Util.getLogger(`${options.name}${options.name ? "::" : ""}GroupPolicy`);
     if (!session || !session.account || !session.username) {
       throw new ParseOptionsError(`Invalid authentication!`);
@@ -45,6 +45,7 @@ export abstract class GroupPolicy {
     } else {
       logger.debug(`authorized token[${session.token}] with groups[${session.groups.toString()}]` +
         ` on correct groups [${options.groups.toString()}] with policy [${options.groupPolicy}]`);
+      return true;
     }
   }
 }
