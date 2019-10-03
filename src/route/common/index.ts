@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { Util } from "miqro-core";
 import { ServiceArg } from "../../service";
-import { BadRequestResponse, ErrorResponse, IAPIRequest, NotFoundResponse, ServiceResponse, UnAuthorizedResponse, ForbidenResponse } from "../response";
+import { BadRequestResponse, ErrorResponse, ForbidenResponse, IAPIRequest, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
 let logger = null;
 
@@ -48,9 +48,9 @@ const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAP
     } catch (e) {
       if (e.isMethodNotImplementedError) {
         await new NotFoundResponse().send(res);
-      } if (e.isForbidenError) {
+      } else if (e.isForbidenError) {
         await new ForbidenResponse(e.message).send(res);
-      } if (e.isUnAuthorizeError) {
+      } else if (e.isUnAuthorizeError) {
         await new UnAuthorizedResponse(e.message).send(res);
       } else if (e.isParserOptionsError) {
         await new BadRequestResponse(e.message).send(res);
