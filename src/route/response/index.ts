@@ -4,3 +4,4 @@ export * from "./badrequest";
 export * from "./notfound";
 export * from "./error";
 export * from "./unauth";
+export * from "./forbiden";
