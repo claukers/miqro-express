@@ -1,4 +1,4 @@
-import { createAPIHandler, IServiceHandler, IServiceRouteOptions } from "./common";
+import { createAPIHandler, IServiceHandler } from "./common";
 import { Route } from "./route";
 
 export class ServiceRoute extends Route {

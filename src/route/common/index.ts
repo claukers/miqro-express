@@ -23,7 +23,17 @@ export interface IServiceRouteOptions extends IRouteOptions {
   postRoute?: string;
 }
 
-export const createAPIHandler = (handler: IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
+export const createAPIHandler = (handlers: IServiceHandler[] | IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler[] => {
+  if (handlers instanceof Array) {
+    return (handlers as IServiceHandler[]).map((handler) => {
+      return createAPIHandlerImpl(handler, config);
+    });
+  } else {
+    return [createAPIHandlerImpl(handlers as IServiceHandler, config)];
+  }
+};
+
+const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   async (req: IAPIRequest, res: Response, next: NextFunction) => {
     try {
       logger = logger ? logger : Util.getLogger("APIHandler");
@@ -70,4 +80,4 @@ export const createServiceAPIHandler = (service, method: string, config?: { opti
           new ServiceArg(req)
         )
       ).send(res);
-    }, config);
+    }, config)[0];
