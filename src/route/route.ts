@@ -1,16 +1,10 @@
 import { Router } from "express";
-import { Util } from "miqro-core";
 import { createAPIHandler, IServiceHandler, IServiceRouteOptions } from "./common";
-
-let logger = null;
 
 export class Route {
   protected router: Router;
   constructor(public options?: IServiceRouteOptions) {
     this.router = options && options.router ? options.router : Router();
-    if (!logger) {
-      logger = Util.getLogger("Route");
-    }
   }
   public get(route: string | string[], handler: IServiceHandler) {
     this.addRoute("get", route, handler);

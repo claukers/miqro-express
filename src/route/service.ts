@@ -1,16 +1,7 @@
-import { Util } from "miqro-core";
 import { createAPIHandler, IServiceHandler, IServiceRouteOptions } from "./common";
 import { Route } from "./route";
 
-let logger;
-
 export class ServiceRoute extends Route {
-  constructor(public options?: IServiceRouteOptions) {
-    super();
-    if (!logger) {
-      logger = Util.getLogger("ServiceRoute");
-    }
-  }
   public get(route: string | string[], handler: IServiceHandler) {
     super.get(route, createAPIHandler(handler, this));
   }
