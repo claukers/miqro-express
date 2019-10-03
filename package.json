@@ -18,7 +18,7 @@
   "author": "claukers",
   "license": "ISC",
   "dependencies": {
-    "miqro-core": "git+ssh://git@github.com/claukers/miqro-core.git#develop",
+    "miqro-core": "https://github.com/claukers/miqro-core.git#develop",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "morgan": "^1.9.1"
