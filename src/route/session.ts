@@ -47,11 +47,11 @@ export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger): 
         next();
       } else {
         logger.warn(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
-        await new UnAuthorizedResponse(`Fail to validate session!`).send(res);
+        await new UnAuthorizedResponse(`Invalid session. You are not permitted to do this!`).send(res);
       }
     } catch (e) {
       logger.warn(e);
-      await new ForbidenResponse(`Fail to validate session!`).send(res);
+      await new ForbidenResponse(`Invalid session. You are not permitted to do this!`).send(res);
     }
   };
 
