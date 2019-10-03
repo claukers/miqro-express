@@ -5,7 +5,25 @@ import { BadRequestResponse, ErrorResponse, IAPIRequest, NotFoundResponse, Servi
 
 let logger = null;
 
-export const createAPIHandler = (handler: IServiceHandler, config?: { options?: IServiceRouteOptions }): IServiceHandler =>
+export interface IServiceHandler {
+  // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
+  (req: IAPIRequest, res: Response, next?: NextFunction): Promise<any>;
+}
+
+export interface IAPIHandlerOptions {
+  allowedMethods?: string[];
+}
+
+export interface IRouteOptions extends IAPIHandlerOptions {
+  router?: any;
+}
+
+export interface IServiceRouteOptions extends IRouteOptions {
+  preRoute?: string;
+  postRoute?: string;
+}
+
+export const createAPIHandler = (handler: IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   async (req: IAPIRequest, res: Response, next: NextFunction) => {
     try {
       logger = logger ? logger : Util.getLogger("APIHandler");
@@ -35,20 +53,7 @@ export const createAPIHandler = (handler: IServiceHandler, config?: { options?: 
     }
   };
 
-export interface IServiceHandler {
-  // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
-  (req: IAPIRequest, res: Response, next?: NextFunction): Promise<any>;
-}
-
-export interface IServiceRouteOptions {
-  allowedMethods?: string[];
-  preRoute?: string;
-  postRoute?: string;
-}
-
-export type IRouteOptions = IServiceRouteOptions;
-
-export const createServiceHandler = (service, method: string, options?: { options?: IServiceRouteOptions }): IServiceHandler =>
+export const createServiceHandler = (service, method: string): IServiceHandler =>
   async (req: IAPIRequest, res: Response) => {
     await new ServiceResponse(
       await service[method](
@@ -57,7 +62,7 @@ export const createServiceHandler = (service, method: string, options?: { option
     ).send(res);
   };
 
-export const createServiceAPIHandler = (service, method: string, options?: { options?: IServiceRouteOptions }): IServiceHandler =>
+export const createServiceAPIHandler = (service, method: string, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   createAPIHandler(
     async (req: IAPIRequest, res: Response) => {
       await new ServiceResponse(
@@ -65,4 +70,4 @@ export const createServiceAPIHandler = (service, method: string, options?: { opt
           new ServiceArg(req)
         )
       ).send(res);
-    }, options);
+    }, config);
