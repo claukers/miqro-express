@@ -1,16 +1,12 @@
-import { ISession, Util } from "miqro-core";
+import { ISession, Util, IVerifyTokenService } from "miqro-core";
 import { IServiceHandler, IServiceRouteOptions } from "./common";
-import { BadRequestResponse, IAPIRequest } from "./response";
+import { BadRequestResponse, IAPIRequest, UnAuthorizedResponse } from "./response";
 import { ServiceRoute } from "./service";
 
 let logger = null;
 
 export interface ISessionRouteOptions extends IServiceRouteOptions {
   authService: IVerifyTokenService;
-}
-
-export interface IVerifyTokenService {
-  verify(args: { token: string }): Promise<ISession>;
 }
 
 export const createSessionHandler = (authService: IVerifyTokenService, logger): IServiceHandler =>
@@ -23,7 +19,7 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger): 
       } else {
         const session: ISession = await authService.verify({ token });
         if (!session) {
-          await new BadRequestResponse(`Fail to authenticate token!`).send(res);
+          await new UnAuthorizedResponse(`Fail to authenticate token!`).send(res);
         } else {
           req.session = session;
           next();
@@ -31,7 +27,7 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger): 
       }
     } catch (e) {
       logger.error(e);
-      await new BadRequestResponse(`Fail to authenticate token!`).send(res);
+      await new UnAuthorizedResponse(`Fail to authenticate token!`).send(res);
     }
   };
 
