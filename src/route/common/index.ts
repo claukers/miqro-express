@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { Util } from "miqro-core";
 import { ServiceArg } from "../../service";
-import { BadRequestResponse, ErrorResponse, IAPIRequest, NotFoundResponse, ServiceResponse } from "../response";
+import { BadRequestResponse, ErrorResponse, IAPIRequest, NotFoundResponse, ServiceResponse, UnAuthorizedResponse, ForbidenResponse } from "../response";
 
 let logger = null;
 
@@ -47,18 +47,22 @@ const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAP
       }
     } catch (e) {
       if (e.isMethodNotImplementedError) {
-        new NotFoundResponse().send(res);
+        await new NotFoundResponse().send(res);
+      } if (e.isForbidenError) {
+        await new ForbidenResponse(e.message).send(res);
+      } if (e.isUnAuthorizeError) {
+        await new UnAuthorizedResponse(e.message).send(res);
       } else if (e.isParserOptionsError) {
-        new BadRequestResponse(e.message).send(res);
+        await new BadRequestResponse(e.message).send(res);
       } else if (e.name === "SequelizeValidationError") {
-        new BadRequestResponse(e.message).send(res);
+        await new BadRequestResponse(e.message).send(res);
       } else if (e.name === "SequelizeEagerLoadingError") {
-        new BadRequestResponse(e.message).send(res);
+        await new BadRequestResponse(e.message).send(res);
       } else if (e.name === "SequelizeUniqueConstraintError") {
-        new BadRequestResponse(e.message).send(res);
+        await new BadRequestResponse(e.message).send(res);
       } else {
         logger.error(e);
-        new ErrorResponse(e.message).send(res);
+        await new ErrorResponse(e.message).send(res);
       }
     }
   };
