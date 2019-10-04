@@ -41,7 +41,7 @@ export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger): 
       if (!req.session) {
         await new BadRequestResponse(`No Session!`).send(res);
       }
-      const result = await GroupPolicy.validateSession(req.session, options);
+      const result = await GroupPolicy.validateSession(req.session, options, logger);
       if (result) {
         logger.info(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
         next();
