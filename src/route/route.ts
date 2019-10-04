@@ -7,7 +7,7 @@ export class Route {
   protected logger: any;
   constructor(public options?: IServiceRouteOptions) {
     this.router = options && options.router ? options.router : Router();
-    this.logger = Util.getLogger(options.name ? options.name : "Router");
+    this.logger = Util.getLogger(options && options.name ? options.name : "Router");
   }
   public get(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     this.addRoute("get", route, handler);

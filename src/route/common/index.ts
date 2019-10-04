@@ -72,7 +72,7 @@ export const createServiceResponseHandler = () =>
       serviceResults && serviceResults.length === 1 ? serviceResults[0] : null
     );
     await new ServiceResponse(response).send(res);
-  }
+  };
 
 export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
   const router = Router();
