@@ -2,19 +2,19 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ServiceArg } from "../../service";
 import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
-export const setServiceResults = (req: Request, results: any[]) => {
-  (req as any).serviceResults = results;
+export const setResults = (req: Request, results: any[]) => {
+  (req as any).results = results;
 };
 
-export const pushServiceResults = (req: Request, result: any) => {
-  getServiceResults(req).push(result);
+export const pushResults = (req: Request, result: any) => {
+  getResults(req).push(result);
 };
 
-export const getServiceResults = (req: Request): any[] => {
-  if (!((req as any).serviceResults)) {
-    setServiceResults(req, []);
+export const getResults = (req: Request): any[] => {
+  if (!((req as any).results)) {
+    setResults(req, []);
   }
-  return (req as any).serviceResults;
+  return (req as any).results;
 };
 
 const createAPIHandlerImpl = (handler: IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
@@ -82,9 +82,9 @@ export const createAPIHandler =
 
 export const createServiceResponseHandler = () =>
   async (req: Request, res: Response) => {
-    const serviceResults = getServiceResults(req);
-    const response = serviceResults && serviceResults.length > 1 ? serviceResults : (
-      serviceResults && serviceResults.length === 1 ? serviceResults[0] : null
+    const results = getResults(req);
+    const response = results && results.length > 1 ? results : (
+      results && results.length === 1 ? results[0] : null
     );
     await new ServiceResponse(response).send(res);
   };
@@ -100,8 +100,8 @@ export const createServiceMethodHandler = (service, method: string, logger): ISe
     const lastServiceResult = await service[method](
       new ServiceArg(req)
     );
-    logger.debug(`${req.method} set req.serviceResults push[${lastServiceResult}]`);
-    pushServiceResults(req, lastServiceResult);
+    logger.debug(`${req.method} set req.results push[${lastServiceResult}]`);
+    pushResults(req, lastServiceResult);
     next();
   };
 

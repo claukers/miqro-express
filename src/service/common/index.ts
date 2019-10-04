@@ -8,12 +8,14 @@ export class ServiceArg implements IServiceArgs {
   public query: ISimpleMap<any>;
   public body: ISimpleMap<any>;
   public headers: ISimpleMap<any>;
+  public results: any[];
   public constructor(req: Request) {
     this.method = req.method;
     this.session = (req as any).session;
     this.params = req.params;
     this.query = req.query;
     this.body = req.body;
+    this.results = (req as any).results;
     this.headers = req.headers;
   }
 }
