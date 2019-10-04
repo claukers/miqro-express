@@ -49,6 +49,7 @@ export interface IRouteOptions extends IAPIHandlerOptions {
 }
 
 export interface IServiceRouteOptions extends IRouteOptions {
+  name?: any;
   preRoute?: string;
   postRoute?: string;
 }
