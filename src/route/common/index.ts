@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response, Router } from "express";
+import { IServiceArgs } from "miqro-core";
 import { ServiceArg } from "../../service";
 import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
@@ -96,8 +97,11 @@ export const createServiceHandler = (service, method: string, logger): IServiceH
 };
 
 export const createServiceMethodHandler = (service, method: string, logger): IServiceHandler =>
+  createMethodHandler(service[method], logger);
+
+export const createMethodHandler = (method: (args: IServiceArgs) => Promise<any>, logger): IServiceHandler =>
   async (req: Request, res: Response, next: NextFunction) => {
-    const lastServiceResult = await service[method](
+    const lastServiceResult = await method(
       new ServiceArg(req)
     );
     logger.debug(`${req.method} set req.results push[${lastServiceResult}]`);
