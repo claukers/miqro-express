@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { Util } from "miqro-core";
 import { ServiceArg } from "../../service";
 import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
@@ -67,21 +67,24 @@ const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAP
     }
   };
 
-export const createServiceHandler = (service, method: string): IServiceHandler =>
-  async (req: Request, res: Response) => {
-    await new ServiceResponse(
-      await service[method](
-        new ServiceArg(req)
-      )
-    ).send(res);
+export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
+  const router = Router();
+  router.use([createServiceMethodHandler(service, method, logger), async (req: Request, res: Response) => {
+    await new ServiceResponse((req as any).lastServiceResult).send(res);
+  }]);
+  return router;
+};
+
+export const createServiceMethodHandler = (service, method: string, logger): IServiceHandler =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    const lastServiceResult = await service[method](
+      new ServiceArg(req)
+    );
+    logger.debug(`${req.method} set req.lastServiceResult=[${lastServiceResult}]`);
+    (req as any).lastServiceResult = lastServiceResult;
+    next();
   };
 
-export const createServiceAPIHandler = (service, method: string, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
+export const createServiceAPIHandler = (service, method: string, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   createAPIHandler(
-    async (req: Request, res: Response) => {
-      await new ServiceResponse(
-        await service[method](
-          new ServiceArg(req)
-        )
-      ).send(res);
-    }, config)[0];
+    createServiceHandler(service, method, logger), config)[0];

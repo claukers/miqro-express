@@ -1,7 +1,7 @@
 import { GroupPolicy, IGroupPolicyOptions, ISession, IVerifyTokenService, Util } from "miqro-core";
 import { IServiceHandler, IServiceRouteOptions } from "./common";
 import { BadRequestResponse, ForbidenResponse, UnAuthorizedResponse } from "./response";
-import { ServiceRoute } from "./service";
+import { APIRoute } from "./apiroute";
 
 export interface ISessionRouteOptions extends IServiceRouteOptions {
   authService: IVerifyTokenService;
@@ -55,7 +55,7 @@ export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger): 
     }
   };
 
-export class SessionRoute extends ServiceRoute {
+export class SessionRoute extends APIRoute {
   protected authService: IVerifyTokenService;
   constructor(options: ISessionRouteOptions) {
     super(options);
