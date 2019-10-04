@@ -2,6 +2,17 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ServiceArg } from "../../service";
 import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
+export const pushServiceResults = (req: Request, result: any) => {
+  getServiceResults(req).push(result);
+};
+
+export const getServiceResults = (req: Request): any[] => {
+  if (!((req as any).serviceResults)) {
+    (req as any).serviceResults = [];
+  }
+  return (req as any).serviceResults;
+};
+
 const createAPIHandlerImpl = (handler: IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -67,7 +78,7 @@ export const createAPIHandler =
 
 export const createServiceResponseHandler = () =>
   async (req: Request, res: Response) => {
-    const serviceResults = (req as any).serviceResults;
+    const serviceResults = getServiceResults(req);
     const response = serviceResults && serviceResults.length > 1 ? serviceResults : (
       serviceResults && serviceResults.length === 1 ? serviceResults[0] : null
     );
@@ -86,10 +97,7 @@ export const createServiceMethodHandler = (service, method: string, logger): ISe
       new ServiceArg(req)
     );
     logger.debug(`${req.method} set req.serviceResults push[${lastServiceResult}]`);
-    if (!(req as any).serviceResults) {
-      (req as any).serviceResults = [];
-    }
-    (req as any).serviceResults.push(lastServiceResult);
+    pushServiceResults(req, lastServiceResult);
     next();
   };
 
