@@ -65,15 +65,18 @@ export const createAPIHandler =
     }
   };
 
-export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
-  const router = Router();
-  router.use([createServiceMethodHandler(service, method, logger), async (req: Request, res: Response) => {
+export const createServiceResponseHandler = () =>
+  async (req: Request, res: Response) => {
     const serviceResults = (req as any).serviceResults;
     const response = serviceResults && serviceResults.length > 1 ? serviceResults : (
       serviceResults && serviceResults.length === 1 ? serviceResults[0] : null
     );
     await new ServiceResponse(response).send(res);
-  }]);
+  }
+
+export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
+  const router = Router();
+  router.use([createServiceMethodHandler(service, method, logger), createServiceResponseHandler()]);
   return router;
 };
 
