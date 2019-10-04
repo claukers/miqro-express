@@ -11,7 +11,10 @@ export const setupMiddleware = async (app, logger) => {
     req.uuid = v4();
     next();
   });
-  app.use(morgan("request[:uuid] [:method] [:url] [:status] [:response-time]ms", { stream: logger.stream }));
+  if (!process.env.MORGAN_FORMAT) {
+    process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
+  }
+  app.use(morgan(process.env.MORGAN_FORMAT, { stream: logger.stream }));
   if (FeatureToggle.isFeatureEnabled("bodyparser")) {
     Util.checkEnvVariables(["BODYPARSER_INFLATE", "BODYPARSER_LIMIT", "BODYPARSER_STRICT", "BODYPARSER_TYPE"]);
     app.use(bodyParser.json({
