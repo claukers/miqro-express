@@ -2,13 +2,17 @@ import { NextFunction, Request, Response, Router } from "express";
 import { ServiceArg } from "../../service";
 import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
+export const setServiceResults = (req: Request, results: any[]) => {
+  (req as any).serviceResults = results;
+};
+
 export const pushServiceResults = (req: Request, result: any) => {
   getServiceResults(req).push(result);
 };
 
 export const getServiceResults = (req: Request): any[] => {
   if (!((req as any).serviceResults)) {
-    (req as any).serviceResults = [];
+    setServiceResults([]);
   }
   return (req as any).serviceResults;
 };
