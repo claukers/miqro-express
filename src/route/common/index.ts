@@ -53,15 +53,16 @@ export interface IServiceRouteOptions extends IRouteOptions {
   postRoute?: string;
 }
 
-export const createAPIHandler = (handlers: IServiceHandler[] | IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler[] => {
-  if (handlers instanceof Array) {
-    return (handlers as IServiceHandler[]).map((handler) => {
-      return createAPIHandlerImpl(handler, logger, config);
-    });
-  } else {
-    return [createAPIHandlerImpl(handlers as IServiceHandler, config)];
-  }
-};
+export const createAPIHandler =
+  (handlers: IServiceHandler[] | IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler[] => {
+    if (handlers instanceof Array) {
+      return (handlers as IServiceHandler[]).map((handler) => {
+        return createAPIHandlerImpl(handler, logger, config);
+      });
+    } else {
+      return [createAPIHandlerImpl(handlers as IServiceHandler, config)];
+    }
+  };
 
 export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
   const router = Router();
