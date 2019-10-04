@@ -1,7 +1,7 @@
 import { createAPIHandler, IServiceHandler } from "./common";
 import { Route } from "./route";
 
-export class ServiceRoute extends Route {
+export class APIRoute extends Route {
   public get(route: string | string[], handler: IServiceHandler | IServiceHandler[]) {
     super.get(route, createAPIHandler(handler, this));
   }
