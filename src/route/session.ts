@@ -59,11 +59,10 @@ export class SessionRoute extends APIRoute {
   protected authService: IVerifyTokenService;
   constructor(options: ISessionRouteOptions) {
     super(options);
-    const logger = Util.getLogger("SessionRoute");
     this.authService = options.authService;
-    this.router.use(createSessionHandler(options.authService, logger));
+    this.router.use(createSessionHandler(options.authService, this.logger));
     if (options.groupPolicy) {
-      this.router.use(createGroupPolicyHandler(options.groupPolicy, logger));
+      this.router.use(createGroupPolicyHandler(options.groupPolicy, this.logger));
     }
   }
 }

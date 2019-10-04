@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { IServiceHandler, IServiceRouteOptions } from "./common";
 import { Util } from "miqro-core";
+import { IServiceHandler, IServiceRouteOptions } from "./common";
 
 export class Route {
   protected router: Router;
