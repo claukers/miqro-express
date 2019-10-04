@@ -68,7 +68,11 @@ export const createAPIHandler =
 export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
   const router = Router();
   router.use([createServiceMethodHandler(service, method, logger), async (req: Request, res: Response) => {
-    await new ServiceResponse((req as any).lastServiceResult).send(res);
+    const serviceResults = (req as any).serviceResults;
+    const response = serviceResults && serviceResults.length > 1 ? serviceResults : (
+      serviceResults && serviceResults.length === 1 ? serviceResults[0] : null
+    );
+    await new ServiceResponse(response).send(res);
   }]);
   return router;
 };
@@ -78,8 +82,11 @@ export const createServiceMethodHandler = (service, method: string, logger): ISe
     const lastServiceResult = await service[method](
       new ServiceArg(req)
     );
-    logger.debug(`${req.method} set req.lastServiceResult=[${lastServiceResult}]`);
-    (req as any).lastServiceResult = lastServiceResult;
+    logger.debug(`${req.method} set req.serviceResults push[${lastServiceResult}]`);
+    if (!(req as any).serviceResults) {
+      (req as any).serviceResults = [];
+    }
+    (req as any).serviceResults.push(lastServiceResult);
     next();
   };
 
