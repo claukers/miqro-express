@@ -12,7 +12,7 @@ export const pushServiceResults = (req: Request, result: any) => {
 
 export const getServiceResults = (req: Request): any[] => {
   if (!((req as any).serviceResults)) {
-    setServiceResults([]);
+    setServiceResults(req, []);
   }
   return (req as any).serviceResults;
 };
