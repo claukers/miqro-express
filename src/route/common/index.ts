@@ -1,13 +1,13 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Util } from "miqro-core";
 import { ServiceArg } from "../../service";
-import { BadRequestResponse, ErrorResponse, ForbidenResponse, IAPIRequest, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
+import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
 let logger = null;
 
 export interface IServiceHandler {
   // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
-  (req: IAPIRequest, res: Response, next?: NextFunction): Promise<any>;
+  (req: Request, res: Response, next?: NextFunction): Promise<any>;
 }
 
 export interface IAPIHandlerOptions {
@@ -34,14 +34,14 @@ export const createAPIHandler = (handlers: IServiceHandler[] | IServiceHandler, 
 };
 
 const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
-  async (req: IAPIRequest, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       logger = logger ? logger : Util.getLogger("APIHandler");
       if (config && config.options && config.options.allowedMethods && config.options.allowedMethods.indexOf(req.method.toUpperCase()) === -1) {
         new NotFoundResponse().send(res);
       } else {
-        if (req.session === undefined) {
-          req.session = null;
+        if ((req as any).session === undefined) {
+          (req as any).session = null;
         }
         await handler(req, res, next);
       }
@@ -68,7 +68,7 @@ const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAP
   };
 
 export const createServiceHandler = (service, method: string): IServiceHandler =>
-  async (req: IAPIRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     await new ServiceResponse(
       await service[method](
         new ServiceArg(req)
@@ -78,7 +78,7 @@ export const createServiceHandler = (service, method: string): IServiceHandler =
 
 export const createServiceAPIHandler = (service, method: string, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   createAPIHandler(
-    async (req: IAPIRequest, res: Response) => {
+    async (req: Request, res: Response) => {
       await new ServiceResponse(
         await service[method](
           new ServiceArg(req)

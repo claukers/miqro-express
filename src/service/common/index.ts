@@ -1,5 +1,5 @@
+import { Request } from "express";
 import { IServiceArgs, ISession, ISimpleMap } from "miqro-core";
-import { IAPIRequest } from "../../route";
 
 export class ServiceArg implements IServiceArgs {
   public session: ISession;
@@ -8,9 +8,9 @@ export class ServiceArg implements IServiceArgs {
   public query: ISimpleMap<any>;
   public body: ISimpleMap<any>;
   public headers: ISimpleMap<any>;
-  public constructor(req: IAPIRequest) {
+  public constructor(req: Request) {
     this.method = req.method;
-    this.session = req.session;
+    this.session = (req as any).session;
     this.params = req.params;
     this.query = req.query;
     this.body = req.body;

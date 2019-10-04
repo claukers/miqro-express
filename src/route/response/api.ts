@@ -1,14 +1,4 @@
-import { Request, Response } from "express";
-import { ISession, ISimpleMap } from "miqro-core";
-
-export interface IAPIRequest extends Request {
-  session: ISession;
-  method: string;
-  params: ISimpleMap<any>;
-  query: ISimpleMap<any>;
-  body: ISimpleMap<any>;
-  headers: ISimpleMap<any>;
-}
+import { Response } from "express";
 
 export class APIResponse {
   public status = 200;

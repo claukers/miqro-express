@@ -1,6 +1,6 @@
 import { GroupPolicy, IGroupPolicyOptions, ISession, IVerifyTokenService, Util } from "miqro-core";
 import { IServiceHandler, IServiceRouteOptions } from "./common";
-import { BadRequestResponse, ForbidenResponse, IAPIRequest, UnAuthorizedResponse } from "./response";
+import { BadRequestResponse, ForbidenResponse, UnAuthorizedResponse } from "./response";
 import { ServiceRoute } from "./service";
 
 export interface ISessionRouteOptions extends IServiceRouteOptions {
@@ -9,10 +9,10 @@ export interface ISessionRouteOptions extends IServiceRouteOptions {
 }
 
 export const createSessionHandler = (authService: IVerifyTokenService, logger): IServiceHandler =>
-  async (req: IAPIRequest, res, next) => {
+  async (req, res, next) => {
     try {
       Util.checkEnvVariables(["TOKEN_HEADER"]);
-      const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()];
+      const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()] as string;
       if (!token) {
         const message = `No token provided!`;
         logger.error(message);
@@ -24,7 +24,7 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger): 
           logger.warn(message);
           await new UnAuthorizedResponse(`Fail to authenticate token`).send(res);
         } else {
-          req.session = session;
+          (req as any).session = session;
           logger.info(`Token [${token}] authenticated!`);
           next();
         }
@@ -36,17 +36,17 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger): 
   };
 
 export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger): IServiceHandler =>
-  async (req: IAPIRequest, res, next) => {
+  async (req, res, next) => {
     try {
-      if (!req.session) {
+      if (!(req as any).session) {
         await new BadRequestResponse(`No Session!`).send(res);
       }
-      const result = await GroupPolicy.validateSession(req.session, options, logger);
+      const result = await GroupPolicy.validateSession((req as any).session, options, logger);
       if (result) {
-        logger.info(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
+        logger.info(`groups [${req && (req as any).session && (req as any).session.groups ? (req as any).session.groups.join(",") : ""}] validated!`);
         next();
       } else {
-        logger.warn(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
+        logger.warn(`groups [${req && (req as any).session && (req as any).session.groups ? (req as any).session.groups.join(",") : ""}] fail to validate!`);
         await new UnAuthorizedResponse(`Invalid session. You are not permitted to do this!`).send(res);
       }
     } catch (e) {
