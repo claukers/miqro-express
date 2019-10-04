@@ -9,8 +9,10 @@ export class ServiceArg implements IServiceArgs {
   public body: ISimpleMap<any>;
   public headers: ISimpleMap<any>;
   public results: any[];
+  public uuid: string;
   public constructor(req: Request) {
     this.method = req.method;
+    this.uuid = (req as any).uuid;
     this.session = (req as any).session;
     this.params = req.params;
     this.query = req.query;

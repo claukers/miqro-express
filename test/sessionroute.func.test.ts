@@ -11,41 +11,43 @@ Util.loadConfig();
 
 describe("session functional tests", () => {
   it("SessionRoute happy path allow pass through", (done) => {
-    const { SessionRoute } = require("../src/");
+    const { SessionRoute, setupMiddleware } = require("../src/");
 
     const fakeToken = "FakeToken";
     const fakeSession = "FakeSession";
-    process.env.TOKEN_HEADER = "TOKEN_HEADER";
+    process.env.TOKEN_HEADER = "token";
 
-    const app = express();
-    const authService = {
-      verify: sinon.fake(async ({ token }) => {
-        expect(token).to.be.equals(fakeToken);
-        return fakeSession;
-      })
-    };
-    const finalHandler = sinon.fake((req, res) => {
-      expect(req.session).to.be.equals(fakeSession);
-      res.json(true);
-    });
-    const sessionRouter = new SessionRoute({
-      authService
-    });
-    sessionRouter.get("/user", finalHandler);
-    app.use(sessionRouter.routes());
-
-    request(app)
-      .get('/user')
-      .set({ 'TOKEN_HEADER': fakeToken })
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '4')
-      .expect(200)
-      .end((err, res) => {
-        if (err) done(err);
-        expect(finalHandler.callCount).to.be.equals(1);
-        expect(authService.verify.callCount).to.be.equals(1);
-        done();
+    const logger = Util.getLogger("test");
+    setupMiddleware(express(), logger).then((app) => {
+      const authService = {
+        verify: sinon.fake(async ({ token }) => {
+          expect(token).to.be.equals(fakeToken);
+          return fakeSession;
+        })
+      };
+      const finalHandler = sinon.fake((req, res) => {
+        expect(req.session).to.be.equals(fakeSession);
+        res.json(true);
       });
+      const sessionRouter = new SessionRoute({
+        authService
+      });
+      sessionRouter.get("/user", finalHandler);
+      app.use(sessionRouter.routes());
+
+      request(app)
+        .get('/user')
+        .set({ 'token': fakeToken })
+        .expect('Content-Type', /json/)
+        .expect('Content-Length', '4')
+        .expect(200)
+        .end((err, res) => {
+          if (err) done(err);
+          expect(finalHandler.callCount).to.be.equals(1);
+          expect(authService.verify.callCount).to.be.equals(1);
+          done();
+        });
+    });
   });
 
   it("SessionRoute happy path doesnt allow pass through is 401", (done) => {
