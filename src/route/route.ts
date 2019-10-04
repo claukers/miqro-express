@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createAPIHandler, IServiceHandler, IServiceRouteOptions } from "./common";
+import { IServiceHandler, IServiceRouteOptions } from "./common";
 
 export class Route {
   protected router: Router;
