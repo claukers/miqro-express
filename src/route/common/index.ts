@@ -1,42 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { Util } from "miqro-core";
 import { ServiceArg } from "../../service";
 import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../response";
 
-let logger = null;
-
-export interface IServiceHandler {
-  // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
-  (req: Request, res: Response, next?: NextFunction): Promise<any>;
-}
-
-export interface IAPIHandlerOptions {
-  allowedMethods?: string[];
-}
-
-export interface IRouteOptions extends IAPIHandlerOptions {
-  router?: any;
-}
-
-export interface IServiceRouteOptions extends IRouteOptions {
-  preRoute?: string;
-  postRoute?: string;
-}
-
-export const createAPIHandler = (handlers: IServiceHandler[] | IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler[] => {
-  if (handlers instanceof Array) {
-    return (handlers as IServiceHandler[]).map((handler) => {
-      return createAPIHandlerImpl(handler, config);
-    });
-  } else {
-    return [createAPIHandlerImpl(handlers as IServiceHandler, config)];
-  }
-};
-
-const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
+const createAPIHandlerImpl = (handler: IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      logger = logger ? logger : Util.getLogger("APIHandler");
       if (config && config.options && config.options.allowedMethods && config.options.allowedMethods.indexOf(req.method.toUpperCase()) === -1) {
         new NotFoundResponse().send(res);
       } else {
@@ -67,6 +35,34 @@ const createAPIHandlerImpl = (handler: IServiceHandler, config?: { options?: IAP
     }
   };
 
+export interface IServiceHandler {
+  // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
+  (req: Request, res: Response, next?: NextFunction): Promise<any>;
+}
+
+export interface IAPIHandlerOptions {
+  allowedMethods?: string[];
+}
+
+export interface IRouteOptions extends IAPIHandlerOptions {
+  router?: any;
+}
+
+export interface IServiceRouteOptions extends IRouteOptions {
+  preRoute?: string;
+  postRoute?: string;
+}
+
+export const createAPIHandler = (handlers: IServiceHandler[] | IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler[] => {
+  if (handlers instanceof Array) {
+    return (handlers as IServiceHandler[]).map((handler) => {
+      return createAPIHandlerImpl(handler, logger, config);
+    });
+  } else {
+    return [createAPIHandlerImpl(handlers as IServiceHandler, config)];
+  }
+};
+
 export const createServiceHandler = (service, method: string, logger): IServiceHandler => {
   const router = Router();
   router.use([createServiceMethodHandler(service, method, logger), async (req: Request, res: Response) => {
@@ -87,4 +83,4 @@ export const createServiceMethodHandler = (service, method: string, logger): ISe
 
 export const createServiceAPIHandler = (service, method: string, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   createAPIHandler(
-    createServiceHandler(service, method, logger), config)[0];
+    createServiceHandler(service, method, logger), logger, config)[0];
