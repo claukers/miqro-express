@@ -3,7 +3,7 @@ import { FeatureToggle, Util } from "miqro-core";
 import * as morgan from "morgan";
 import { v4 } from "uuid";
 
-morgan.token('uuid', (req, res) => { return (req as any).uuid })
+morgan.token("uuid", (req, res) => (req as any).uuid);
 
 export const setupMiddleware = async (app, logger) => {
   app.disable("x-powered-by");

@@ -97,9 +97,16 @@ export const createServiceHandler = (service, method: string, logger): IServiceH
 };
 
 export const createServiceMethodHandler = (service, method: string, logger): IServiceHandler =>
-  createMethodHandler(service[method], logger);
+  async (req: Request, res: Response, next: NextFunction) => {
+    const lastServiceResult = await service[method](
+      new ServiceArg(req)
+    );
+    logger.debug(`${req.method} set req.results push[${lastServiceResult}]`);
+    pushResults(req, lastServiceResult);
+    next();
+  };
 
-export const createMethodHandler = (method: (args: IServiceArgs) => Promise<any>, logger): IServiceHandler =>
+export const createHandler = (method: (args: IServiceArgs) => Promise<any>, logger): IServiceHandler =>
   async (req: Request, res: Response, next: NextFunction) => {
     const lastServiceResult = await method(
       new ServiceArg(req)
