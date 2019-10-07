@@ -149,4 +149,182 @@ describe("apiroute functional tests", () => {
         }
       });
   });
+  it("apiroute createServiceFunctionHandler happy path agregates results to one if only one result with preroute of router", (done) => {
+    const { APIRoute, createServiceFunctionHandler, createResponseHandler } = require("../src/");
+    const service = new class {
+      bla: number;
+      constructor() {
+        this.bla = 0;
+      }
+      async myFunc() {
+        return ++this.bla;
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    const secondRouter = new APIRoute({
+      preRoute: "/bla"
+    });
+    const myFuncRouter = new APIRoute();
+    myFuncRouter.use(undefined, [
+      createServiceFunctionHandler(service, "myFunc", api.logger),
+      createResponseHandler(api.logger)
+    ]);
+    secondRouter.use(undefined, myFuncRouter.routes());
+    api.use("/myFunc", secondRouter.routes());
+    app.use("/api", api.routes());
+
+    request(app)
+      .get('/api/myFunc/bla')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '27')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(true);
+          expect(res.body.result).to.be.equals(1);
+          done();
+        }
+      });
+  });
+  it("apiroute createServiceFunctionHandler happy path agregates results with preroute of router", (done) => {
+    const { APIRoute, createServiceFunctionHandler, createResponseHandler } = require("../src/");
+    const service = new class {
+      bla: number;
+      constructor() {
+        this.bla = 0;
+      }
+      async myFunc() {
+        return ++this.bla;
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    const secondRouter = new APIRoute({
+      preRoute: "/bla"
+    });
+    const myFuncRouter = new APIRoute({
+      preRoute: "/ble"
+    });
+    myFuncRouter.get("/sum", [
+      createServiceFunctionHandler(service, "myFunc", api.logger)
+    ]);
+    const finalHandler = async (req, res) => {
+      res.json({
+        result: "bla"
+      })
+    };
+    secondRouter.use(undefined, [myFuncRouter.routes(), finalHandler]);
+    api.use("/myFunc", secondRouter.routes());
+    app.use("/api", api.routes());
+
+    request(app)
+      .get('/api/myFunc/bla/ble/sum')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '16')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(undefined);
+          expect(res.body.result).to.be.equals("bla");
+          done();
+        }
+      });
+  });
+  it("apiroute createServiceFunctionHandler happy path agregates results with preroute of router 404", (done) => {
+    const { APIRoute, createServiceFunctionHandler } = require("../src/");
+
+    const service = new class {
+      bla: number;
+      constructor() {
+        this.bla = 0;
+      }
+      async myFunc() {
+        return ++this.bla;
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    const secondRouter = new APIRoute({
+      preRoute: "/bla"
+    });
+    const myFuncRouter = new APIRoute({
+      preRoute: "/ble"
+    });
+
+    const finalHandler = async (req, res) => {
+      res.json({
+        result: "bla"
+      })
+    };
+    myFuncRouter.get("/sum", [createServiceFunctionHandler(service, "myFunc", api.logger), finalHandler]);
+    secondRouter.use(undefined, [myFuncRouter.routes()]);
+    api.use("/myFunc", secondRouter.routes());
+    app.use("/api", api.routes());
+
+    request(app)
+      .get('/api/myFunc/bla/sum')
+      .expect('Content-Type', /text\/html; charset=utf-8/)
+      .expect('Content-Length', '157')
+      .expect(404)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(undefined);
+          expect(res.body.result).to.be.equals(undefined);
+          done();
+        }
+      });
+  });
+  it("apiroute createServiceFunctionHandler happy path agregates results with preroute of router should throw API 404", (done) => {
+    const { APIRoute, createServiceFunctionHandler, createResponseHandler } = require("../src/");
+
+    const service = new class {
+      bla: number;
+      constructor() {
+        this.bla = 0;
+      }
+      async myFunc() {
+        return ++this.bla;
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    const secondRouter = new APIRoute({
+      preRoute: "/bla"
+    });
+    const myFuncRouter = new APIRoute({
+      preRoute: "/ble"
+    });
+
+    const finalHandler = async (req, res) => {
+      res.json({
+        result: "bla"
+      })
+    };
+    myFuncRouter.get("/sum", [createServiceFunctionHandler(service, "myFunc", api.logger), finalHandler]);
+    secondRouter.use(undefined, [myFuncRouter.routes(), createResponseHandler(api.logger)]);
+    api.use("/myFunc", secondRouter.routes());
+    app.use("/api", api.routes());
+
+    request(app)
+      .get('/api/myFunc/bla/sum')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '39')
+      .expect(404)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(false);
+          expect(res.body.message).to.be.equals("not found");
+          done();
+        }
+      });
+  });
 });
