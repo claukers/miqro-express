@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { IServiceArgs } from "miqro-core";
 import { ServiceArg } from "../../service";
-import { APIResponse, ServiceResponse } from "../response";
+import { APIResponse, ServiceResponse, NotFoundResponse } from "../response";
 import { createAPIHandler, IAPIHandlerOptions, IServiceHandler } from "./apihandler";
 
 export const serviceResponseCreator = (results: any) => {
+  if(!results || results.length === 0) {
+    return new NotFoundResponse();
+  }
   const response = results && results.length > 1 ? results : (
     results && results.length === 1 ? results[0] : null
   );
@@ -47,6 +50,7 @@ export const createResponseHandler =
   (logger, config?: { options?: IAPIHandlerOptions }, responseCreator?: (results: any) => APIResponse): IServiceHandler =>
     createAPIHandler(async (req: Request, res: Response) => {
       responseCreator = responseCreator ? responseCreator : serviceResponseCreator;
-      const response = responseCreator(getResults(req));
+      const results = getResults(req);
+      const response = responseCreator(results);
       await response.send(res);
     }, logger, config)[0];
