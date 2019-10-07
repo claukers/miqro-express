@@ -44,6 +44,8 @@ export class Route {
             this.router.use(renderRoute(r), handler);
           }
         }
+      } else if (this.options && (this.options.postRoute || this.options.preRoute)) {
+        this.router.use(renderRoute(""), handler);
       } else {
         this.router.use(handler);
       }
@@ -56,6 +58,8 @@ export class Route {
             this.router[method](renderRoute(r), handler);
           }
         }
+      } else if (this.options && (this.options.postRoute || this.options.preRoute)) {
+        this.router[method](renderRoute(""), handler);
       } else {
         this.router[method](handler);
       }
