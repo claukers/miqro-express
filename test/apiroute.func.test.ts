@@ -281,7 +281,7 @@ describe("apiroute functional tests", () => {
         }
       });
   });
-  it("apiroute createServiceFunctionHandler happy path agregates results with preroute of router should throw 404", (done) => {
+  it("case 2 apiroute createServiceFunctionHandler happy path agregates results with preroute of router should throw 404", (done) => {
     const { APIRoute, createServiceFunctionHandler, createResponseHandler } = require("../src/");
 
     const service = new class {
@@ -293,29 +293,32 @@ describe("apiroute functional tests", () => {
         return ++this.bla;
       }
     }
-    const app = express();
-    const api = new APIRoute();
-    const secondRouter = new APIRoute({
-      preRoute: "/bla"
-    });
-    const myFuncRouter = new APIRoute({
-      preRoute: "/ble"
-    });
-
     const finalHandler = async (req, res) => {
       res.json({
         result: "bla"
       })
     };
+    const app = express();
+    const api = new APIRoute();
+    const secondRouter = new APIRoute({
+      preRoute: "/bla"
+    });
+    const thirdRouter = new APIRoute({
+      preRoute: "/ble"
+    });
+    const myFuncRouter = new APIRoute({
+      preRoute: "/bli"
+    });
     myFuncRouter.get("/sum", [createServiceFunctionHandler(service, "myFunc", api.logger), finalHandler]);
-    secondRouter.use(undefined, [myFuncRouter.routes(), createResponseHandler(api.logger)]);
-    api.use("/myFunc", secondRouter.routes());
+    thirdRouter.use(undefined, [myFuncRouter.routes(), createResponseHandler(api.logger)]);
+    secondRouter.use(undefined, [thirdRouter.routes(), createResponseHandler(api.logger)]);
+    api.use("/myFunc", [secondRouter.routes(), createResponseHandler(api.logger)]);
     app.use("/api", api.routes());
 
     request(app)
-      .get('/api/myFunc/bla/sum')
+      .get('/api/myFunc/bla/ble/bli/sum/a')
       .expect('Content-Type', /text\/html; charset=utf-8/)
-      .expect('Content-Length', '157')
+      .expect('Content-Length', '167')
       .expect(404)
       .end((err, res) => {
         if (err) {
