@@ -5,8 +5,8 @@ import { APIResponse, ServiceResponse, NotFoundResponse } from "../response";
 import { createAPIHandler, IAPIHandlerOptions, IServiceHandler } from "./apihandler";
 
 export const serviceResponseCreator = (results: any) => {
-  if(!results || results.length === 0) {
-    return new NotFoundResponse();
+  if (!results || results.length === 0) {
+    return null;
   }
   const response = results && results.length > 1 ? results : (
     results && results.length === 1 ? results[0] : null
@@ -48,9 +48,13 @@ export const createFunctionHandler = (fn: (args: IServiceArgs) => Promise<any>, 
 
 export const createResponseHandler =
   (logger, config?: { options?: IAPIHandlerOptions }, responseCreator?: (results: any) => APIResponse): IServiceHandler =>
-    createAPIHandler(async (req: Request, res: Response) => {
+    createAPIHandler(async (req: Request, res: Response, next: NextFunction) => {
       responseCreator = responseCreator ? responseCreator : serviceResponseCreator;
       const results = getResults(req);
       const response = responseCreator(results);
-      await response.send(res);
+      if (!response) {
+        next();
+      } else {
+        await response.send(res);
+      }
     }, logger, config)[0];

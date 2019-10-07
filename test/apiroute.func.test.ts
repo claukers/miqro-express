@@ -281,7 +281,7 @@ describe("apiroute functional tests", () => {
         }
       });
   });
-  it("apiroute createServiceFunctionHandler happy path agregates results with preroute of router should throw API 404", (done) => {
+  it("apiroute createServiceFunctionHandler happy path agregates results with preroute of router should throw 404", (done) => {
     const { APIRoute, createServiceFunctionHandler, createResponseHandler } = require("../src/");
 
     const service = new class {
@@ -314,15 +314,15 @@ describe("apiroute functional tests", () => {
 
     request(app)
       .get('/api/myFunc/bla/sum')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '39')
+      .expect('Content-Type', /text\/html; charset=utf-8/)
+      .expect('Content-Length', '157')
       .expect(404)
       .end((err, res) => {
         if (err) {
           done(err);
         } else {
-          expect(res.body.success).to.be.equals(false);
-          expect(res.body.message).to.be.equals("not found");
+          expect(res.body.success).to.be.equals(undefined);
+          expect(res.body.message).to.be.equals(undefined);
           done();
         }
       });
