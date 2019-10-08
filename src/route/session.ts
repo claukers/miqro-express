@@ -1,9 +1,9 @@
 import { GroupPolicy, IGroupPolicyOptions, ISession, IVerifyTokenService, Util } from "miqro-core";
-import { APIRoute } from "./apiroute";
-import { IServiceHandler, IServiceRouteOptions } from "./common";
+import { IServiceHandler, IRouteOptions } from "./common";
 import { BadRequestResponse, ForbidenResponse, UnAuthorizedResponse } from "./response";
+import { APIRoute } from "./apiroute";
 
-export interface ISessionRouteOptions extends IServiceRouteOptions {
+export interface ISessionRouteOptions extends IRouteOptions {
   authService: IVerifyTokenService;
   groupPolicy?: IGroupPolicyOptions;
 }
