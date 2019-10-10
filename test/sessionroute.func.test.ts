@@ -1,6 +1,6 @@
 import { describe, it } from "mocha";
 import { expect } from "chai";
-import { Util } from "miqro-core";
+import { Util, ParseOptionsError } from "miqro-core";
 import * as express from "express";
 import * as path from "path";
 import * as sinon from "sinon";
@@ -78,7 +78,7 @@ describe("session functional tests", () => {
       .get('/user')
       .set({ 'TOKEN_HEADER': fakeToken })
       .expect('Content-Type', /json/)
-      .expect('Content-Length', '56')
+      .expect('Content-Length', '57')
       .expect(401)
       .end((err, res) => {
         if (err) {
@@ -155,6 +155,55 @@ describe("session functional tests", () => {
       .expect('Content-Type', /json/)
       .expect('Content-Length', '57')
       .expect(401)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(finalHandler.callCount).to.be.equals(0);
+          expect(authService.verify.callCount).to.be.equals(1);
+          done();
+        }
+      });
+  });
+
+  it("SessionRoute custom error", (done) => {
+    const { SessionRoute, APIResponse } = require("../src/");
+
+    const fakeToken = "FakeToken";
+    process.env.TOKEN_HEADER = "TOKEN_HEADER";
+
+    const app = express();
+    const authService = {
+      verify: sinon.fake(async ({ token }) => {
+        throw {
+          blaError: true
+        }
+      })
+    };
+    const finalHandler = sinon.fake((req, res) => {
+      res.json("asdlkjasdliasjdaijal");
+    });
+    const sessionRouter = new SessionRoute({
+      authService,
+      errorResponse: async (e) => {
+        return new class extends APIResponse {
+          constructor() {
+            super();
+            this.status = 555;
+            this.body = { "blaError": e.blaError };
+          }
+        }
+      }
+    });
+    sessionRouter.get("/user", finalHandler);
+    app.use(sessionRouter.routes());
+
+    request(app)
+      .get('/user')
+      .set({ 'TOKEN_HEADER': fakeToken })
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '2')
+      .expect(555)
       .end((err, res) => {
         if (err) {
           done(err);

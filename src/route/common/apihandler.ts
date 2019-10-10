@@ -47,6 +47,7 @@ const createAPIHandlerImpl = (handler: IServiceHandler, logger, config?: { optio
       const response = config && config.options && config.options.errorResponse ?
         await config.options.errorResponse(e, req) : await defaultErrorResponse(e, req);
       if (!response) {
+        logger.error(`un handled error [${e.message}]`);
         throw e;
       } else {
         await response.send(res);
