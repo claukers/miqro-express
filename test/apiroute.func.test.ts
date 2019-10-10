@@ -376,4 +376,43 @@ describe("apiroute functional tests", () => {
         }
       });
   });
+  it("error handler test", (done) => {
+    const { APIRoute, createAPIHandler, APIResponse } = require("../src/");
+
+    const app = express();
+
+    app.use("/bla", createAPIHandler(async (req, res, next) => {
+      throw new Error("bli");
+    }, {
+      error: (text) => {
+      }
+    }, {
+      options: {
+        errorResponse: async (e: Error, req) => {
+          expect(e.message).to.be.equals("bli");
+          return new class extends APIResponse {
+            constructor(body?) {
+              super(body);
+              this.status = 555;
+              this.body = { bla: "ble" };
+            }
+          }
+        }
+      }
+    }));
+
+    request(app)
+      .get('/bla')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '13')
+      .expect(555)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.bla).to.be.equals("ble");
+          done();
+        }
+      });
+  });
 });

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, UnAuthorizedResponse } from "../response";
+import { APIResponse, BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, UnAuthorizedResponse } from "../response";
 
 export interface IServiceHandler {
   // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
@@ -8,7 +8,28 @@ export interface IServiceHandler {
 
 export interface IAPIHandlerOptions {
   allowedMethods?: string[];
+  errorResponse?: (e: Error, req: Request) => Promise<APIResponse>;
 }
+
+export const defaultErrorResponse = async (e: Error, req: Request): Promise<APIResponse> => {
+  if ((e as any).isMethodNotImplementedError) {
+    return new NotFoundResponse();
+  } else if ((e as any).isForbidenError) {
+    return new ForbidenResponse(e.message);
+  } else if ((e as any).isUnAuthorizeError) {
+    return new UnAuthorizedResponse(e.message);
+  } else if ((e as any).isParserOptionsError) {
+    return new BadRequestResponse(e.message);
+  } else if (e.name === "SequelizeValidationError") {
+    return new BadRequestResponse(e.message);
+  } else if (e.name === "SequelizeEagerLoadingError") {
+    return new BadRequestResponse(e.message);
+  } else if (e.name === "SequelizeUniqueConstraintError") {
+    return new BadRequestResponse(e.message);
+  } else {
+    return new ErrorResponse(e);
+  }
+};
 
 const createAPIHandlerImpl = (handler: IServiceHandler, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   async (req: Request, res: Response, next: NextFunction) => {
@@ -22,23 +43,13 @@ const createAPIHandlerImpl = (handler: IServiceHandler, logger, config?: { optio
         await handler(req, res, next);
       }
     } catch (e) {
-      if (e.isMethodNotImplementedError) {
-        await new NotFoundResponse().send(res);
-      } else if (e.isForbidenError) {
-        await new ForbidenResponse(e.message).send(res);
-      } else if (e.isUnAuthorizeError) {
-        await new UnAuthorizedResponse(e.message).send(res);
-      } else if (e.isParserOptionsError) {
-        await new BadRequestResponse(e.message).send(res);
-      } else if (e.name === "SequelizeValidationError") {
-        await new BadRequestResponse(e.message).send(res);
-      } else if (e.name === "SequelizeEagerLoadingError") {
-        await new BadRequestResponse(e.message).send(res);
-      } else if (e.name === "SequelizeUniqueConstraintError") {
-        await new BadRequestResponse(e.message).send(res);
+      logger.error(e);
+      const response = config && config.options && config.options.errorResponse ?
+        await config.options.errorResponse(e, req) : await defaultErrorResponse(e, req);
+      if (!response) {
+        throw e;
       } else {
-        logger.error(e);
-        await new ErrorResponse(e.message).send(res);
+        await response.send(res);
       }
     }
   };

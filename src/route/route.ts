@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { Util } from "miqro-core";
-import { IServiceHandler, IRouteOptions } from "./common";
+import { IRouteOptions, IServiceHandler } from "./common";
 
 export class Route {
   public logger: any;
