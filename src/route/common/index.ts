@@ -1,11 +1,3 @@
-import { IAPIHandlerOptions } from "./apihandler";
-
+export * from "./options";
 export * from "./apihandler";
 export * from "./servicehandler";
-
-export interface IRouteOptions extends IAPIHandlerOptions {
-  name?: any;
-  router?: any;
-  preRoute?: string;
-  postRoute?: string;
-}

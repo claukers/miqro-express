@@ -41,6 +41,114 @@ describe("apiroute functional tests", () => {
         }
       });
   });
+  it("apiroute createServiceHandler with preroute happy path", (done) => {
+    const { APIRoute, createServiceHandler } = require("../src/");
+    const service = new class {
+      bla: string;
+      constructor() {
+        this.bla = "myerror";
+      }
+      async myFunc() {
+        throw new ParseOptionsError(this.bla);
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    api.use("/", createServiceHandler(service, "myFunc", api.logger, {
+      options: {
+        preRoute: "/myFunc",
+        allowedMethods: ["GET"]
+      }
+    }));
+    app.use("/api", api.routes());
+
+    request(app)
+      .get('/api/myFunc')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '37')
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(false);
+          expect(res.body.message).to.be.equals("myerror");
+          done();
+        }
+      });
+  });
+  it("apiroute createServiceHandler with preroute happy path 404 by method", (done) => {
+    const { APIRoute, createServiceHandler } = require("../src/");
+    const service = new class {
+      bla: string;
+      constructor() {
+        this.bla = "myerror";
+      }
+      async myFunc() {
+        throw new ParseOptionsError(this.bla);
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    api.use("/", createServiceHandler(service, "myFunc", api.logger, {
+      options: {
+        preRoute: "/myFunc",
+        allowedMethods: ["GET"]
+      }
+    }));
+    app.use("/api", api.routes());
+
+    request(app)
+      .post('/api/myFunc')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '39')
+      .expect(404)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(false);
+          expect(res.body.result).to.be.equals(undefined);
+          done();
+        }
+      });
+  });
+  it("apiroute createServiceHandler with preroute 404", (done) => {
+    const { APIRoute, createServiceHandler } = require("../src/");
+    const service = new class {
+      bla: string;
+      constructor() {
+        this.bla = "myerror";
+      }
+      async myFunc() {
+        throw new ParseOptionsError(this.bla);
+      }
+    }
+    const app = express();
+    const api = new APIRoute();
+    api.use("/", createServiceHandler(service, "myFunc", api.logger, {
+      options: {
+        preRoute: "/myFun",
+        allowedMethods: ["GET"]
+      }
+    }));
+    app.use("/api", api.routes());
+
+    request(app)
+      .get('/api/myFunc')
+      .expect('Content-Type', /text\/html; charset=utf-8/)
+      .expect('Content-Length', '149')
+      .expect(404)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(undefined);
+          expect(res.body.result).to.be.equals(undefined);
+          done();
+        }
+      });
+  });
   it("apiroute createServiceFunctionHandler happy path agregates results", (done) => {
     const { APIRoute, createServiceFunctionHandler, createResponseHandler } = require("../src/");
     const service = new class {

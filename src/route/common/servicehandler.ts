@@ -1,8 +1,10 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { NextFunction, Request, Response } from "express";
 import { IServiceArgs } from "miqro-core";
 import { ServiceArg } from "../../service";
+import { APIRoute } from "../apiroute";
 import { APIResponse, NotFoundResponse, ServiceResponse } from "../response";
 import { createAPIHandler, IAPIHandlerOptions, IServiceHandler } from "./apihandler";
+import { IRouteOptions } from "./options";
 
 export const serviceResponseCreator = (results: any) => {
   if (!results || results.length === 0) {
@@ -25,10 +27,10 @@ export const getResults = (req: Request): any[] => {
   return (req as any).results;
 };
 
-export const createServiceHandler = (service, fn: string, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler => {
-  const router = Router();
-  router.use([createServiceFunctionHandler(service, fn, logger, config), createResponseHandler(logger)]);
-  return router;
+export const createServiceHandler = (service, fn: string, logger, config?: { options?: IRouteOptions }): IServiceHandler => {
+  const router = new APIRoute(config && config.options ? config.options : undefined);
+  router.use(undefined, [createServiceFunctionHandler(service, fn, logger, config), createResponseHandler(logger)]);
+  return router.routes();
 };
 
 export const createServiceFunctionHandler = (service, fn: string, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
