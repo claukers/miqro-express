@@ -12,7 +12,7 @@ export interface IAPIHandlerOptions {
 }
 
 // noinspection JSUnusedLocalSymbols
-export const defaultErrorResponse = async (e: Error, req: Request): Promise<APIResponse> => {
+export const defaultErrorResponse = async (e: Error, req): Promise<APIResponse> => {
   if (!e.name) {
     return new ErrorResponse(e);
   } else {

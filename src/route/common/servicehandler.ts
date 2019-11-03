@@ -16,11 +16,11 @@ export const serviceResponseCreator = (results: any) => {
   return new ServiceResponse(response);
 };
 
-export const setResults = (req: Request, results: any[]) => {
+export const setResults = (req, results: any[]) => {
   (req as any).results = results;
 };
 
-export const getResults = (req: Request): any[] => {
+export const getResults = (req): any[] => {
   if (!((req as any).results)) {
     setResults(req, []);
   }
