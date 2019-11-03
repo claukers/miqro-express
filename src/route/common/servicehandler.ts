@@ -1,10 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { IServiceArgs } from "miqro-core";
-import { ServiceArg } from "../../service";
-import { APIRoute } from "../apiroute";
-import { APIResponse, ServiceResponse } from "../response";
-import { createAPIHandler, IAPIHandlerOptions, IServiceHandler } from "./apihandler";
-import { IRouteOptions } from "./options";
+import {NextFunction, Request, Response} from "express";
+import {IServiceArgs} from "miqro-core";
+import {APIRoute} from "../apiroute";
+import {APIResponse, ServiceResponse} from "../response";
+import {createAPIHandler, IAPIHandlerOptions, IServiceHandler} from "./apihandler";
+import {IRouteOptions} from "./options";
 
 export const serviceResponseCreator = (results: any) => {
   if (!results || results.length === 0) {
@@ -41,7 +40,7 @@ export const createServiceFunctionHandler = (service, fn: string, logger, config
 export const createFunctionHandler = (fn: (args: IServiceArgs) => Promise<any>, logger, config?: { options?: IAPIHandlerOptions }): IServiceHandler =>
   createAPIHandler(async (req: Request, res: Response, next: NextFunction) => {
     const lastServiceResult = await fn(
-      new ServiceArg(req)
+      req as any
     );
     logger.debug(`${req.method} set req.results push[${lastServiceResult}]`);
     getResults(req).push(lastServiceResult);
