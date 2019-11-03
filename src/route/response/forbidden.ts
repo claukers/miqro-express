@@ -1,6 +1,6 @@
 import { APIResponse } from "./api";
 
-export class ForbidenResponse extends APIResponse {
+export class ForbiddenResponse extends APIResponse {
   constructor(message: string) {
     super({
       success: false,

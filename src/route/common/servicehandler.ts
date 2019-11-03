@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { IServiceArgs } from "miqro-core";
 import { ServiceArg } from "../../service";
 import { APIRoute } from "../apiroute";
-import { APIResponse, NotFoundResponse, ServiceResponse } from "../response";
+import { APIResponse, ServiceResponse } from "../response";
 import { createAPIHandler, IAPIHandlerOptions, IServiceHandler } from "./apihandler";
 import { IRouteOptions } from "./options";
 

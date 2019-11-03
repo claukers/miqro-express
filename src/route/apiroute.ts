@@ -1,4 +1,3 @@
-import { Util } from "miqro-core";
 import { createAPIHandler, IServiceHandler } from "./common";
 import { Route } from "./route";
 

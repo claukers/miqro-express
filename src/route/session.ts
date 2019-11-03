@@ -1,6 +1,15 @@
-import { ForbidenError, GroupPolicy, IGroupPolicyOptions, ISession, IVerifyTokenService, ParseOptionsError, UnAuthorizedError, Util } from "miqro-core";
-import { APIRoute } from "./apiroute";
-import { createAPIHandler, IAPIHandlerOptions, IRouteOptions, IServiceHandler } from "./common";
+import {
+  ForbiddenError,
+  GroupPolicy,
+  IGroupPolicyOptions,
+  ISession,
+  IVerifyTokenService,
+  ParseOptionsError,
+  UnAuthorizedError,
+  Util
+} from "miqro-core";
+import {APIRoute} from "./apiroute";
+import {createAPIHandler, IAPIHandlerOptions, IRouteOptions, IServiceHandler} from "./common";
 
 export interface ISessionRouteOptions extends IRouteOptions {
   authService: IVerifyTokenService;
@@ -15,12 +24,14 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger, c
       if (!token) {
         const message = `No token provided!`;
         logger.error(message);
+        // noinspection ExceptionCaughtLocallyJS
         throw new ParseOptionsError(message);
       } else {
-        const session: ISession = await authService.verify({ token });
+        const session: ISession = await authService.verify({token});
         if (!session) {
           const message = `Fail to authenticate token [${token}]!`;
           logger.warn(message);
+          // noinspection ExceptionCaughtLocallyJS
           throw new UnAuthorizedError(`Fail to authenticate token!`);
         } else {
           (req as any).session = session;
@@ -30,7 +41,7 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger, c
       }
     } catch (e) {
       logger.error(e);
-      if (e.isParserOptionsError || e.isUnAuthorizeError || e.isForbidenError) {
+      if (e.name) {
         throw e;
       }
       throw new UnAuthorizedError(`Fail to authenticate token!`);
@@ -41,6 +52,7 @@ export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger, c
   createAPIHandler(async (req, res, next) => {
     try {
       if (!(req as any).session) {
+        // noinspection ExceptionCaughtLocallyJS
         throw new ParseOptionsError(`No Session!`);
       }
       const result = await GroupPolicy.validateSession((req as any).session, options, logger);
@@ -49,25 +61,27 @@ export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger, c
         next();
       } else {
         logger.warn(`groups [${req && (req as any).session && (req as any).session.groups ? (req as any).session.groups.join(",") : ""}] fail to validate!`);
+        // noinspection ExceptionCaughtLocallyJS
         throw new UnAuthorizedError(`Invalid session. You are not permitted to do this!`);
       }
     } catch (e) {
       logger.warn(e);
-      if (e.isParserOptionsError || e.isUnAuthorizeError || e.isForbidenError) {
+      if (e.name) {
         throw e;
       }
-      throw new ForbidenError(`Invalid session. You are not permitted to do this!`);
+      throw new ForbiddenError(`Invalid session. You are not permitted to do this!`);
     }
   }, logger, config)[0];
 
 export class SessionRoute extends APIRoute {
   protected authService: IVerifyTokenService;
+
   constructor(options: ISessionRouteOptions) {
     super(options);
     this.authService = options.authService;
-    this.router.use(createSessionHandler(options.authService, this.logger, { options }));
+    this.router.use(createSessionHandler(options.authService, this.logger, {options}));
     if (options.groupPolicy) {
-      this.router.use(createGroupPolicyHandler(options.groupPolicy, this.logger, { options }));
+      this.router.use(createGroupPolicyHandler(options.groupPolicy, this.logger, {options}));
     }
   }
 }

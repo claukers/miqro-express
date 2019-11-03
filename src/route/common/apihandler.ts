@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { APIResponse, BadRequestResponse, ErrorResponse, ForbidenResponse, NotFoundResponse, UnAuthorizedResponse } from "../response";
+import {NextFunction, Request, Response} from "express";
+import {APIResponse, BadRequestResponse, ErrorResponse, ForbiddenResponse, NotFoundResponse, UnAuthorizedResponse} from "../response";
 
 export interface IServiceHandler {
   // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
@@ -11,23 +11,26 @@ export interface IAPIHandlerOptions {
   errorResponse?: (e: Error, req: Request) => Promise<APIResponse>;
 }
 
+// noinspection JSUnusedLocalSymbols
 export const defaultErrorResponse = async (e: Error, req: Request): Promise<APIResponse> => {
-  if ((e as any).isMethodNotImplementedError) {
-    return new NotFoundResponse();
-  } else if ((e as any).isForbidenError) {
-    return new ForbidenResponse(e.message);
-  } else if ((e as any).isUnAuthorizeError) {
-    return new UnAuthorizedResponse(e.message);
-  } else if ((e as any).isParserOptionsError) {
-    return new BadRequestResponse(e.message);
-  } else if (e.name === "SequelizeValidationError") {
-    return new BadRequestResponse(e.message);
-  } else if (e.name === "SequelizeEagerLoadingError") {
-    return new BadRequestResponse(e.message);
-  } else if (e.name === "SequelizeUniqueConstraintError") {
-    return new BadRequestResponse(e.message);
-  } else {
+  if (!e.name) {
     return new ErrorResponse(e);
+  } else {
+    switch (e.name) {
+      case "MethodNotImplementedError":
+        return new NotFoundResponse();
+      case "ForbiddenError":
+        return new ForbiddenResponse(e.message);
+      case "UnAuthorizedError":
+        return new UnAuthorizedResponse(e.message);
+      case "ParseOptionsError":
+      case "SequelizeValidationError":
+      case "SequelizeEagerLoadingError":
+      case "SequelizeUniqueConstraintError":
+        return new BadRequestResponse(e.message);
+      default:
+        return new ErrorResponse(e);
+    }
   }
 };
 
