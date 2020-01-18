@@ -166,4 +166,92 @@ describe("apiroute functional tests", () => {
         }
       });
   });
+  it("Handler throws", (done) => {
+    const {Handler, ResponseHandler} = require("../src/");
+    const myFunc = () => {
+      throw new Error("asd");
+    };
+    const app = express();
+    app.get("/myFunc", [
+      Handler(myFunc),
+      ResponseHandler()
+    ]);
+
+    request(app)
+      .get('/myFunc')
+      .expect('Content-Type', /html/)
+      // .expect('Content-Length', '3571')
+      .expect(500)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(undefined);
+          expect(res.body.result).to.be.equals(undefined);
+          done();
+        }
+      });
+  });
+
+  it("Handler throws and catched by ErrorHandler", (done) => {
+    const {Handler, ResponseHandler, ErrorHandler} = require("../src/");
+    const myFunc = () => {
+      throw new ParseOptionsError("asd");
+    };
+    const app = express();
+    app.get("/myFunc", [
+      Handler(myFunc),
+      ResponseHandler()
+    ]);
+    app.use(ErrorHandler());
+
+    request(app)
+      .get('/myFunc')
+      .expect('Content-Type', /json/)
+      // .expect('Content-Length', '3571')
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(false);
+          expect(res.body.message).to.be.equals("asd");
+          done();
+        }
+      });
+  });
+
+  it("Handler throws unkonen and  ErrorHandler ignores it", (done) => {
+    const {Handler, ResponseHandler, ErrorHandler} = require("../src/");
+    const myFunc = () => {
+      throw new Error("asd");
+    };
+    const app = express();
+    app.get("/myFunc", [
+      Handler(myFunc),
+      ResponseHandler()
+    ]);
+    app.use(ErrorHandler());
+    let dCallCount = 0;
+    app.use((e, req, res, next) => {
+      dCallCount++;
+      next(e);
+    });
+
+    request(app)
+      .get('/myFunc')
+      .expect('Content-Type', /html/)
+      // .expect('Content-Length', '3571')
+      .expect(500)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(undefined);
+          expect(res.body.message).to.be.equals(undefined);
+          expect(dCallCount).to.be.equals(1);
+          done();
+        }
+      });
+  });
 });
