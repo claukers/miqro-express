@@ -1,3 +1,4 @@
+import {NextFunction, Request, Response} from "express";
 import {
   ForbiddenError,
   GroupPolicy,
@@ -8,16 +9,12 @@ import {
   UnAuthorizedError,
   Util
 } from "miqro-core";
-import {APIRoute} from "./apiroute";
-import {createAPIHandler, IAPIHandlerOptions, IRouteOptions, IServiceHandler} from "./common";
 
-export interface ISessionRouteOptions extends IRouteOptions {
-  authService: IVerifyTokenService;
-  groupPolicy?: IGroupPolicyOptions;
-}
-
-export const createSessionHandler = (authService: IVerifyTokenService, logger, config?: { options: IAPIHandlerOptions }): IServiceHandler =>
-  createAPIHandler(async (req, res, next) => {
+export const SessionHandler = (authService: IVerifyTokenService, logger?) => {
+  if (!logger) {
+    logger = Util.getLogger("SessionHandler");
+  }
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       Util.checkEnvVariables(["TOKEN_HEADER"]);
       const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()] as string;
@@ -42,14 +39,19 @@ export const createSessionHandler = (authService: IVerifyTokenService, logger, c
     } catch (e) {
       logger.error(e);
       if (e.name) {
-        throw e;
+        next(e);
+      } else {
+        next(new UnAuthorizedError(`Fail to authenticate token!`));
       }
-      throw new UnAuthorizedError(`Fail to authenticate token!`);
     }
-  }, logger, config)[0];
+  };
+};
 
-export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger, config?: { options: IAPIHandlerOptions }): IServiceHandler =>
-  createAPIHandler(async (req, res, next) => {
+export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?) => {
+  if (!logger) {
+    logger = Util.getLogger("GroupPolicyHandler");
+  }
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!(req as any).session) {
         // noinspection ExceptionCaughtLocallyJS
@@ -71,17 +73,5 @@ export const createGroupPolicyHandler = (options: IGroupPolicyOptions, logger, c
       }
       throw new ForbiddenError(`Invalid session. You are not permitted to do this!`);
     }
-  }, logger, config)[0];
-
-export class SessionRoute extends APIRoute {
-  protected authService: IVerifyTokenService;
-
-  constructor(options: ISessionRouteOptions) {
-    super(options);
-    this.authService = options.authService;
-    this.router.use(createSessionHandler(options.authService, this.logger, {options}));
-    if (options.groupPolicy) {
-      this.router.use(createGroupPolicyHandler(options.groupPolicy, this.logger, {options}));
-    }
-  }
-}
+  };
+};

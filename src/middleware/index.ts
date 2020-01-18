@@ -1,21 +1,25 @@
 import * as bodyParser from "body-parser";
-import { FeatureToggle, Util } from "miqro-core";
+import {NextFunction, Request, Response} from "express";
+import {FeatureToggle, Util} from "miqro-core";
 import * as morgan from "morgan";
-import { v4 } from "uuid";
+import {v4} from "uuid";
 
 // noinspection JSUnusedLocalSymbols
 morgan.token("uuid", (req, res) => (req as any).uuid);
 
-export const setupMiddleware = async (app, logger) => {
+export const setupMiddleware = async (app, logger?) => {
+  if (!logger) {
+    logger = Util.getLogger("setupMiddleware");
+  }
   app.disable("x-powered-by");
-  app.use((req, res, next) => {
-    req.uuid = v4();
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    (req as any).uuid = v4();
     next();
   });
   if (!process.env.MORGAN_FORMAT) {
     process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
   }
-  app.use(morgan(process.env.MORGAN_FORMAT, { stream: logger.stream }));
+  app.use(morgan(process.env.MORGAN_FORMAT, {stream: logger.stream}));
   if (FeatureToggle.isFeatureEnabled("bodyparser")) {
     Util.checkEnvVariables(["BODYPARSER_INFLATE", "BODYPARSER_LIMIT", "BODYPARSER_STRICT", "BODYPARSER_TYPE"]);
     app.use(bodyParser.json({

@@ -7,7 +7,7 @@ import * as request from "supertest";
 
 describe("session functional tests", () => {
   it("createSessionHandler happy path allow pass through", (done) => {
-    const { createSessionHandler } = require("../src/");
+    const { SessionHandler } = require("../src/");
 
     const fakeToken = "FakeToken";
     const fakeSession = "FakeSession";
@@ -20,19 +20,11 @@ describe("session functional tests", () => {
         return fakeSession;
       })
     };
-    const logger = {
-      info: (text: string) => {
-        console.log(text);
-      },
-      error: (text: string) => {
-        done(text);
-      }
-    };
     const finalHandler = sinon.fake((req, res) => {
       expect(req.session).to.be.equals(fakeSession);
       res.json(true);
     });
-    app.get("/user", [createSessionHandler(authService, logger), finalHandler]);
+    app.get("/user", [SessionHandler(authService), finalHandler]);
 
     request(app)
       .get('/user')
@@ -49,7 +41,7 @@ describe("session functional tests", () => {
   });
 
   it("createSessionHandler happy path doesnt allow pass through is 401", (done) => {
-    const { createSessionHandler } = require("../src/");
+    const { SessionHandler, ErrorHandler } = require("../src/");
 
     const fakeToken = "FakeToken";
     const fakeSession = null;
@@ -62,22 +54,12 @@ describe("session functional tests", () => {
         return fakeSession;
       })
     };
-    const logger = {
-      info: (text: string) => {
-        console.log(text);
-      },
-      warn: (text: string) => {
-        console.warn(text);
-      },
-      error: (text: string) => {
-        console.error(text);
-      }
-    };
     const finalHandler = sinon.fake((req, res) => {
       expect(req.session).to.be.equals(fakeSession);
       res.json(true);
     });
-    app.get("/user", [createSessionHandler(authService, logger), finalHandler]);
+    app.get("/user", [SessionHandler(authService), finalHandler]);
+    app.use(ErrorHandler());
 
     request(app)
       .get('/user')
@@ -97,7 +79,7 @@ describe("session functional tests", () => {
   });
 
   it("createSessionHandler no token is 400", (done) => {
-    const { createSessionHandler } = require("../src/");
+    const { SessionHandler, ErrorHandler } = require("../src/");
 
     process.env.TOKEN_HEADER = "TOKEN_HEADER";
 
@@ -106,21 +88,11 @@ describe("session functional tests", () => {
       verify: sinon.fake(async ({ token }) => {
       })
     };
-    const logger = {
-      info: (text: string) => {
-        console.log(text);
-      },
-      warn: (text: string) => {
-        console.warn(text);
-      },
-      error: (text: string) => {
-        console.error(text);
-      }
-    };
     const finalHandler = sinon.fake((req, res) => {
       res.json("asdlkjasdliasjdaijal");
     });
-    app.get("/user", [createSessionHandler(authService, logger), finalHandler]);
+    app.get("/user", [SessionHandler(authService), finalHandler]);
+    app.use(ErrorHandler());
 
     request(app)
       .get('/user')
@@ -139,7 +111,7 @@ describe("session functional tests", () => {
   });
 
   it("createSessionHandler verify throws is 401", (done) => {
-    const { createSessionHandler } = require("../src/");
+    const { SessionHandler, ErrorHandler } = require("../src/");
     
     const fakeToken = "FakeToken";
     process.env.TOKEN_HEADER = "TOKEN_HEADER";
@@ -152,22 +124,11 @@ describe("session functional tests", () => {
         }
       })
     };
-    const logger = {
-      info: (text: string) => {
-        console.log(text);
-      },
-      warn: (text: string) => {
-        console.warn(text);
-      },
-      error: sinon.fake((e) => {
-        // expect(e.blaError).to.be.equals(true);
-        console.error(e);
-      })
-    };
     const finalHandler = sinon.fake((req, res) => {
       res.json("asdlkjasdliasjdaijal");
     });
-    app.get("/user", [createSessionHandler(authService, logger), finalHandler]);
+    app.get("/user", [SessionHandler(authService), finalHandler]);
+    app.use(ErrorHandler());
 
     request(app)
       .get('/user')
@@ -181,7 +142,6 @@ describe("session functional tests", () => {
         } else {
           expect(finalHandler.callCount).to.be.equals(0);
           expect(authService.verify.callCount).to.be.equals(1);
-          expect(logger.error.callCount).to.be.equals(2);
           done();
         }
       });
