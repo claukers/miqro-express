@@ -5,8 +5,8 @@
 this is a part of the ```miqro``` module and provides very simple express integration.
 
 - some error handling.
+- some function result passing.
 - express logging integration.
-- ServiceRoute
 - **body-parser** configuration via Env vars
 
 
