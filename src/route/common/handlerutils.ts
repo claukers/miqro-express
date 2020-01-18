@@ -32,7 +32,8 @@ export const createErrorResponse = async (e, req: Request): Promise<APIResponse>
   }
 };
 
-export const createServiceResponse = (results: any) => {
+export const createServiceResponse = async (req, res) => {
+  const {results} = req;
   if (!results || results.length === 0) {
     return null;
   }
