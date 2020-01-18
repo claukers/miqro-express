@@ -68,10 +68,11 @@ export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?) => {
       }
     } catch (e) {
       logger.warn(e);
-      if (e.name) {
-        throw e;
+      if (e.name && e.name !== "Error") {
+        next(e);
+      } else {
+        next(new ForbiddenError(`Invalid session. You are not permitted to do this!`));
       }
-      throw new ForbiddenError(`Invalid session. You are not permitted to do this!`);
     }
   };
 };
