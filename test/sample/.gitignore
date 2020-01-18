@@ -1,7 +1,0 @@
-config/log.js
-config/db.js
-logs/
-db/models/index.js
-node_modules/
-*.sqlite3
-.sequelizerc
