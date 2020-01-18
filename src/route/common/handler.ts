@@ -17,14 +17,12 @@ export const ErrorHandler = (logger?) => {
   };
 };
 
-export const Handler = (fn: (results: any[], req: Request, res: Response) => Promise<any>, logger?) => {
+export const Handler = (fn: (req: Request, res: Response) => Promise<any>, logger?) => {
   if (!logger) {
     logger = Util.getLogger("Handler");
   }
   return async (req: Request, res: Response, next: NextFunction) => {
-    const results = getResults(req);
     const lastServiceResult = await fn(
-      results,
       req,
       res
     );
