@@ -9,7 +9,8 @@
   },
   "scripts": {
     "prepare": "npm run build",
-    "build": "rimraf dist/ && tsc",
+    "prebuild": "rm -Rf dist;",
+    "build": "tsc",
     "test": "NODE_ENV=test nyc mocha test/*.test.ts",
     "testfile": "NODE_ENV=test nyc mocha",
     "lint": "tslint -c ./tslint.json -p ./tsconfig.json",
@@ -32,7 +33,6 @@
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
-    "rimraf": "^2.7.1",
     "sinon": "^7.5.0",
     "supertest": "^4.0.2",
     "ts-node": "^7.0.1",
