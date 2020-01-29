@@ -1,39 +1,45 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/notfound"](../modules/_route_response_notfound_.md) › [NotFoundResponse](_route_response_notfound_.notfoundresponse.md)
+[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/index"](../modules/_route_response_index_.md) › [UnAuthorizedResponse](_route_response_index_.unauthorizedresponse.md)
 
-# Class: NotFoundResponse
+# Class: UnAuthorizedResponse
 
 ## Hierarchy
 
 * [APIResponse](_index_.apiresponse.md)
 
-  ↳ **NotFoundResponse**
+  ↳ **UnAuthorizedResponse**
 
 ## Index
 
 ### Constructors
 
-* [constructor](_route_response_notfound_.notfoundresponse.md#constructor)
+* [constructor](_route_response_index_.unauthorizedresponse.md#constructor)
 
 ### Properties
 
-* [body](_route_response_notfound_.notfoundresponse.md#optional-body)
-* [status](_route_response_notfound_.notfoundresponse.md#status)
+* [body](_route_response_index_.unauthorizedresponse.md#optional-body)
+* [status](_route_response_index_.unauthorizedresponse.md#status)
 
 ### Methods
 
-* [send](_route_response_notfound_.notfoundresponse.md#send)
+* [send](_route_response_index_.unauthorizedresponse.md#send)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new NotFoundResponse**(): *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+\+ **new UnAuthorizedResponse**(`message`: string): *[UnAuthorizedResponse](_route_response_index_.unauthorizedresponse.md)*
 
 *Overrides [APIResponse](_index_.apiresponse.md).[constructor](_index_.apiresponse.md#constructor)*
 
-*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/notfound.ts#L3)*
+*Defined in [route/response/unauth.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/unauth.ts#L3)*
 
-**Returns:** *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`message` | string |
+
+**Returns:** *[UnAuthorizedResponse](_route_response_index_.unauthorizedresponse.md)*
 
 ## Properties
 

@@ -1,6 +1,6 @@
 [miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/unauth"](_route_response_unauth_.md)
 
-# External module: "route/response/unauth"
+# Module: "route/response/unauth"
 
 ## Index
 

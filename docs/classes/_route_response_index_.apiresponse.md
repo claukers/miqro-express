@@ -1,4 +1,4 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/api"](../modules/_route_response_api_.md) › [APIResponse](_route_response_api_.apiresponse.md)
+[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/index"](../modules/_route_response_index_.md) › [APIResponse](_route_response_index_.apiresponse.md)
 
 # Class: APIResponse
 
@@ -10,22 +10,22 @@
 
 ### Constructors
 
-* [constructor](_route_response_api_.apiresponse.md#constructor)
+* [constructor](_route_response_index_.apiresponse.md#constructor)
 
 ### Properties
 
-* [body](_route_response_api_.apiresponse.md#optional-body)
-* [status](_route_response_api_.apiresponse.md#status)
+* [body](_route_response_index_.apiresponse.md#optional-body)
+* [status](_route_response_index_.apiresponse.md#status)
 
 ### Methods
 
-* [send](_route_response_api_.apiresponse.md#send)
+* [send](_route_response_index_.apiresponse.md#send)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new APIResponse**(`body?`: any): *[APIResponse](_route_response_api_.apiresponse.md)*
+\+ **new APIResponse**(`body?`: any): *[APIResponse](_route_response_index_.apiresponse.md)*
 
 *Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/api.ts#L4)*
 
@@ -35,7 +35,7 @@ Name | Type |
 ------ | ------ |
 `body?` | any |
 
-**Returns:** *[APIResponse](_route_response_api_.apiresponse.md)*
+**Returns:** *[APIResponse](_route_response_index_.apiresponse.md)*
 
 ## Properties
 

@@ -1,6 +1,6 @@
 [miqro-express](../README.md) › [Globals](../globals.md) › ["route/common/handler"](_route_common_handler_.md)
 
-# External module: "route/common/handler"
+# Module: "route/common/handler"
 
 ## Index
 
@@ -17,13 +17,15 @@
 
 ▸ **ErrorHandler**(`logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:18](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handler.ts#L18)*
+*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L30)*
+
+Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`logger?` | any |
+Name | Type | Description |
+------ | ------ | ------ |
+`logger?` | any | logger for logging errors ´ILogger´.  |
 
 **Returns:** *(Anonymous function)*
 
@@ -33,11 +35,15 @@ ___
 
 ▸ **Handler**(`fn`: function, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:37](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handler.ts#L37)*
+*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L55)*
+
+Wraps an async express request handler but catches the return value and appends it to req.results
 
 **Parameters:**
 
 ▪ **fn**: *function*
+
+express request handler ´async function´.
 
 ▸ (`req`: Request, `res`: Response): *Promise‹any›*
 
@@ -50,6 +56,8 @@ Name | Type |
 
 ▪`Optional`  **logger**: *any*
 
+logger for logging errors ´ILogger´.
+
 **Returns:** *(Anonymous function)*
 
 ___
@@ -58,11 +66,15 @@ ___
 
 ▸ **NextErrorHandler**(`fn`: function, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:5](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handler.ts#L5)*
+*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L11)*
+
+Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
 
 **Parameters:**
 
 ▪ **fn**: *function*
+
+express request handler ´async function´.
 
 ▸ (`req`: Request, `res`: Response, `next`: NextFunction): *Promise‹any›*
 
@@ -76,6 +88,8 @@ Name | Type |
 
 ▪`Optional`  **logger**: *any*
 
+logger for logging errors ´ILogger´.
+
 **Returns:** *(Anonymous function)*
 
 ___
@@ -84,13 +98,15 @@ ___
 
 ▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:52](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handler.ts#L52)*
+*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L76)*
+
+Express middleware that uses req.resutls to create a response.
 
 **Parameters:**
 
-Name | Type |
------- | ------ |
-`responseFactory?` | any |
-`logger?` | any |
+Name | Type | Description |
+------ | ------ | ------ |
+`responseFactory?` | any | factory to create the response ´async function´. |
+`logger?` | any | logger for logging errors ´ILogger´.  |
 
 **Returns:** *(Anonymous function)*

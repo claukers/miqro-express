@@ -4,7 +4,7 @@
 
 ## Index
 
-### External modules
+### Modules
 
 * ["index"](modules/_index_.md)
 * ["middleware/index"](modules/_middleware_index_.md)

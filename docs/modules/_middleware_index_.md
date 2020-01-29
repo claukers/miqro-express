@@ -1,6 +1,6 @@
 [miqro-express](../README.md) › [Globals](../globals.md) › ["middleware/index"](_middleware_index_.md)
 
-# External module: "middleware/index"
+# Module: "middleware/index"
 
 ## Index
 
@@ -14,7 +14,7 @@
 
 ▸ **setupMiddleware**(`app`: any, `logger?`: any): *Promise‹any›*
 
-*Defined in [middleware/index.ts:10](https://github.com/claukers/miqro-express/blob/3953b02/src/middleware/index.ts#L10)*
+*Defined in [middleware/index.ts:10](https://github.com/claukers/miqro-express/blob/4a37b0c/src/middleware/index.ts#L10)*
 
 **Parameters:**
 

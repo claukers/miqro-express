@@ -2,6 +2,12 @@ import {NextFunction, Request, Response} from "express";
 import {Util} from "miqro-core";
 import {createErrorResponse, createServiceResponse, getResults} from "./handlerutils";
 
+/**
+ * Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
+ *
+ * @param fn  express request handler ´async function´.
+ * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
+ */
 export const NextErrorHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>, logger?) => {
   if (!logger) {
     logger = Util.getLogger("NextErrorHandler");
@@ -10,14 +16,20 @@ export const NextErrorHandler = (fn: (req: Request, res: Response, next: NextFun
     try {
       await fn(req, res, next);
     } catch (e) {
+      logger.error(e);
       next(e);
     }
   };
 };
 
+/**
+ * Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
+ *
+ * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
+ */
 export const ErrorHandler = (logger?) => {
   if (!logger) {
-    logger = Util.getLogger("Handler");
+    logger = Util.getLogger("ErrorHandler");
   }
   return async (err: Error, req: Request, res: Response, next: NextFunction) => {
     try {
@@ -34,6 +46,12 @@ export const ErrorHandler = (logger?) => {
   };
 };
 
+/**
+ * Wraps an async express request handler but catches the return value and appends it to req.results
+ *
+ * @param fn  express request handler ´async function´.
+ * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
+ */
 export const Handler = (fn: (req: Request, res: Response) => Promise<any>, logger?) => {
   if (!logger) {
     logger = Util.getLogger("Handler");
@@ -49,6 +67,12 @@ export const Handler = (fn: (req: Request, res: Response) => Promise<any>, logge
   }, logger);
 };
 
+/**
+ * Express middleware that uses req.resutls to create a response.
+ *
+ * @param responseFactory  [OPTIONAL] factory to create the response ´async function´.
+ * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
+ */
 export const ResponseHandler = (responseFactory?, logger?) => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");

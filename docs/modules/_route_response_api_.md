@@ -1,6 +1,6 @@
 [miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/api"](_route_response_api_.md)
 
-# External module: "route/response/api"
+# Module: "route/response/api"
 
 ## Index
 

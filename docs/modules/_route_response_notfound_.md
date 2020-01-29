@@ -1,6 +1,6 @@
 [miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/notfound"](_route_response_notfound_.md)
 
-# External module: "route/response/notfound"
+# Module: "route/response/notfound"
 
 ## Index
 

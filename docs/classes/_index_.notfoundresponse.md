@@ -1,4 +1,4 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/notfound"](../modules/_route_response_notfound_.md) › [NotFoundResponse](_route_response_notfound_.notfoundresponse.md)
+[miqro-express](../README.md) › [Globals](../globals.md) › ["index"](../modules/_index_.md) › [NotFoundResponse](_index_.notfoundresponse.md)
 
 # Class: NotFoundResponse
 
@@ -12,28 +12,28 @@
 
 ### Constructors
 
-* [constructor](_route_response_notfound_.notfoundresponse.md#constructor)
+* [constructor](_index_.notfoundresponse.md#constructor)
 
 ### Properties
 
-* [body](_route_response_notfound_.notfoundresponse.md#optional-body)
-* [status](_route_response_notfound_.notfoundresponse.md#status)
+* [body](_index_.notfoundresponse.md#optional-body)
+* [status](_index_.notfoundresponse.md#status)
 
 ### Methods
 
-* [send](_route_response_notfound_.notfoundresponse.md#send)
+* [send](_index_.notfoundresponse.md#send)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new NotFoundResponse**(): *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+\+ **new NotFoundResponse**(): *[NotFoundResponse](_index_.notfoundresponse.md)*
 
 *Overrides [APIResponse](_index_.apiresponse.md).[constructor](_index_.apiresponse.md#constructor)*
 
 *Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/notfound.ts#L3)*
 
-**Returns:** *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+**Returns:** *[NotFoundResponse](_index_.notfoundresponse.md)*
 
 ## Properties
 

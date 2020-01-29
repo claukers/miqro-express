@@ -1,6 +1,6 @@
 [miqro-express](../README.md) › [Globals](../globals.md) › ["route/common/handlerutils"](_route_common_handlerutils_.md)
 
-# External module: "route/common/handlerutils"
+# Module: "route/common/handlerutils"
 
 ## Index
 
@@ -15,9 +15,9 @@
 
 ### `Const` createErrorResponse
 
-▸ **createErrorResponse**(`e`: any, `req`: Request): *Promise‹[APIResponse](../classes/_route_response_api_.apiresponse.md)›*
+▸ **createErrorResponse**(`e`: any, `req`: Request): *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
 
-*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handlerutils.ts#L13)*
+*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handlerutils.ts#L13)*
 
 **Parameters:**
 
@@ -26,15 +26,15 @@ Name | Type |
 `e` | any |
 `req` | Request |
 
-**Returns:** *Promise‹[APIResponse](../classes/_route_response_api_.apiresponse.md)›*
+**Returns:** *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
 
 ___
 
 ### `Const` createServiceResponse
 
-▸ **createServiceResponse**(`req`: any, `res`: any): *Promise‹[ServiceResponse](../classes/_route_response_service_.serviceresponse.md)‹››*
+▸ **createServiceResponse**(`req`: any, `res`: any): *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
 
-*Defined in [route/common/handlerutils.ts:35](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handlerutils.ts#L35)*
+*Defined in [route/common/handlerutils.ts:35](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handlerutils.ts#L35)*
 
 **Parameters:**
 
@@ -43,7 +43,7 @@ Name | Type |
 `req` | any |
 `res` | any |
 
-**Returns:** *Promise‹[ServiceResponse](../classes/_route_response_service_.serviceresponse.md)‹››*
+**Returns:** *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 ▸ **getResults**(`req`: any): *any[]*
 
-*Defined in [route/common/handlerutils.ts:50](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handlerutils.ts#L50)*
+*Defined in [route/common/handlerutils.ts:50](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handlerutils.ts#L50)*
 
 **Parameters:**
 
@@ -67,7 +67,7 @@ ___
 
 ▸ **setResults**(`req`: any, `results`: any[]): *void*
 
-*Defined in [route/common/handlerutils.ts:46](https://github.com/claukers/miqro-express/blob/3953b02/src/route/common/handlerutils.ts#L46)*
+*Defined in [route/common/handlerutils.ts:46](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handlerutils.ts#L46)*
 
 **Parameters:**
 

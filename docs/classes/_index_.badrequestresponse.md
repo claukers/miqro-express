@@ -1,39 +1,45 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/notfound"](../modules/_route_response_notfound_.md) › [NotFoundResponse](_route_response_notfound_.notfoundresponse.md)
+[miqro-express](../README.md) › [Globals](../globals.md) › ["index"](../modules/_index_.md) › [BadRequestResponse](_index_.badrequestresponse.md)
 
-# Class: NotFoundResponse
+# Class: BadRequestResponse
 
 ## Hierarchy
 
 * [APIResponse](_index_.apiresponse.md)
 
-  ↳ **NotFoundResponse**
+  ↳ **BadRequestResponse**
 
 ## Index
 
 ### Constructors
 
-* [constructor](_route_response_notfound_.notfoundresponse.md#constructor)
+* [constructor](_index_.badrequestresponse.md#constructor)
 
 ### Properties
 
-* [body](_route_response_notfound_.notfoundresponse.md#optional-body)
-* [status](_route_response_notfound_.notfoundresponse.md#status)
+* [body](_index_.badrequestresponse.md#optional-body)
+* [status](_index_.badrequestresponse.md#status)
 
 ### Methods
 
-* [send](_route_response_notfound_.notfoundresponse.md#send)
+* [send](_index_.badrequestresponse.md#send)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new NotFoundResponse**(): *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+\+ **new BadRequestResponse**(`message`: string): *[BadRequestResponse](_index_.badrequestresponse.md)*
 
 *Overrides [APIResponse](_index_.apiresponse.md).[constructor](_index_.apiresponse.md#constructor)*
 
-*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/notfound.ts#L3)*
+*Defined in [route/response/badrequest.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/badrequest.ts#L3)*
 
-**Returns:** *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`message` | string |
+
+**Returns:** *[BadRequestResponse](_index_.badrequestresponse.md)*
 
 ## Properties
 

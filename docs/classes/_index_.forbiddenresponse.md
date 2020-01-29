@@ -1,39 +1,45 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/notfound"](../modules/_route_response_notfound_.md) › [NotFoundResponse](_route_response_notfound_.notfoundresponse.md)
+[miqro-express](../README.md) › [Globals](../globals.md) › ["index"](../modules/_index_.md) › [ForbiddenResponse](_index_.forbiddenresponse.md)
 
-# Class: NotFoundResponse
+# Class: ForbiddenResponse
 
 ## Hierarchy
 
 * [APIResponse](_index_.apiresponse.md)
 
-  ↳ **NotFoundResponse**
+  ↳ **ForbiddenResponse**
 
 ## Index
 
 ### Constructors
 
-* [constructor](_route_response_notfound_.notfoundresponse.md#constructor)
+* [constructor](_index_.forbiddenresponse.md#constructor)
 
 ### Properties
 
-* [body](_route_response_notfound_.notfoundresponse.md#optional-body)
-* [status](_route_response_notfound_.notfoundresponse.md#status)
+* [body](_index_.forbiddenresponse.md#optional-body)
+* [status](_index_.forbiddenresponse.md#status)
 
 ### Methods
 
-* [send](_route_response_notfound_.notfoundresponse.md#send)
+* [send](_index_.forbiddenresponse.md#send)
 
 ## Constructors
 
 ###  constructor
 
-\+ **new NotFoundResponse**(): *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+\+ **new ForbiddenResponse**(`message`: string): *[ForbiddenResponse](_index_.forbiddenresponse.md)*
 
 *Overrides [APIResponse](_index_.apiresponse.md).[constructor](_index_.apiresponse.md#constructor)*
 
-*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/notfound.ts#L3)*
+*Defined in [route/response/forbidden.ts:3](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/response/forbidden.ts#L3)*
 
-**Returns:** *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
+**Parameters:**
+
+Name | Type |
+------ | ------ |
+`message` | string |
+
+**Returns:** *[ForbiddenResponse](_index_.forbiddenresponse.md)*
 
 ## Properties
 
