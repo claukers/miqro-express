@@ -17,7 +17,7 @@
 
 ▸ **ErrorHandler**(`logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L30)*
+*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L30)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -35,7 +35,7 @@ ___
 
 ▸ **Handler**(`fn`: function, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L55)*
+*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L55)*
 
 Wraps an async express request handler but catches the return value and appends it to req.results
 
@@ -66,7 +66,7 @@ ___
 
 ▸ **NextErrorHandler**(`fn`: function, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L11)*
+*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L11)*
 
 Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
 
@@ -98,7 +98,7 @@ ___
 
 ▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/4a37b0c/src/route/common/handler.ts#L76)*
+*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L76)*
 
 Express middleware that uses req.resutls to create a response.
 
