@@ -8,6 +8,8 @@
     "url": "https://github.com/claukers/miqro-express.git"
   },
   "scripts": {
+    "predoc": "rm -Rf docs;",
+    "doc": "typedoc --plugin typedoc-plugin-markdown --out docs src",
     "prepare": "npm run build",
     "prebuild": "rm -Rf dist;",
     "build": "tsc",
@@ -37,6 +39,8 @@
     "supertest": "^4.0.2",
     "ts-node": "^7.0.1",
     "tslint": "^5.20.1",
+    "typedoc": "^0.16.9",
+    "typedoc-plugin-markdown": "^2.2.16",
     "typescript": "^3.7.3"
   },
   "engines": {

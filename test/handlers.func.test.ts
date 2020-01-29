@@ -254,4 +254,30 @@ describe("apiroute functional tests", () => {
         }
       });
   });
+
+  /*it("ExecHandler works ?", (done) => {
+    const {ExecHandler, ResponseHandler} = require("../src/");
+    const myFunc = () => {
+      throw new Error("asd");
+    };
+    const app = express();
+    app.get("/myFunc", [
+      ExecHandler("echo \"hello\""),
+      ResponseHandler()
+    ]);
+    request(app)
+      .get('/myFunc')
+      .expect('Content-Type', /json/)
+      // .expect('Content-Length', '3571')
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(true);
+          expect(res.body.result).to.be.equals("hello\n");
+          done();
+        }
+      });
+  });*/
 });
