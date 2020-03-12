@@ -4,7 +4,7 @@ import * as express from "express";
 import * as sinon from "sinon";
 import * as path from "path";
 import * as request from "supertest";
-import {Util, ParseOptionsError} from "miqro-core";
+import {Util, ParseOptionsError} from "@miqro/core";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 Util.loadConfig();
