@@ -1,6 +1,6 @@
-[miqro-express](README.md) › [Globals](globals.md)
+[@miqro/handlers](README.md) › [Globals](globals.md)
 
-# miqro-express
+# @miqro/handlers
 
 ## Index
 

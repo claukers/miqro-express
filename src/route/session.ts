@@ -1,4 +1,3 @@
-import {NextFunction, Request, Response} from "express";
 import {
   ForbiddenError,
   GroupPolicy,
@@ -8,7 +7,8 @@ import {
   ParseOptionsError,
   UnAuthorizedError,
   Util
-} from "miqro-core";
+} from "@miqro/core";
+import {NextFunction, Request, Response} from "express";
 
 export const SessionHandler = (authService: IVerifyTokenService, logger?) => {
   if (!logger) {

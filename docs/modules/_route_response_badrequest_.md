@@ -1,4 +1,4 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/badrequest"](_route_response_badrequest_.md)
+[@miqro/handlers](../README.md) › [Globals](../globals.md) › ["route/response/badrequest"](_route_response_badrequest_.md)
 
 # Module: "route/response/badrequest"
 

@@ -1,12 +1,12 @@
-[miqro-express](README.md) › [Globals](globals.md)
+[@miqro/handlers](README.md) › [Globals](globals.md)
 
-# miqro-express
+# @miqro/handlers
 
-# miqro-express
+# @miqro/handlers
 
 **in early development not to use in production**
 
-this is a part of the ```miqro``` module and provides very simple express integration.
+this is a part of the ```@miqro``` modules and provides very simple express integration.
 
 - some error handling.
 - some function result passing.

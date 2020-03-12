@@ -1,4 +1,4 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/response/service"](../modules/_route_response_service_.md) › [ServiceResponse](_route_response_service_.serviceresponse.md)
+[@miqro/handlers](../README.md) › [Globals](../globals.md) › ["route/response/service"](../modules/_route_response_service_.md) › [ServiceResponse](_route_response_service_.serviceresponse.md)
 
 # Class: ServiceResponse
 
@@ -31,7 +31,7 @@
 
 *Overrides [APIResponse](_index_.apiresponse.md).[constructor](_index_.apiresponse.md#constructor)*
 
-*Defined in [route/response/service.ts:3](https://github.com/claukers/miqro-express/blob/47304ab/src/route/response/service.ts#L3)*
+*Defined in [route/response/service.ts:3](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/service.ts#L3)*
 
 **Parameters:**
 
@@ -49,7 +49,7 @@ Name | Type |
 
 *Inherited from [APIResponse](_index_.apiresponse.md).[body](_index_.apiresponse.md#optional-body)*
 
-*Defined in [route/response/api.ts:5](https://github.com/claukers/miqro-express/blob/47304ab/src/route/response/api.ts#L5)*
+*Defined in [route/response/api.ts:5](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/api.ts#L5)*
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 *Inherited from [APIResponse](_index_.apiresponse.md).[status](_index_.apiresponse.md#status)*
 
-*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/47304ab/src/route/response/api.ts#L4)*
+*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/api.ts#L4)*
 
 ## Methods
 
@@ -69,7 +69,7 @@ ___
 
 *Inherited from [APIResponse](_index_.apiresponse.md).[send](_index_.apiresponse.md#send)*
 
-*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/47304ab/src/route/response/api.ts#L6)*
+*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/api.ts#L6)*
 
 **Parameters:**
 

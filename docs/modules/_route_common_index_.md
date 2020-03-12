@@ -1,4 +1,4 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/common/index"](_route_common_index_.md)
+[@miqro/handlers](../README.md) › [Globals](../globals.md) › ["route/common/index"](_route_common_index_.md)
 
 # Module: "route/common/index"
 
@@ -21,7 +21,7 @@
 
 ▸ **ErrorHandler**(`logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L30)*
+*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L30)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -39,7 +39,7 @@ ___
 
 ▸ **Handler**(`fn`: function, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L55)*
+*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L55)*
 
 Wraps an async express request handler but catches the return value and appends it to req.results
 
@@ -70,7 +70,7 @@ ___
 
 ▸ **NextErrorHandler**(`fn`: function, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L11)*
+*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L11)*
 
 Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
 
@@ -102,7 +102,7 @@ ___
 
 ▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handler.ts#L76)*
+*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L76)*
 
 Express middleware that uses req.resutls to create a response.
 
@@ -121,7 +121,7 @@ ___
 
 ▸ **createErrorResponse**(`e`: any, `req`: Request): *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
 
-*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handlerutils.ts#L13)*
+*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L13)*
 
 **Parameters:**
 
@@ -138,7 +138,7 @@ ___
 
 ▸ **createServiceResponse**(`req`: any, `res`: any): *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
 
-*Defined in [route/common/handlerutils.ts:35](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handlerutils.ts#L35)*
+*Defined in [route/common/handlerutils.ts:35](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L35)*
 
 **Parameters:**
 
@@ -155,7 +155,7 @@ ___
 
 ▸ **getResults**(`req`: any): *any[]*
 
-*Defined in [route/common/handlerutils.ts:50](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handlerutils.ts#L50)*
+*Defined in [route/common/handlerutils.ts:50](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L50)*
 
 **Parameters:**
 
@@ -171,7 +171,7 @@ ___
 
 ▸ **setResults**(`req`: any, `results`: any[]): *void*
 
-*Defined in [route/common/handlerutils.ts:46](https://github.com/claukers/miqro-express/blob/47304ab/src/route/common/handlerutils.ts#L46)*
+*Defined in [route/common/handlerutils.ts:46](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L46)*
 
 **Parameters:**
 

@@ -1,4 +1,4 @@
-[miqro-express](../README.md) › [Globals](../globals.md) › ["route/session"](_route_session_.md)
+[@miqro/handlers](../README.md) › [Globals](../globals.md) › ["route/session"](_route_session_.md)
 
 # Module: "route/session"
 
@@ -15,7 +15,7 @@
 
 ▸ **GroupPolicyHandler**(`options`: IGroupPolicyOptions, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/session.ts:50](https://github.com/claukers/miqro-express/blob/47304ab/src/route/session.ts#L50)*
+*Defined in [route/session.ts:50](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/session.ts#L50)*
 
 **Parameters:**
 
@@ -32,7 +32,7 @@ ___
 
 ▸ **SessionHandler**(`authService`: IVerifyTokenService, `logger?`: any): *(Anonymous function)*
 
-*Defined in [route/session.ts:13](https://github.com/claukers/miqro-express/blob/47304ab/src/route/session.ts#L13)*
+*Defined in [route/session.ts:13](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/session.ts#L13)*
 
 **Parameters:**
 

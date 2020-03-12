@@ -1,5 +1,5 @@
+import {Util} from "@miqro/core";
 import {NextFunction, Request, Response} from "express";
-import {Util} from "miqro-core";
 import {createErrorResponse, createServiceResponse, getResults} from "./handlerutils";
 
 /**

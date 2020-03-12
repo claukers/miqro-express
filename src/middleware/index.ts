@@ -1,6 +1,6 @@
+import {FeatureToggle, Util} from "@miqro/core";
 import * as bodyParser from "body-parser";
 import {NextFunction, Request, Response} from "express";
-import {FeatureToggle, Util} from "miqro-core";
 import * as morgan from "morgan";
 import {v4} from "uuid";
 
