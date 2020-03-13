@@ -28,6 +28,7 @@ export const NextErrorHandler = (fn: INextHandlerCallback, logger?): INextHandle
   };
 };
 
+// noinspection SpellCheckingInspection
 /**
  * Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
  *
@@ -40,7 +41,7 @@ export const ErrorHandler = (logger?): IErrorHandlerCallback => {
   return async (err: Error, req, res, next) => {
     try {
       logger.error(err);
-      const response = await createErrorResponse(err, req);
+      const response = await createErrorResponse(err);
       if (response) {
         await response.send(res);
       } else {
@@ -74,7 +75,7 @@ export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => 
 };
 
 /**
- * Express middleware that uses req.resutls to create a response.
+ * Express middleware that uses req.results to create a response.
  *
  * @param responseFactory  [OPTIONAL] factory to create the response ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.

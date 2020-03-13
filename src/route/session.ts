@@ -21,15 +21,13 @@ export const SessionHandler = (authService: IVerifyTokenService, logger?): INext
       if (!token) {
         const message = `No token provided!`;
         logger.error(message);
-        // noinspection ExceptionCaughtLocallyJS
-        throw new ParseOptionsError(message);
+        next(new ParseOptionsError(message));
       } else {
         const session: ISession = await authService.verify({token});
         if (!session) {
           const message = `Fail to authenticate token [${token}]!`;
           logger.warn(message);
-          // noinspection ExceptionCaughtLocallyJS
-          throw new UnAuthorizedError(`Fail to authenticate token!`);
+          next(new UnAuthorizedError(`Fail to authenticate token!`));
         } else {
           req.session = session;
           logger.info(`Token [${token}] authenticated!`);
@@ -54,8 +52,7 @@ export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?): INext
   return async (req, res, next) => {
     try {
       if (!req.session) {
-        // noinspection ExceptionCaughtLocallyJS
-        throw new ParseOptionsError(`No Session!`);
+        next(new ParseOptionsError(`No Session!`));
       }
       const result = await GroupPolicy.validateSession(req.session, options, logger);
       if (result) {
@@ -63,8 +60,7 @@ export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?): INext
         next();
       } else {
         logger.warn(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
-        // noinspection ExceptionCaughtLocallyJS
-        throw new UnAuthorizedError(`Invalid session. You are not permitted to do this!`);
+        next(new UnAuthorizedError(`Invalid session. You are not permitted to do this!`));
       }
     } catch (e) {
       logger.warn(e);

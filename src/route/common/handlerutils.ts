@@ -25,11 +25,11 @@ export type IHandlerCallback = (req: Request, res: Response) => Promise<any>;
 export type ICallback = (req: Request, res: Response) => any;
 export type INextHandlerCallback = (req: Request, res: Response, next: NextFunction) => Promise<any>;
 
-// noinspection JSUnusedLocalSymbols
-export const createErrorResponse = async (e, req: Request): Promise<APIResponse> => {
+export const createErrorResponse = async (e): Promise<APIResponse> => {
   if (!e.name || e.name === "Error") {
     return null;
   } else {
+    // noinspection SpellCheckingInspection
     switch (e.name) {
       case "MethodNotImplementedError":
         return new NotFoundResponse();
@@ -48,7 +48,7 @@ export const createErrorResponse = async (e, req: Request): Promise<APIResponse>
   }
 };
 
-export const createServiceResponse = async (req: Request, res: Response) => {
+export const createServiceResponse = async (req: Request) => {
   const {results} = req;
   if (!results || results.length === 0) {
     return null;

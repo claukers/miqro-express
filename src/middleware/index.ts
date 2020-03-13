@@ -22,7 +22,9 @@ export const setupMiddleware = async (app, logger?) => {
     process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
   }
   app.use(morgan(process.env.MORGAN_FORMAT, {stream: logger.stream}));
+  // noinspection SpellCheckingInspection
   if (FeatureToggle.isFeatureEnabled("bodyparser")) {
+    // noinspection SpellCheckingInspection
     Util.checkEnvVariables(["BODYPARSER_INFLATE", "BODYPARSER_LIMIT", "BODYPARSER_STRICT", "BODYPARSER_TYPE"]);
     app.use(bodyParser.json({
       inflate: process.env.BODYPARSER_INFLATE === "true",
