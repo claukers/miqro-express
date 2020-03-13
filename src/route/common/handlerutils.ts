@@ -1,4 +1,4 @@
-import {Request} from "express";
+import {NextFunction, Request, Response} from "express";
 import {
   APIResponse,
   BadRequestResponse,
@@ -8,6 +8,22 @@ import {
   ServiceResponse,
   UnAuthorizedResponse
 } from "../response";
+
+declare global {
+  namespace Express {
+    // tslint:disable-next-line:interface-name
+    interface Request {
+      results: any[];
+      session: any;
+      uuid: string;
+    }
+  }
+}
+
+export type IErrorHandlerCallback = (err: Error, req: Request, res: Response, next: NextFunction) => Promise<any>;
+export type IHandlerCallback = (req: Request, res: Response) => Promise<any>;
+export type ICallback = (req: Request, res: Response) => any;
+export type INextHandlerCallback = (req: Request, res: Response, next: NextFunction) => Promise<any>;
 
 // noinspection JSUnusedLocalSymbols
 export const createErrorResponse = async (e, req: Request): Promise<APIResponse> => {
@@ -32,7 +48,7 @@ export const createErrorResponse = async (e, req: Request): Promise<APIResponse>
   }
 };
 
-export const createServiceResponse = async (req, res) => {
+export const createServiceResponse = async (req: Request, res: Response) => {
   const {results} = req;
   if (!results || results.length === 0) {
     return null;
@@ -43,13 +59,13 @@ export const createServiceResponse = async (req, res) => {
   return new ServiceResponse(response);
 };
 
-export const setResults = (req, results: any[]) => {
-  (req as any).results = results;
+export const setResults = (req: Request, results: any[]) => {
+  req.results = results;
 };
 
-export const getResults = (req): any[] => {
-  if (!((req as any).results)) {
+export const getResults = (req: Request): any[] => {
+  if (!(req.results)) {
     setResults(req, []);
   }
-  return (req as any).results;
+  return req.results;
 };

@@ -8,13 +8,13 @@ import {
   UnAuthorizedError,
   Util
 } from "@miqro/core";
-import {NextFunction, Request, Response} from "express";
+import {INextHandlerCallback} from "./common";
 
-export const SessionHandler = (authService: IVerifyTokenService, logger?) => {
+export const SessionHandler = (authService: IVerifyTokenService, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("SessionHandler");
   }
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req, res, next) => {
     try {
       Util.checkEnvVariables(["TOKEN_HEADER"]);
       const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()] as string;
@@ -31,7 +31,7 @@ export const SessionHandler = (authService: IVerifyTokenService, logger?) => {
           // noinspection ExceptionCaughtLocallyJS
           throw new UnAuthorizedError(`Fail to authenticate token!`);
         } else {
-          (req as any).session = session;
+          req.session = session;
           logger.info(`Token [${token}] authenticated!`);
           next();
         }
@@ -47,22 +47,22 @@ export const SessionHandler = (authService: IVerifyTokenService, logger?) => {
   };
 };
 
-export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?) => {
+export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("GroupPolicyHandler");
   }
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req, res, next) => {
     try {
-      if (!(req as any).session) {
+      if (!req.session) {
         // noinspection ExceptionCaughtLocallyJS
         throw new ParseOptionsError(`No Session!`);
       }
-      const result = await GroupPolicy.validateSession((req as any).session, options, logger);
+      const result = await GroupPolicy.validateSession(req.session, options, logger);
       if (result) {
-        logger.info(`groups [${req && (req as any).session && (req as any).session.groups ? (req as any).session.groups.join(",") : ""}] validated!`);
+        logger.info(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
         next();
       } else {
-        logger.warn(`groups [${req && (req as any).session && (req as any).session.groups ? (req as any).session.groups.join(",") : ""}] fail to validate!`);
+        logger.warn(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
         // noinspection ExceptionCaughtLocallyJS
         throw new UnAuthorizedError(`Invalid session. You are not permitted to do this!`);
       }

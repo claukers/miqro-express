@@ -1,6 +1,12 @@
 import {Util} from "@miqro/core";
-import {NextFunction, Request, Response} from "express";
-import {createErrorResponse, createServiceResponse, getResults} from "./handlerutils";
+import {
+  createErrorResponse,
+  createServiceResponse,
+  getResults,
+  IErrorHandlerCallback,
+  IHandlerCallback,
+  INextHandlerCallback
+} from "./handlerutils";
 
 /**
  * Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
@@ -8,7 +14,7 @@ import {createErrorResponse, createServiceResponse, getResults} from "./handleru
  * @param fn  express request handler ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const NextErrorHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>, logger?) => {
+export const NextErrorHandler = (fn: INextHandlerCallback, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("NextErrorHandler");
   }
@@ -27,11 +33,11 @@ export const NextErrorHandler = (fn: (req: Request, res: Response, next: NextFun
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ErrorHandler = (logger?) => {
+export const ErrorHandler = (logger?): IErrorHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ErrorHandler");
   }
-  return async (err: Error, req: Request, res: Response, next: NextFunction) => {
+  return async (err: Error, req, res, next) => {
     try {
       logger.error(err);
       const response = await createErrorResponse(err, req);
@@ -52,11 +58,11 @@ export const ErrorHandler = (logger?) => {
  * @param fn  express request handler ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const Handler = (fn: (req: Request, res: Response) => Promise<any>, logger?) => {
+export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("Handler");
   }
-  return NextErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+  return NextErrorHandler(async (req, res, next) => {
     const lastServiceResult = await fn(
       req,
       res
@@ -73,14 +79,14 @@ export const Handler = (fn: (req: Request, res: Response) => Promise<any>, logge
  * @param responseFactory  [OPTIONAL] factory to create the response ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ResponseHandler = (responseFactory?, logger?) => {
+export const ResponseHandler = (responseFactory?, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }
   if (!responseFactory) {
     responseFactory = createServiceResponse;
   }
-  return NextErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
+  return NextErrorHandler(async (req, res, next) => {
     const response = await responseFactory(req, res);
     logger.debug(`${req.method} response is [${response}]`);
     if (!response) {
