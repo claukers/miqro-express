@@ -4,226 +4,152 @@
 
 ## Index
 
-### Classes
+### References
 
-* [APIResponse](../classes/_route_index_.apiresponse.md)
-* [BadRequestResponse](../classes/_route_index_.badrequestresponse.md)
-* [ErrorResponse](../classes/_route_index_.errorresponse.md)
-* [ForbiddenResponse](../classes/_route_index_.forbiddenresponse.md)
-* [NotFoundResponse](../classes/_route_index_.notfoundresponse.md)
-* [ServiceResponse](../classes/_route_index_.serviceresponse.md)
-* [UnAuthorizedResponse](../classes/_route_index_.unauthorizedresponse.md)
+* [APIResponse](_route_index_.md#apiresponse)
+* [BadRequestResponse](_route_index_.md#badrequestresponse)
+* [ErrorHandler](_route_index_.md#errorhandler)
+* [ErrorResponse](_route_index_.md#errorresponse)
+* [ForbiddenResponse](_route_index_.md#forbiddenresponse)
+* [GroupPolicyHandler](_route_index_.md#grouppolicyhandler)
+* [Handler](_route_index_.md#handler)
+* [ICallback](_route_index_.md#icallback)
+* [IErrorHandlerCallback](_route_index_.md#ierrorhandlercallback)
+* [IHandlerCallback](_route_index_.md#ihandlercallback)
+* [INextHandlerCallback](_route_index_.md#inexthandlercallback)
+* [NextErrorHandler](_route_index_.md#nexterrorhandler)
+* [NotFoundResponse](_route_index_.md#notfoundresponse)
+* [ResponseHandler](_route_index_.md#responsehandler)
+* [ServiceResponse](_route_index_.md#serviceresponse)
+* [SessionHandler](_route_index_.md#sessionhandler)
+* [UnAuthorizedResponse](_route_index_.md#unauthorizedresponse)
+* [createErrorResponse](_route_index_.md#createerrorresponse)
+* [createServiceResponse](_route_index_.md#createserviceresponse)
+* [getResults](_route_index_.md#getresults)
+* [setResults](_route_index_.md#setresults)
 
-### Functions
+## References
 
-* [ErrorHandler](_route_index_.md#const-errorhandler)
-* [GroupPolicyHandler](_route_index_.md#const-grouppolicyhandler)
-* [Handler](_route_index_.md#const-handler)
-* [NextErrorHandler](_route_index_.md#const-nexterrorhandler)
-* [ResponseHandler](_route_index_.md#const-responsehandler)
-* [SessionHandler](_route_index_.md#const-sessionhandler)
-* [createErrorResponse](_route_index_.md#const-createerrorresponse)
-* [createServiceResponse](_route_index_.md#const-createserviceresponse)
-* [getResults](_route_index_.md#const-getresults)
-* [setResults](_route_index_.md#const-setresults)
+###  APIResponse
 
-## Functions
-
-### `Const` ErrorHandler
-
-▸ **ErrorHandler**(`logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L30)*
-
-Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`logger?` | any | logger for logging errors ´ILogger´.  |
-
-**Returns:** *(Anonymous function)*
+• **APIResponse**:
 
 ___
 
-### `Const` GroupPolicyHandler
+###  BadRequestResponse
 
-▸ **GroupPolicyHandler**(`options`: IGroupPolicyOptions, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/session.ts:50](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/session.ts#L50)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`options` | IGroupPolicyOptions |
-`logger?` | any |
-
-**Returns:** *(Anonymous function)*
+• **BadRequestResponse**:
 
 ___
 
-### `Const` Handler
+###  ErrorHandler
 
-▸ **Handler**(`fn`: function, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L55)*
-
-Wraps an async express request handler but catches the return value and appends it to req.results
-
-**Parameters:**
-
-▪ **fn**: *function*
-
-express request handler ´async function´.
-
-▸ (`req`: Request, `res`: Response): *Promise‹any›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | Request |
-`res` | Response |
-
-▪`Optional`  **logger**: *any*
-
-logger for logging errors ´ILogger´.
-
-**Returns:** *(Anonymous function)*
+• **ErrorHandler**:
 
 ___
 
-### `Const` NextErrorHandler
+###  ErrorResponse
 
-▸ **NextErrorHandler**(`fn`: function, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L11)*
-
-Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
-
-**Parameters:**
-
-▪ **fn**: *function*
-
-express request handler ´async function´.
-
-▸ (`req`: Request, `res`: Response, `next`: NextFunction): *Promise‹any›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | Request |
-`res` | Response |
-`next` | NextFunction |
-
-▪`Optional`  **logger**: *any*
-
-logger for logging errors ´ILogger´.
-
-**Returns:** *(Anonymous function)*
+• **ErrorResponse**:
 
 ___
 
-### `Const` ResponseHandler
+###  ForbiddenResponse
 
-▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L76)*
-
-Express middleware that uses req.resutls to create a response.
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`responseFactory?` | any | factory to create the response ´async function´. |
-`logger?` | any | logger for logging errors ´ILogger´.  |
-
-**Returns:** *(Anonymous function)*
+• **ForbiddenResponse**:
 
 ___
 
-### `Const` SessionHandler
+###  GroupPolicyHandler
 
-▸ **SessionHandler**(`authService`: IVerifyTokenService, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/session.ts:13](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/session.ts#L13)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`authService` | IVerifyTokenService |
-`logger?` | any |
-
-**Returns:** *(Anonymous function)*
+• **GroupPolicyHandler**:
 
 ___
 
-### `Const` createErrorResponse
+###  Handler
 
-▸ **createErrorResponse**(`e`: any, `req`: Request): *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
-
-*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L13)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`e` | any |
-`req` | Request |
-
-**Returns:** *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
+• **Handler**:
 
 ___
 
-### `Const` createServiceResponse
+###  ICallback
 
-▸ **createServiceResponse**(`req`: any, `res`: any): *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
-
-*Defined in [route/common/handlerutils.ts:35](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L35)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | any |
-`res` | any |
-
-**Returns:** *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
+• **ICallback**:
 
 ___
 
-### `Const` getResults
+###  IErrorHandlerCallback
 
-▸ **getResults**(`req`: any): *any[]*
-
-*Defined in [route/common/handlerutils.ts:50](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L50)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | any |
-
-**Returns:** *any[]*
+• **IErrorHandlerCallback**:
 
 ___
 
-### `Const` setResults
+###  IHandlerCallback
 
-▸ **setResults**(`req`: any, `results`: any[]): *void*
+• **IHandlerCallback**:
 
-*Defined in [route/common/handlerutils.ts:46](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L46)*
+___
 
-**Parameters:**
+###  INextHandlerCallback
 
-Name | Type |
------- | ------ |
-`req` | any |
-`results` | any[] |
+• **INextHandlerCallback**:
 
-**Returns:** *void*
+___
+
+###  NextErrorHandler
+
+• **NextErrorHandler**:
+
+___
+
+###  NotFoundResponse
+
+• **NotFoundResponse**:
+
+___
+
+###  ResponseHandler
+
+• **ResponseHandler**:
+
+___
+
+###  ServiceResponse
+
+• **ServiceResponse**:
+
+___
+
+###  SessionHandler
+
+• **SessionHandler**:
+
+___
+
+###  UnAuthorizedResponse
+
+• **UnAuthorizedResponse**:
+
+___
+
+###  createErrorResponse
+
+• **createErrorResponse**:
+
+___
+
+###  createServiceResponse
+
+• **createServiceResponse**:
+
+___
+
+###  getResults
+
+• **getResults**:
+
+___
+
+###  setResults
+
+• **setResults**:

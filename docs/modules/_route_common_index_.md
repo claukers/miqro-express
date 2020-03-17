@@ -4,180 +4,89 @@
 
 ## Index
 
-### Functions
+### References
 
-* [ErrorHandler](_route_common_index_.md#const-errorhandler)
-* [Handler](_route_common_index_.md#const-handler)
-* [NextErrorHandler](_route_common_index_.md#const-nexterrorhandler)
-* [ResponseHandler](_route_common_index_.md#const-responsehandler)
-* [createErrorResponse](_route_common_index_.md#const-createerrorresponse)
-* [createServiceResponse](_route_common_index_.md#const-createserviceresponse)
-* [getResults](_route_common_index_.md#const-getresults)
-* [setResults](_route_common_index_.md#const-setresults)
+* [ErrorHandler](_route_common_index_.md#errorhandler)
+* [Handler](_route_common_index_.md#handler)
+* [ICallback](_route_common_index_.md#icallback)
+* [IErrorHandlerCallback](_route_common_index_.md#ierrorhandlercallback)
+* [IHandlerCallback](_route_common_index_.md#ihandlercallback)
+* [INextHandlerCallback](_route_common_index_.md#inexthandlercallback)
+* [NextErrorHandler](_route_common_index_.md#nexterrorhandler)
+* [ResponseHandler](_route_common_index_.md#responsehandler)
+* [createErrorResponse](_route_common_index_.md#createerrorresponse)
+* [createServiceResponse](_route_common_index_.md#createserviceresponse)
+* [getResults](_route_common_index_.md#getresults)
+* [setResults](_route_common_index_.md#setresults)
 
-## Functions
+## References
 
-### `Const` ErrorHandler
+###  ErrorHandler
 
-▸ **ErrorHandler**(`logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L30)*
-
-Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`logger?` | any | logger for logging errors ´ILogger´.  |
-
-**Returns:** *(Anonymous function)*
+• **ErrorHandler**:
 
 ___
 
-### `Const` Handler
+###  Handler
 
-▸ **Handler**(`fn`: function, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L55)*
-
-Wraps an async express request handler but catches the return value and appends it to req.results
-
-**Parameters:**
-
-▪ **fn**: *function*
-
-express request handler ´async function´.
-
-▸ (`req`: Request, `res`: Response): *Promise‹any›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | Request |
-`res` | Response |
-
-▪`Optional`  **logger**: *any*
-
-logger for logging errors ´ILogger´.
-
-**Returns:** *(Anonymous function)*
+• **Handler**:
 
 ___
 
-### `Const` NextErrorHandler
+###  ICallback
 
-▸ **NextErrorHandler**(`fn`: function, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L11)*
-
-Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
-
-**Parameters:**
-
-▪ **fn**: *function*
-
-express request handler ´async function´.
-
-▸ (`req`: Request, `res`: Response, `next`: NextFunction): *Promise‹any›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | Request |
-`res` | Response |
-`next` | NextFunction |
-
-▪`Optional`  **logger**: *any*
-
-logger for logging errors ´ILogger´.
-
-**Returns:** *(Anonymous function)*
+• **ICallback**:
 
 ___
 
-### `Const` ResponseHandler
+###  IErrorHandlerCallback
 
-▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *(Anonymous function)*
-
-*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L76)*
-
-Express middleware that uses req.resutls to create a response.
-
-**Parameters:**
-
-Name | Type | Description |
------- | ------ | ------ |
-`responseFactory?` | any | factory to create the response ´async function´. |
-`logger?` | any | logger for logging errors ´ILogger´.  |
-
-**Returns:** *(Anonymous function)*
+• **IErrorHandlerCallback**:
 
 ___
 
-### `Const` createErrorResponse
+###  IHandlerCallback
 
-▸ **createErrorResponse**(`e`: any, `req`: Request): *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
-
-*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L13)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`e` | any |
-`req` | Request |
-
-**Returns:** *Promise‹[APIResponse](../classes/_index_.apiresponse.md)›*
+• **IHandlerCallback**:
 
 ___
 
-### `Const` createServiceResponse
+###  INextHandlerCallback
 
-▸ **createServiceResponse**(`req`: any, `res`: any): *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
-
-*Defined in [route/common/handlerutils.ts:35](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L35)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | any |
-`res` | any |
-
-**Returns:** *Promise‹[ServiceResponse](../classes/_index_.serviceresponse.md)‹››*
+• **INextHandlerCallback**:
 
 ___
 
-### `Const` getResults
+###  NextErrorHandler
 
-▸ **getResults**(`req`: any): *any[]*
-
-*Defined in [route/common/handlerutils.ts:50](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L50)*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | any |
-
-**Returns:** *any[]*
+• **NextErrorHandler**:
 
 ___
 
-### `Const` setResults
+###  ResponseHandler
 
-▸ **setResults**(`req`: any, `results`: any[]): *void*
+• **ResponseHandler**:
 
-*Defined in [route/common/handlerutils.ts:46](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handlerutils.ts#L46)*
+___
 
-**Parameters:**
+###  createErrorResponse
 
-Name | Type |
------- | ------ |
-`req` | any |
-`results` | any[] |
+• **createErrorResponse**:
 
-**Returns:** *void*
+___
+
+###  createServiceResponse
+
+• **createServiceResponse**:
+
+___
+
+###  getResults
+
+• **getResults**:
+
+___
+
+###  setResults
+
+• **setResults**:

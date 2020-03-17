@@ -15,9 +15,9 @@
 
 ### `Const` ErrorHandler
 
-▸ **ErrorHandler**(`logger?`: any): *(Anonymous function)*
+▸ **ErrorHandler**(`logger?`: any): *[IErrorHandlerCallback](_route_common_handlerutils_.md#ierrorhandlercallback)*
 
-*Defined in [route/common/handler.ts:30](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L30)*
+*Defined in [route/common/handler.ts:37](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/common/handler.ts#L37)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -27,80 +27,55 @@ Name | Type | Description |
 ------ | ------ | ------ |
 `logger?` | any | logger for logging errors ´ILogger´.  |
 
-**Returns:** *(Anonymous function)*
+**Returns:** *[IErrorHandlerCallback](_route_common_handlerutils_.md#ierrorhandlercallback)*
 
 ___
 
 ### `Const` Handler
 
-▸ **Handler**(`fn`: function, `logger?`: any): *(Anonymous function)*
+▸ **Handler**(`fn`: [IHandlerCallback](_route_common_handlerutils_.md#ihandlercallback), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:55](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L55)*
+*Defined in [route/common/handler.ts:62](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/common/handler.ts#L62)*
 
 Wraps an async express request handler but catches the return value and appends it to req.results
 
 **Parameters:**
 
-▪ **fn**: *function*
+Name | Type | Description |
+------ | ------ | ------ |
+`fn` | [IHandlerCallback](_route_common_handlerutils_.md#ihandlercallback) | express request handler ´async function´. |
+`logger?` | any | logger for logging errors ´ILogger´.  |
 
-express request handler ´async function´.
-
-▸ (`req`: Request, `res`: Response): *Promise‹any›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | Request |
-`res` | Response |
-
-▪`Optional`  **logger**: *any*
-
-logger for logging errors ´ILogger´.
-
-**Returns:** *(Anonymous function)*
+**Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
 ___
 
 ### `Const` NextErrorHandler
 
-▸ **NextErrorHandler**(`fn`: function, `logger?`: any): *(Anonymous function)*
+▸ **NextErrorHandler**(`fn`: [INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:11](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L11)*
+*Defined in [route/common/handler.ts:17](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/common/handler.ts#L17)*
 
 Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
 
 **Parameters:**
 
-▪ **fn**: *function*
+Name | Type | Description |
+------ | ------ | ------ |
+`fn` | [INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback) | express request handler ´async function´. |
+`logger?` | any | logger for logging errors ´ILogger´.  |
 
-express request handler ´async function´.
-
-▸ (`req`: Request, `res`: Response, `next`: NextFunction): *Promise‹any›*
-
-**Parameters:**
-
-Name | Type |
------- | ------ |
-`req` | Request |
-`res` | Response |
-`next` | NextFunction |
-
-▪`Optional`  **logger**: *any*
-
-logger for logging errors ´ILogger´.
-
-**Returns:** *(Anonymous function)*
+**Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
 ___
 
 ### `Const` ResponseHandler
 
-▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *(Anonymous function)*
+▸ **ResponseHandler**(`responseFactory?`: any, `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:76](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/common/handler.ts#L76)*
+*Defined in [route/common/handler.ts:83](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/common/handler.ts#L83)*
 
-Express middleware that uses req.resutls to create a response.
+Express middleware that uses req.results to create a response.
 
 **Parameters:**
 
@@ -109,4 +84,4 @@ Name | Type | Description |
 `responseFactory?` | any | factory to create the response ´async function´. |
 `logger?` | any | logger for logging errors ´ILogger´.  |
 
-**Returns:** *(Anonymous function)*
+**Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*

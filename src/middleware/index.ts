@@ -1,7 +1,6 @@
 import {FeatureToggle, Util} from "@miqro/core";
 import * as bodyParser from "body-parser";
 import * as morgan from "morgan";
-import {v4} from "uuid";
 import {ICallback, INextHandlerCallback} from "../route/common";
 
 // noinspection JSUnusedLocalSymbols
@@ -15,7 +14,7 @@ export const setupMiddleware = async (app, logger?) => {
   }
   app.disable("x-powered-by");
   app.use(((req, res, next) => {
-    req.uuid = v4();
+    req.uuid = Util.uuid();
     next();
   }) as INextHandlerCallback);
   if (!process.env.MORGAN_FORMAT) {

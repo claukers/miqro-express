@@ -4,7 +4,7 @@
 
 ## Hierarchy
 
-* [APIResponse](_index_.apiresponse.md)
+* [APIResponse](_route_response_api_.apiresponse.md)
 
   ↳ **NotFoundResponse**
 
@@ -29,9 +29,9 @@
 
 \+ **new NotFoundResponse**(): *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
 
-*Overrides [APIResponse](_index_.apiresponse.md).[constructor](_index_.apiresponse.md#constructor)*
+*Overrides [APIResponse](_route_response_api_.apiresponse.md).[constructor](_route_response_api_.apiresponse.md#constructor)*
 
-*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/notfound.ts#L3)*
+*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/response/notfound.ts#L3)*
 
 **Returns:** *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
 
@@ -41,9 +41,9 @@
 
 • **body**? : *any*
 
-*Inherited from [APIResponse](_index_.apiresponse.md).[body](_index_.apiresponse.md#optional-body)*
+*Inherited from [APIResponse](_route_response_api_.apiresponse.md).[body](_route_response_api_.apiresponse.md#optional-body)*
 
-*Defined in [route/response/api.ts:5](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/api.ts#L5)*
+*Defined in [route/response/api.ts:5](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/response/api.ts#L5)*
 
 ___
 
@@ -51,9 +51,9 @@ ___
 
 • **status**: *number* = 200
 
-*Inherited from [APIResponse](_index_.apiresponse.md).[status](_index_.apiresponse.md#status)*
+*Inherited from [APIResponse](_route_response_api_.apiresponse.md).[status](_route_response_api_.apiresponse.md#status)*
 
-*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/api.ts#L4)*
+*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/response/api.ts#L4)*
 
 ## Methods
 
@@ -61,9 +61,9 @@ ___
 
 ▸ **send**(`res`: Response): *Promise‹void›*
 
-*Inherited from [APIResponse](_index_.apiresponse.md).[send](_index_.apiresponse.md#send)*
+*Inherited from [APIResponse](_route_response_api_.apiresponse.md).[send](_route_response_api_.apiresponse.md#send)*
 
-*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/response/api.ts#L6)*
+*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/response/api.ts#L6)*
 
 **Parameters:**
 

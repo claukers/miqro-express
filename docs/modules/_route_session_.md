@@ -13,9 +13,9 @@
 
 ### `Const` GroupPolicyHandler
 
-▸ **GroupPolicyHandler**(`options`: IGroupPolicyOptions, `logger?`: any): *(Anonymous function)*
+▸ **GroupPolicyHandler**(`options`: IGroupPolicyOptions, `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/session.ts:50](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/session.ts#L50)*
+*Defined in [route/session.ts:48](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/session.ts#L48)*
 
 **Parameters:**
 
@@ -24,15 +24,15 @@ Name | Type |
 `options` | IGroupPolicyOptions |
 `logger?` | any |
 
-**Returns:** *(Anonymous function)*
+**Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
 ___
 
 ### `Const` SessionHandler
 
-▸ **SessionHandler**(`authService`: IVerifyTokenService, `logger?`: any): *(Anonymous function)*
+▸ **SessionHandler**(`authService`: IVerifyTokenService, `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/session.ts:13](https://github.com/claukers/miqro-express/blob/b49d4d2/src/route/session.ts#L13)*
+*Defined in [route/session.ts:13](https://github.com/claukers/miqro-express/blob/7e34ed5/src/route/session.ts#L13)*
 
 **Parameters:**
 
@@ -41,4 +41,4 @@ Name | Type |
 `authService` | IVerifyTokenService |
 `logger?` | any |
 
-**Returns:** *(Anonymous function)*
+**Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*

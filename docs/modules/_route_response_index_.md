@@ -4,12 +4,54 @@
 
 ## Index
 
-### Classes
+### References
 
-* [APIResponse](../classes/_route_response_index_.apiresponse.md)
-* [BadRequestResponse](../classes/_route_response_index_.badrequestresponse.md)
-* [ErrorResponse](../classes/_route_response_index_.errorresponse.md)
-* [ForbiddenResponse](../classes/_route_response_index_.forbiddenresponse.md)
-* [NotFoundResponse](../classes/_route_response_index_.notfoundresponse.md)
-* [ServiceResponse](../classes/_route_response_index_.serviceresponse.md)
-* [UnAuthorizedResponse](../classes/_route_response_index_.unauthorizedresponse.md)
+* [APIResponse](_route_response_index_.md#apiresponse)
+* [BadRequestResponse](_route_response_index_.md#badrequestresponse)
+* [ErrorResponse](_route_response_index_.md#errorresponse)
+* [ForbiddenResponse](_route_response_index_.md#forbiddenresponse)
+* [NotFoundResponse](_route_response_index_.md#notfoundresponse)
+* [ServiceResponse](_route_response_index_.md#serviceresponse)
+* [UnAuthorizedResponse](_route_response_index_.md#unauthorizedresponse)
+
+## References
+
+###  APIResponse
+
+• **APIResponse**:
+
+___
+
+###  BadRequestResponse
+
+• **BadRequestResponse**:
+
+___
+
+###  ErrorResponse
+
+• **ErrorResponse**:
+
+___
+
+###  ForbiddenResponse
+
+• **ForbiddenResponse**:
+
+___
+
+###  NotFoundResponse
+
+• **NotFoundResponse**:
+
+___
+
+###  ServiceResponse
+
+• **ServiceResponse**:
+
+___
+
+###  UnAuthorizedResponse
+
+• **UnAuthorizedResponse**:
