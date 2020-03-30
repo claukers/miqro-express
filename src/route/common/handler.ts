@@ -7,6 +7,7 @@ import {
   IHandlerCallback,
   INextHandlerCallback
 } from "./handlerutils";
+import {inspect} from "util";
 
 /**
  * Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
@@ -40,7 +41,7 @@ export const ErrorHandler = (logger?): IErrorHandlerCallback => {
   }
   return async (err: Error, req, res, next) => {
     try {
-      logger.error(err);
+      logger.error(`request[${req.uuid}] ${inspect(err)}`);
       const response = await createErrorResponse(err);
       if (response) {
         await response.send(res);
@@ -68,7 +69,7 @@ export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => 
       req,
       res
     );
-    logger.debug(`${req.method} set req.results push[${lastServiceResult}]`);
+    logger.debug(`request[${req.uuid}] push result[${inspect(lastServiceResult)}]`);
     getResults(req).push(lastServiceResult);
     next();
   }, logger);
@@ -77,19 +78,15 @@ export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => 
 /**
  * Express middleware that uses req.results to create a response.
  *
- * @param responseFactory  [OPTIONAL] factory to create the response ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ResponseHandler = (responseFactory?, logger?): INextHandlerCallback => {
+export const ResponseHandler = (logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }
-  if (!responseFactory) {
-    responseFactory = createServiceResponse;
-  }
   return NextErrorHandler(async (req, res, next) => {
-    const response = await responseFactory(req, res);
-    logger.debug(`${req.method} response is [${response}]`);
+    const response = await createServiceResponse(req);
+    logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
     if (!response) {
       next();
     } else {

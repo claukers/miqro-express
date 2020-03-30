@@ -56,10 +56,12 @@ export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?): INext
       }
       const result = await GroupPolicy.validateSession(req.session, options, logger);
       if (result) {
-        logger.info(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
+        logger.info(`request[${req.uuid}] ` +
+          `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
         next();
       } else {
-        logger.warn(`groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
+        logger.warn(`request[${req.uuid}] ` +
+          `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
         next(new UnAuthorizedError(`Invalid session. You are not permitted to do this!`));
       }
     } catch (e) {
