@@ -31,7 +31,7 @@
 
 *Overrides [APIResponse](_route_response_api_.apiresponse.md).[constructor](_route_response_api_.apiresponse.md#constructor)*
 
-*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/d8085da/src/route/response/notfound.ts#L3)*
+*Defined in [route/response/notfound.ts:3](https://github.com/claukers/miqro-express/blob/b08eced/src/route/response/notfound.ts#L3)*
 
 **Returns:** *[NotFoundResponse](_route_response_notfound_.notfoundresponse.md)*
 
@@ -43,7 +43,7 @@
 
 *Inherited from [APIResponse](_route_response_api_.apiresponse.md).[body](_route_response_api_.apiresponse.md#optional-body)*
 
-*Defined in [route/response/api.ts:5](https://github.com/claukers/miqro-express/blob/d8085da/src/route/response/api.ts#L5)*
+*Defined in [route/response/api.ts:5](https://github.com/claukers/miqro-express/blob/b08eced/src/route/response/api.ts#L5)*
 
 ___
 
@@ -53,7 +53,7 @@ ___
 
 *Inherited from [APIResponse](_route_response_api_.apiresponse.md).[status](_route_response_api_.apiresponse.md#status)*
 
-*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/d8085da/src/route/response/api.ts#L4)*
+*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/b08eced/src/route/response/api.ts#L4)*
 
 ## Methods
 
@@ -63,7 +63,7 @@ ___
 
 *Inherited from [APIResponse](_route_response_api_.apiresponse.md).[send](_route_response_api_.apiresponse.md#send)*
 
-*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/d8085da/src/route/response/api.ts#L6)*
+*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/b08eced/src/route/response/api.ts#L6)*
 
 **Parameters:**
 

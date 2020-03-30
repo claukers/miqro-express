@@ -5,7 +5,8 @@ import {
   getResults,
   IErrorHandlerCallback,
   IHandlerCallback,
-  INextHandlerCallback
+  INextHandlerCallback,
+  setResults
 } from "./handlerutils";
 import {inspect} from "util";
 
@@ -65,12 +66,9 @@ export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => 
     logger = Util.getLogger("Handler");
   }
   return NextErrorHandler(async (req, res, next) => {
-    const lastServiceResult = await fn(
-      req,
-      res
-    );
-    logger.debug(`request[${req.uuid}] push result[${inspect(lastServiceResult)}]`);
-    getResults(req).push(lastServiceResult);
+    const result = await fn(req, res);
+    logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
+    getResults(req).push(result);
     next();
   }, logger);
 };
