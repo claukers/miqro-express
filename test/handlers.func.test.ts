@@ -9,7 +9,8 @@ import {Util, ParseOptionsError} from "@miqro/core";
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 Util.loadConfig();
 
-describe("apiroute functional tests", () => {
+describe("handlers functional tests", function() {
+  this.timeout(10000);
   it("ErrorHandler catches ParseOptionsError as 400", (done) => {
     const {ErrorHandler} = require("../src/");
     const myFunc = () => {
