@@ -5,8 +5,7 @@ import {
   getResults,
   IErrorHandlerCallback,
   IHandlerCallback,
-  INextHandlerCallback,
-  setResults
+  INextHandlerCallback
 } from "./handlerutils";
 import {inspect} from "util";
 
@@ -24,7 +23,7 @@ export const NextErrorHandler = (fn: INextHandlerCallback, logger?): INextHandle
     try {
       await fn(req, res, next);
     } catch (e) {
-      logger.error(e);
+      logger.error(`request[${req.uuid}] ${inspect(e)}`);
       next(e);
     }
   };

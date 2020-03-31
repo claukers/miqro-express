@@ -6,13 +6,17 @@ import {
   IVerifyTokenService,
   ParseOptionsError,
   UnAuthorizedError,
+  VerifyJWTEndpointService,
   Util
 } from "@miqro/core";
 import {INextHandlerCallback} from "./common";
 
-export const SessionHandler = (authService: IVerifyTokenService, logger?): INextHandlerCallback => {
+export const SessionHandler = (authService?: IVerifyTokenService, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("SessionHandler");
+  }
+  if (!authService) {
+    authService = VerifyJWTEndpointService.getInstance();
   }
   return async (req, res, next) => {
     try {

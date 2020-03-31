@@ -19,6 +19,8 @@
 * [INextHandlerCallback](_route_index_.md#inexthandlercallback)
 * [NextErrorHandler](_route_index_.md#nexterrorhandler)
 * [NotFoundResponse](_route_index_.md#notfoundresponse)
+* [ProxyHandler](_route_index_.md#proxyhandler)
+* [ProxyResponseHandler](_route_index_.md#proxyresponsehandler)
 * [ResponseHandler](_route_index_.md#responsehandler)
 * [ServiceResponse](_route_index_.md#serviceresponse)
 * [SessionHandler](_route_index_.md#sessionhandler)
@@ -105,6 +107,18 @@ ___
 ###  NotFoundResponse
 
 • **NotFoundResponse**:
+
+___
+
+###  ProxyHandler
+
+• **ProxyHandler**:
+
+___
+
+###  ProxyResponseHandler
+
+• **ProxyResponseHandler**:
 
 ___
 

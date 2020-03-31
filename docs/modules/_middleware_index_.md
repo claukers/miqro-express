@@ -14,7 +14,7 @@
 
 ▸ **setupMiddleware**(`app`: any, `logger?`: any): *Promise‹any›*
 
-*Defined in [middleware/index.ts:11](https://github.com/claukers/miqro-express/blob/b08eced/src/middleware/index.ts#L11)*
+*Defined in [middleware/index.ts:11](https://github.com/claukers/miqro-express/blob/ae7e18a/src/middleware/index.ts#L11)*
 
 **Parameters:**
 
