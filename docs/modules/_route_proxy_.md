@@ -15,7 +15,7 @@
 
 ▸ **ProxyHandler**(`options`: [IProxyOptions](../interfaces/_route_common_proxyutils_.iproxyoptions.md), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/proxy.ts:12](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/proxy.ts#L12)*
+*Defined in [route/proxy.ts:12](https://github.com/claukers/miqro-express/blob/0917369/src/route/proxy.ts#L12)*
 
 Wraps an axios request and add the response to req.results
 
@@ -34,7 +34,7 @@ ___
 
 ▸ **ProxyResponseHandler**(`logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/proxy.ts:40](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/proxy.ts#L40)*
+*Defined in [route/proxy.ts:40](https://github.com/claukers/miqro-express/blob/0917369/src/route/proxy.ts#L40)*
 
 Express middleware that uses the last req.results to create a proxy response.
 

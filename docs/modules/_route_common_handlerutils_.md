@@ -28,37 +28,37 @@
 
 • **__global**:
 
-*Defined in [route/common/handlerutils.ts:12](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L12)*
+*Defined in [route/common/handlerutils.ts:12](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L12)*
 
 ###  Express
 
 • **Express**:
 
-*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L13)*
+*Defined in [route/common/handlerutils.ts:13](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L13)*
 
 ###  Request
 
 • **Request**:
 
-*Defined in [route/common/handlerutils.ts:15](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L15)*
+*Defined in [route/common/handlerutils.ts:15](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L15)*
 
 ###  results
 
 • **results**: *any[]*
 
-*Defined in [route/common/handlerutils.ts:16](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L16)*
+*Defined in [route/common/handlerutils.ts:16](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L16)*
 
 ###  session
 
 • **session**: *any*
 
-*Defined in [route/common/handlerutils.ts:17](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L17)*
+*Defined in [route/common/handlerutils.ts:17](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L17)*
 
 ###  uuid
 
 • **uuid**: *string*
 
-*Defined in [route/common/handlerutils.ts:18](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L18)*
+*Defined in [route/common/handlerutils.ts:18](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L18)*
 
 ## Type aliases
 
@@ -66,7 +66,7 @@
 
 Ƭ **ICallback**: *function*
 
-*Defined in [route/common/handlerutils.ts:25](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L25)*
+*Defined in [route/common/handlerutils.ts:25](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L25)*
 
 #### Type declaration:
 
@@ -85,7 +85,7 @@ ___
 
 Ƭ **IErrorHandlerCallback**: *function*
 
-*Defined in [route/common/handlerutils.ts:23](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L23)*
+*Defined in [route/common/handlerutils.ts:23](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L23)*
 
 #### Type declaration:
 
@@ -106,7 +106,7 @@ ___
 
 Ƭ **IHandlerCallback**: *function*
 
-*Defined in [route/common/handlerutils.ts:24](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L24)*
+*Defined in [route/common/handlerutils.ts:24](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L24)*
 
 #### Type declaration:
 
@@ -125,7 +125,7 @@ ___
 
 Ƭ **INextHandlerCallback**: *function*
 
-*Defined in [route/common/handlerutils.ts:26](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L26)*
+*Defined in [route/common/handlerutils.ts:26](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L26)*
 
 #### Type declaration:
 
@@ -145,7 +145,7 @@ Name | Type |
 
 ▸ **createErrorResponse**(`e`: any): *Promise‹[APIResponse](../classes/_route_response_api_.apiresponse.md)›*
 
-*Defined in [route/common/handlerutils.ts:28](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L28)*
+*Defined in [route/common/handlerutils.ts:28](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L28)*
 
 **Parameters:**
 
@@ -161,7 +161,7 @@ ___
 
 ▸ **createServiceResponse**(`req`: [Request](_route_common_handlerutils_.md#request)): *Promise‹[ServiceResponse](../classes/_route_response_service_.serviceresponse.md)‹››*
 
-*Defined in [route/common/handlerutils.ts:51](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L51)*
+*Defined in [route/common/handlerutils.ts:51](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L51)*
 
 **Parameters:**
 
@@ -177,7 +177,7 @@ ___
 
 ▸ **getResults**(`req`: [Request](_route_common_handlerutils_.md#request)): *any[]*
 
-*Defined in [route/common/handlerutils.ts:66](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L66)*
+*Defined in [route/common/handlerutils.ts:66](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L66)*
 
 **Parameters:**
 
@@ -193,7 +193,7 @@ ___
 
 ▸ **setResults**(`req`: [Request](_route_common_handlerutils_.md#request), `results`: any[]): *void*
 
-*Defined in [route/common/handlerutils.ts:62](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/handlerutils.ts#L62)*
+*Defined in [route/common/handlerutils.ts:62](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handlerutils.ts#L62)*
 
 **Parameters:**
 
