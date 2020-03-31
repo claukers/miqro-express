@@ -19,7 +19,7 @@
 
 ▸ **createProxyResponse**(`req`: any): *Promise‹[ProxyResponse](../classes/_route_response_proxy_.proxyresponse.md)‹››*
 
-*Defined in [route/common/proxyutils.ts:12](https://github.com/claukers/miqro-express/blob/ae7e18a/src/route/common/proxyutils.ts#L12)*
+*Defined in [route/common/proxyutils.ts:12](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/proxyutils.ts#L12)*
 
 **Parameters:**
 

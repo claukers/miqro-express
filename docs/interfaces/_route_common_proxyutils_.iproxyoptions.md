@@ -18,4 +18,4 @@
 
 • **proxyService**: *[IProxyService](_route_common_proxyutils_.iproxyservice.md)*
 
-*Defined in [route/common/proxyutils.ts:9](https://github.com/claukers/miqro-express/blob/ae7e18a/src/route/common/proxyutils.ts#L9)*
+*Defined in [route/common/proxyutils.ts:9](https://github.com/claukers/miqro-express/blob/df8c9ce/src/route/common/proxyutils.ts#L9)*

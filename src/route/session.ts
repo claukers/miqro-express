@@ -12,6 +12,18 @@ import {
 import {INextHandlerCallback} from "./common";
 
 export const SessionHandler = (authService?: IVerifyTokenService, logger?): INextHandlerCallback => {
+  Util.checkEnvVariables(["TOKEN_LOCATION"]);
+  switch (process.env.TOKEN_LOCATION) {
+    case "header":
+      Util.checkEnvVariables(["TOKEN_HEADER"]);
+      break;
+    case "query":
+      Util.checkEnvVariables(["TOKEN_QUERY"]);
+      break;
+    default:
+      throw new Error(`TOKEN_LOCATION=${process.env.TOKEN_LOCATION} not supported use (header or query)`);
+  }
+
   if (!logger) {
     logger = Util.getLogger("SessionHandler");
   }
@@ -20,8 +32,15 @@ export const SessionHandler = (authService?: IVerifyTokenService, logger?): INex
   }
   return async (req, res, next) => {
     try {
-      Util.checkEnvVariables(["TOKEN_HEADER"]);
-      const token = req.headers[process.env.TOKEN_HEADER.toLowerCase()] as string;
+      let token = null;
+      switch (process.env.TOKEN_LOCATION) {
+        case "header":
+          token = req.headers[process.env.TOKEN_HEADER.toLowerCase()] as string
+          break;
+        case "query":
+          token = req.query[process.env.TOKEN_QUERY] as string;
+          break;
+      }
       if (!token) {
         const message = `No token provided!`;
         logger.error(message);
