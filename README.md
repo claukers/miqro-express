@@ -9,16 +9,6 @@ this is a part of the ```@miqro``` modules and provides very simple express inte
 - express logging integration.
 - **body-parser** configuration via Env vars
 
-
-## body-parser configuration
-
-```
-BODYPARSER_INFLATE=true
-BODYPARSER_LIMIT="100kb"
-BODYPARSER_STRICT=true
-BODYPARSER_TYPE="application/json"
-```
-
 ## result passing
 
 ```javascript
@@ -35,13 +25,14 @@ app.get("/add/:a/:b/:c", [
     Handler(getSomething("a")),
     Handler(getSomething("b")),
     Handler(getSomething("c")),
-    Handler(({results}) => {
+    NextErrorHandler((req, res, next) => {
+        const results = getResults(req);
         const ret = results.reduce((ag, value) => {
             ag += value;
         }, 0);
         // clear prev results ?
-        results.splice(0, results.length);
-        return ret;
+        setResults(req, [ret]);
+        next();
     }), 
     ResponseHandler()
 ]);
@@ -66,6 +57,15 @@ app.use(myFallBackerrorHandler) // this will catch all throws that are not recon
 // put this at the start of the app setup
 app.use(setupMiddleware());
 ...
+```
+
+## body-parser configuration
+
+```
+BODYPARSER_INFLATE=true
+BODYPARSER_LIMIT="100kb"
+BODYPARSER_STRICT=true
+BODYPARSER_TYPE="application/json"
 ```
 
 ## Documentation
