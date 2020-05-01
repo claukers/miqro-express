@@ -12,9 +12,9 @@
 
 ### `Const` setupMiddleware
 
-▸ **setupMiddleware**(`app`: any, `logger?`: any): *Promise‹any›*
+▸ **setupMiddleware**(`app`: any, `logger?`: any): *Promise‹void›*
 
-*Defined in [middleware/index.ts:11](https://github.com/claukers/miqro-express/blob/0917369/src/middleware/index.ts#L11)*
+*Defined in [middleware/index.ts:12](https://github.com/claukers/miqro-express/blob/ec7462e/src/middleware/index.ts#L12)*
 
 **Parameters:**
 
@@ -23,4 +23,4 @@ Name | Type |
 `app` | any |
 `logger?` | any |
 
-**Returns:** *Promise‹any›*
+**Returns:** *Promise‹void›*

@@ -17,7 +17,7 @@
 
 ▸ **ErrorHandler**(`logger?`: any): *[IErrorHandlerCallback](_route_common_handlerutils_.md#ierrorhandlercallback)*
 
-*Defined in [route/common/handler.ts:38](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handler.ts#L38)*
+*Defined in [route/common/handler.ts:38](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/common/handler.ts#L38)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -35,7 +35,7 @@ ___
 
 ▸ **Handler**(`fn`: [IHandlerCallback](_route_common_handlerutils_.md#ihandlercallback), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:63](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handler.ts#L63)*
+*Defined in [route/common/handler.ts:63](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/common/handler.ts#L63)*
 
 Wraps an async express request handler but catches the return value and appends it to req.results
 
@@ -54,7 +54,7 @@ ___
 
 ▸ **NextErrorHandler**(`fn`: [INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:18](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handler.ts#L18)*
+*Defined in [route/common/handler.ts:18](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/common/handler.ts#L18)*
 
 Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **ResponseHandler**(`logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:80](https://github.com/claukers/miqro-express/blob/0917369/src/route/common/handler.ts#L80)*
+*Defined in [route/common/handler.ts:80](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/common/handler.ts#L80)*
 
 Express middleware that uses req.results to create a response.
 
