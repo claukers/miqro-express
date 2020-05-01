@@ -1,7 +1,6 @@
 import {describe, it} from "mocha";
 import {expect} from "chai";
 import * as express from "express";
-import * as sinon from "sinon";
 import * as path from "path";
 import * as request from "supertest";
 import {Util, ParseOptionsError} from "@miqro/core";

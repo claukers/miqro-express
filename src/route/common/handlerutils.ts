@@ -9,6 +9,7 @@ import {
   UnAuthorizedResponse
 } from "../response";
 
+/* eslint-disable  @typescript-eslint/no-namespace */
 declare global {
   namespace Express {
     // tslint:disable-next-line:interface-name
@@ -48,7 +49,7 @@ export const createErrorResponse = async (e): Promise<APIResponse> => {
   }
 };
 
-export const createServiceResponse = async (req: Request) => {
+export const createServiceResponse = async (req: Request): Promise<ServiceResponse> => {
   const {results} = req;
   if (!results || results.length === 0) {
     return null;
@@ -59,7 +60,7 @@ export const createServiceResponse = async (req: Request) => {
   return new ServiceResponse(response);
 };
 
-export const setResults = (req: Request, results: any[]) => {
+export const setResults = (req: Request, results: any[]): void => {
   req.results = results;
 };
 

@@ -4,11 +4,12 @@ import * as morgan from "morgan";
 import {ICallback, INextHandlerCallback} from "../route/common";
 
 // noinspection JSUnusedLocalSymbols
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 morgan.token("uuid", ((req, res) => {
   return req.uuid;
 }) as ICallback);
 
-export const setupMiddleware = async (app, logger?) => {
+export const setupMiddleware = async (app, logger?): Promise<void> => {
   if (!logger) {
     logger = Util.getLogger("setupMiddleware");
   }

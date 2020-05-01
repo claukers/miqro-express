@@ -16,6 +16,7 @@ docs/
 src/
 test/
 tslint.json
+.eslintrc
 tsconfig.json
 .editorconfig
 .nycrc

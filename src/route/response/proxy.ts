@@ -6,7 +6,7 @@ export class ProxyResponse extends APIResponse {
     super();
   }
 
-  public async send(res) {
+  public async send(res): Promise<void> {
     res.status(this.response.status);
     const keys = Object.keys(this.response.headers);
     for (const key of keys) {

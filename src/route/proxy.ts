@@ -1,7 +1,7 @@
 import { Util } from "@miqro/core";
 import { Handler, NextErrorHandler, INextHandlerCallback } from "./common";
 import { inspect } from "util";
-import {createProxyResponse, IProxyOptions} from "./common/proxyutils";
+import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
 
 /**
  * Wraps an axios request and add the response to req.results
@@ -9,10 +9,11 @@ import {createProxyResponse, IProxyOptions} from "./common/proxyutils";
  * @param options IProxyOptions options for transforming requests into AxiosRequestConfig
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ProxyHandler = (options: IProxyOptions, logger?: any): INextHandlerCallback => {
+export const ProxyHandler = (options: ProxyOptionsInterface, logger?: any): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ProxyHandler");
   }
+  /* eslint-disable  @typescript-eslint/no-unused-vars */
   return Handler(async (req, res) => {
     const resolver = options.proxyService;
     const requestConfig = await resolver.resolveRequest(req);

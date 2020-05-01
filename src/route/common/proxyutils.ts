@@ -1,16 +1,16 @@
-import { AxiosRequestConfig } from "axios";
-import { ProxyResponse } from "../response/proxy";
+import {AxiosRequestConfig} from "axios";
+import {ProxyResponse} from "../response/proxy";
 
-export interface IProxyService {
+export interface ProxyServiceInterface {
   resolveRequest(req): Promise<AxiosRequestConfig>;
 }
 
-export interface IProxyOptions {
-  proxyService: IProxyService;
+export interface ProxyOptionsInterface {
+  proxyService: ProxyServiceInterface;
 }
 
-export const createProxyResponse = async (req) => {
-  const { results } = req;
+export const createProxyResponse = async (req): Promise<ProxyResponse> => {
+  const {results} = req;
   if (!results || results.length === 0) {
     return null;
   }

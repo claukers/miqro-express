@@ -19,7 +19,7 @@ export const NextErrorHandler = (fn: INextHandlerCallback, logger?): INextHandle
   if (!logger) {
     logger = Util.getLogger("NextErrorHandler");
   }
-  return async (req, res, next) => {
+  return async (req, res, next): Promise<void> => {
     try {
       await fn(req, res, next);
     } catch (e) {
@@ -39,7 +39,7 @@ export const ErrorHandler = (logger?): IErrorHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ErrorHandler");
   }
-  return async (err: Error, req, res, next) => {
+  return async (err: Error, req, res, next): Promise<void> => {
     try {
       logger.error(`request[${req.uuid}] ${inspect(err)}`);
       const response = await createErrorResponse(err);

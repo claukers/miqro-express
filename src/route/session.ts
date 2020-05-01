@@ -1,9 +1,9 @@
 import {
   ForbiddenError,
   GroupPolicy,
-  IGroupPolicyOptions,
-  ISession,
-  IVerifyTokenService,
+  GroupPolicyOptionsInterface,
+  SessionInterface,
+  VerifyTokenServiceInterface,
   ParseOptionsError,
   UnAuthorizedError,
   VerifyJWTEndpointService,
@@ -11,7 +11,7 @@ import {
 } from "@miqro/core";
 import {INextHandlerCallback} from "./common";
 
-export const SessionHandler = (authService?: IVerifyTokenService, logger?): INextHandlerCallback => {
+export const SessionHandler = (authService?: VerifyTokenServiceInterface, logger?): INextHandlerCallback => {
   Util.checkEnvVariables(["TOKEN_LOCATION"]);
   switch (process.env.TOKEN_LOCATION) {
     case "header":
@@ -30,7 +30,7 @@ export const SessionHandler = (authService?: IVerifyTokenService, logger?): INex
   if (!authService) {
     authService = VerifyJWTEndpointService.getInstance();
   }
-  return async (req, res, next) => {
+  return async (req, res, next): Promise<void> => {
     try {
       let token = null;
       switch (process.env.TOKEN_LOCATION) {
@@ -46,7 +46,7 @@ export const SessionHandler = (authService?: IVerifyTokenService, logger?): INex
         logger.error(message);
         next(new ParseOptionsError(message));
       } else {
-        const session: ISession = await authService.verify({token});
+        const session: SessionInterface = await authService.verify({token});
         if (!session) {
           const message = `Fail to authenticate token [${token}]!`;
           logger.warn(message);
@@ -68,11 +68,11 @@ export const SessionHandler = (authService?: IVerifyTokenService, logger?): INex
   };
 };
 
-export const GroupPolicyHandler = (options: IGroupPolicyOptions, logger?): INextHandlerCallback => {
+export const GroupPolicyHandler = (options: GroupPolicyOptionsInterface, logger?): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("GroupPolicyHandler");
   }
-  return async (req, res, next) => {
+  return async (req, res, next): Promise<void> => {
     try {
       if (!req.session) {
         next(new ParseOptionsError(`No Session!`));
