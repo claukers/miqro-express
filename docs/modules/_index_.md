@@ -10,6 +10,10 @@
 * [BadRequestResponse](_index_.md#badrequestresponse)
 * [ErrorHandler](_index_.md#errorhandler)
 * [ErrorResponse](_index_.md#errorresponse)
+* [FeatureHandler](_index_.md#featurehandler)
+* [FeatureRouter](_index_.md#featurerouter)
+* [FeatureRouterOptions](_index_.md#featurerouteroptions)
+* [FeatureRouterPathOptions](_index_.md#featurerouterpathoptions)
 * [ForbiddenResponse](_index_.md#forbiddenresponse)
 * [GroupPolicyHandler](_index_.md#grouppolicyhandler)
 * [Handler](_index_.md#handler)
@@ -54,6 +58,30 @@ ___
 ###  ErrorResponse
 
 • **ErrorResponse**:
+
+___
+
+###  FeatureHandler
+
+• **FeatureHandler**:
+
+___
+
+###  FeatureRouter
+
+• **FeatureRouter**:
+
+___
+
+###  FeatureRouterOptions
+
+• **FeatureRouterOptions**:
+
+___
+
+###  FeatureRouterPathOptions
+
+• **FeatureRouterPathOptions**:
 
 ___
 

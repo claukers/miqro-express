@@ -12,6 +12,7 @@
 * ["route/common/handlerutils"](modules/_route_common_handlerutils_.md)
 * ["route/common/index"](modules/_route_common_index_.md)
 * ["route/common/proxyutils"](modules/_route_common_proxyutils_.md)
+* ["route/feature-router"](modules/_route_feature_router_.md)
 * ["route/index"](modules/_route_index_.md)
 * ["route/proxy"](modules/_route_proxy_.md)
 * ["route/response/api"](modules/_route_response_api_.md)

@@ -18,4 +18,4 @@
 
 • **proxyService**: *[ProxyServiceInterface](_route_common_proxyutils_.proxyserviceinterface.md)*
 
-*Defined in [route/common/proxyutils.ts:9](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/common/proxyutils.ts#L9)*
+*Defined in [route/common/proxyutils.ts:9](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/proxyutils.ts#L9)*

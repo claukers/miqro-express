@@ -15,7 +15,7 @@
 
 ▸ **GroupPolicyHandler**(`options`: GroupPolicyOptionsInterface, `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/session.ts:71](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/session.ts#L71)*
+*Defined in [route/session.ts:71](https://github.com/claukers/miqro-express/blob/410db9f/src/route/session.ts#L71)*
 
 **Parameters:**
 
@@ -32,7 +32,7 @@ ___
 
 ▸ **SessionHandler**(`authService?`: VerifyTokenServiceInterface, `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/session.ts:14](https://github.com/claukers/miqro-express/blob/ec7462e/src/route/session.ts#L14)*
+*Defined in [route/session.ts:14](https://github.com/claukers/miqro-express/blob/410db9f/src/route/session.ts#L14)*
 
 **Parameters:**
 
