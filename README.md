@@ -6,7 +6,9 @@ this is a part of the ```@miqro``` modules and provides very simple express inte
 
 - some error handling.
 - some function result passing.
-- express logging integration.
+- proxy request handler.
+- feature toggle router.
+- express logging integration with morgan.
 - **body-parser** configuration via Env vars
 
 ## result passing
@@ -66,6 +68,31 @@ BODYPARSER_INFLATE=true
 BODYPARSER_LIMIT="100kb"
 BODYPARSER_STRICT=true
 BODYPARSER_TYPE="application/json"
+```
+
+## proxy handler
+
+```javascript
+app.use([
+    ProxyHandler({
+        proxyService: {
+            resolveRequest: (req) => {
+                return { url: ..., method: ... };
+            }
+        }
+    }, logger),
+    ProxyResponseHandler(logger)
+])
+```
+
+## feature router
+
+```javascript
+// ONLY if FeatureToggle.isFeatureEnabled(...) is true the feature will be enabled in the router
+app.use(FeatureRouter({
+    features: ....
+    ....
+}, logger));
 ```
 
 ## Documentation
