@@ -9,8 +9,7 @@ export interface ProxyOptionsInterface {
   proxyService: ProxyServiceInterface;
 }
 
-export const createProxyResponse = async (req): Promise<ProxyResponse> => {
-  const {results} = req;
+export const createProxyResponse = async ({results}: { results: any[] }): Promise<ProxyResponse> => {
   if (!results || results.length === 0) {
     return null;
   }

@@ -2,6 +2,7 @@ import {FeatureToggle, SimpleMapInterface, Util, VerifyTokenServiceInterface} fr
 import {Router} from "express";
 import {INextHandlerCallback} from "./common";
 import {SessionHandler} from "./session";
+import {Logger} from "winston";
 
 export type FeatureHandler = (logger?: any) => INextHandlerCallback[];
 
@@ -23,7 +24,7 @@ export interface FeatureRouterOptions {
 
 const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
 
-export const FeatureRouter = (options: FeatureRouterOptions, logger?: any): Router => {
+export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
   if (!logger) {
     logger = Util.getComponentLogger("FeatureRouter");
   }

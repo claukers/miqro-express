@@ -2,16 +2,17 @@ import {
   ForbiddenError,
   GroupPolicy,
   GroupPolicyOptionsInterface,
-  SessionInterface,
-  VerifyTokenServiceInterface,
   ParseOptionsError,
+  SessionInterface,
   UnAuthorizedError,
+  Util,
   VerifyJWTEndpointService,
-  Util
+  VerifyTokenServiceInterface
 } from "@miqro/core";
+import {Logger} from "winston";
 import {INextHandlerCallback} from "./common";
 
-export const SessionHandler = (authService?: VerifyTokenServiceInterface, logger?): INextHandlerCallback => {
+export const SessionHandler = (authService?: VerifyTokenServiceInterface, logger?: Logger): INextHandlerCallback => {
   Util.checkEnvVariables(["TOKEN_LOCATION"]);
   switch (process.env.TOKEN_LOCATION) {
     case "header":
@@ -68,7 +69,7 @@ export const SessionHandler = (authService?: VerifyTokenServiceInterface, logger
   };
 };
 
-export const GroupPolicyHandler = (options: GroupPolicyOptionsInterface, logger?): INextHandlerCallback => {
+export const GroupPolicyHandler = (options: GroupPolicyOptionsInterface, logger?: Logger): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("GroupPolicyHandler");
   }

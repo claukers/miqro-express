@@ -7,6 +7,7 @@ import {
   IHandlerCallback,
   INextHandlerCallback
 } from "./handlerutils";
+import {Logger} from "winston";
 import {inspect} from "util";
 
 /**
@@ -15,7 +16,7 @@ import {inspect} from "util";
  * @param fn  express request handler ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const NextErrorHandler = (fn: INextHandlerCallback, logger?): INextHandlerCallback => {
+export const NextErrorHandler = (fn: INextHandlerCallback, logger?: Logger): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("NextErrorHandler");
   }
@@ -35,7 +36,7 @@ export const NextErrorHandler = (fn: INextHandlerCallback, logger?): INextHandle
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ErrorHandler = (logger?): IErrorHandlerCallback => {
+export const ErrorHandler = (logger?: Logger): IErrorHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ErrorHandler");
   }
@@ -60,7 +61,7 @@ export const ErrorHandler = (logger?): IErrorHandlerCallback => {
  * @param fn  express request handler ´async function´.
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => {
+export const Handler = (fn: IHandlerCallback, logger?: Logger): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("Handler");
   }
@@ -77,7 +78,7 @@ export const Handler = (fn: IHandlerCallback, logger?): INextHandlerCallback => 
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ResponseHandler = (logger?): INextHandlerCallback => {
+export const ResponseHandler = (logger?: Logger): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }

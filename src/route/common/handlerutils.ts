@@ -26,7 +26,7 @@ export type IHandlerCallback = (req: Request, res: Response) => Promise<any>;
 export type ICallback = (req: Request, res: Response) => any;
 export type INextHandlerCallback = (req: Request, res: Response, next: NextFunction) => Promise<any>;
 
-export const createErrorResponse = async (e): Promise<APIResponse> => {
+export const createErrorResponse = async (e: Error): Promise<APIResponse> => {
   if (!e.name || e.name === "Error") {
     return null;
   } else {

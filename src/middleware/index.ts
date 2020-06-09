@@ -1,4 +1,5 @@
 import {FeatureToggle, Util} from "@miqro/core";
+import {Logger} from "winston";
 import * as bodyParser from "body-parser";
 import * as morgan from "morgan";
 import {ICallback, INextHandlerCallback} from "../route/common";
@@ -9,7 +10,8 @@ morgan.token("uuid", ((req, res) => {
   return req.uuid;
 }) as ICallback);
 
-export const setupMiddleware = async (app, logger?): Promise<void> => {
+/* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+export const setupMiddleware = async (app, logger?: Logger): Promise<void> => {
   if (!logger) {
     logger = Util.getLogger("setupMiddleware");
   }

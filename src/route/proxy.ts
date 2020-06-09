@@ -1,6 +1,7 @@
-import { Util } from "@miqro/core";
-import { Handler, NextErrorHandler, INextHandlerCallback } from "./common";
-import { inspect } from "util";
+import {Util} from "@miqro/core";
+import {Handler, INextHandlerCallback, NextErrorHandler} from "./common";
+import {inspect} from "util";
+import {Logger} from "winston";
 import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
 
 /**
@@ -9,7 +10,7 @@ import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
  * @param options IProxyOptions options for transforming requests into AxiosRequestConfig
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ProxyHandler = (options: ProxyOptionsInterface, logger?: any): INextHandlerCallback => {
+export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ProxyHandler");
   }
@@ -38,7 +39,7 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: any): INex
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ProxyResponseHandler = (logger?): INextHandlerCallback => {
+export const ProxyResponseHandler = (logger?: Logger): INextHandlerCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }
