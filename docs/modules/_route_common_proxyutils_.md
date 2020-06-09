@@ -17,14 +17,16 @@
 
 ### `Const` createProxyResponse
 
-▸ **createProxyResponse**(`req`: any): *Promise‹[ProxyResponse](../classes/_route_response_proxy_.proxyresponse.md)›*
+▸ **createProxyResponse**(`__namedParameters`: object): *Promise‹[ProxyResponse](../classes/_route_response_proxy_.proxyresponse.md)›*
 
-*Defined in [route/common/proxyutils.ts:12](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/proxyutils.ts#L12)*
+*Defined in [route/common/proxyutils.ts:12](https://github.com/claukers/miqro-express/blob/56b5831/src/route/common/proxyutils.ts#L12)*
 
 **Parameters:**
 
+▪ **__namedParameters**: *object*
+
 Name | Type |
 ------ | ------ |
-`req` | any |
+`results` | any[] |
 
 **Returns:** *Promise‹[ProxyResponse](../classes/_route_response_proxy_.proxyresponse.md)›*

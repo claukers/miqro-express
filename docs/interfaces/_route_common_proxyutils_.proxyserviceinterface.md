@@ -18,7 +18,7 @@
 
 ▸ **resolveRequest**(`req`: any): *Promise‹AxiosRequestConfig›*
 
-*Defined in [route/common/proxyutils.ts:5](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/proxyutils.ts#L5)*
+*Defined in [route/common/proxyutils.ts:5](https://github.com/claukers/miqro-express/blob/56b5831/src/route/common/proxyutils.ts#L5)*
 
 **Parameters:**
 

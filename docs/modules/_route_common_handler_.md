@@ -15,9 +15,9 @@
 
 ### `Const` ErrorHandler
 
-▸ **ErrorHandler**(`logger?`: any): *[IErrorHandlerCallback](_route_common_handlerutils_.md#ierrorhandlercallback)*
+▸ **ErrorHandler**(`logger?`: Logger): *[IErrorHandlerCallback](_route_common_handlerutils_.md#ierrorhandlercallback)*
 
-*Defined in [route/common/handler.ts:38](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/handler.ts#L38)*
+*Defined in [route/common/handler.ts:39](https://github.com/claukers/miqro-express/blob/56b5831/src/route/common/handler.ts#L39)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -25,7 +25,7 @@ Express middleware that catches sequelize and other known errors. If the error i
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`logger?` | any | logger for logging errors ´ILogger´.  |
+`logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[IErrorHandlerCallback](_route_common_handlerutils_.md#ierrorhandlercallback)*
 
@@ -33,9 +33,9 @@ ___
 
 ### `Const` Handler
 
-▸ **Handler**(`fn`: [IHandlerCallback](_route_common_handlerutils_.md#ihandlercallback), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
+▸ **Handler**(`fn`: [IHandlerCallback](_route_common_handlerutils_.md#ihandlercallback), `logger?`: Logger): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:63](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/handler.ts#L63)*
+*Defined in [route/common/handler.ts:64](https://github.com/claukers/miqro-express/blob/56b5831/src/route/common/handler.ts#L64)*
 
 Wraps an async express request handler but catches the return value and appends it to req.results
 
@@ -44,7 +44,7 @@ Wraps an async express request handler but catches the return value and appends 
 Name | Type | Description |
 ------ | ------ | ------ |
 `fn` | [IHandlerCallback](_route_common_handlerutils_.md#ihandlercallback) | express request handler ´async function´. |
-`logger?` | any | logger for logging errors ´ILogger´.  |
+`logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
@@ -52,9 +52,9 @@ ___
 
 ### `Const` NextErrorHandler
 
-▸ **NextErrorHandler**(`fn`: [INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
+▸ **NextErrorHandler**(`fn`: [INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback), `logger?`: Logger): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:18](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/handler.ts#L18)*
+*Defined in [route/common/handler.ts:19](https://github.com/claukers/miqro-express/blob/56b5831/src/route/common/handler.ts#L19)*
 
 Wraps an async express request handler that when the function throws it is correctly handled by calling the next function
 
@@ -63,7 +63,7 @@ Wraps an async express request handler that when the function throws it is corre
 Name | Type | Description |
 ------ | ------ | ------ |
 `fn` | [INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback) | express request handler ´async function´. |
-`logger?` | any | logger for logging errors ´ILogger´.  |
+`logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
@@ -71,9 +71,9 @@ ___
 
 ### `Const` ResponseHandler
 
-▸ **ResponseHandler**(`logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
+▸ **ResponseHandler**(`logger?`: Logger): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/common/handler.ts:80](https://github.com/claukers/miqro-express/blob/410db9f/src/route/common/handler.ts#L80)*
+*Defined in [route/common/handler.ts:81](https://github.com/claukers/miqro-express/blob/56b5831/src/route/common/handler.ts#L81)*
 
 Express middleware that uses req.results to create a response.
 
@@ -81,6 +81,6 @@ Express middleware that uses req.results to create a response.
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`logger?` | any | logger for logging errors ´ILogger´.  |
+`logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*

@@ -27,7 +27,7 @@
 
 Ƭ **FeatureHandler**: *function*
 
-Defined in route/feature-router.ts:6
+*Defined in [route/feature-router.ts:7](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L7)*
 
 #### Type declaration:
 
@@ -45,21 +45,21 @@ Name | Type |
 
 • **FEATURE_ROUTER_METHODS**: *string[]* = ["use", "get", "post", "put", "delete", "patch", "options"]
 
-Defined in route/feature-router.ts:24
+*Defined in [route/feature-router.ts:25](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L25)*
 
 ## Functions
 
 ### `Const` FeatureRouter
 
-▸ **FeatureRouter**(`options`: [FeatureRouterOptions](../interfaces/_route_feature_router_.featurerouteroptions.md), `logger?`: any): *Router*
+▸ **FeatureRouter**(`options`: [FeatureRouterOptions](../interfaces/_route_feature_router_.featurerouteroptions.md), `logger?`: Logger): *Router*
 
-Defined in route/feature-router.ts:26
+*Defined in [route/feature-router.ts:27](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L27)*
 
 **Parameters:**
 
 Name | Type |
 ------ | ------ |
 `options` | [FeatureRouterOptions](../interfaces/_route_feature_router_.featurerouteroptions.md) |
-`logger?` | any |
+`logger?` | Logger |
 
 **Returns:** *Router*

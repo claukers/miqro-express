@@ -41,7 +41,7 @@
 
 \+ **new APIResponse**(`body?`: any): *[APIResponse](_route_response_api_.apiresponse.md)*
 
-*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/410db9f/src/route/response/api.ts#L4)*
+*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/56b5831/src/route/response/api.ts#L4)*
 
 **Parameters:**
 
@@ -57,7 +57,7 @@ Name | Type |
 
 • **body**? : *any*
 
-*Defined in [route/response/api.ts:6](https://github.com/claukers/miqro-express/blob/410db9f/src/route/response/api.ts#L6)*
+*Defined in [route/response/api.ts:7](https://github.com/claukers/miqro-express/blob/56b5831/src/route/response/api.ts#L7)*
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 • **status**: *number* = 200
 
-*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/410db9f/src/route/response/api.ts#L4)*
+*Defined in [route/response/api.ts:4](https://github.com/claukers/miqro-express/blob/56b5831/src/route/response/api.ts#L4)*
 
 ## Methods
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **send**(`res`: Response): *Promise‹void›*
 
-*Defined in [route/response/api.ts:9](https://github.com/claukers/miqro-express/blob/410db9f/src/route/response/api.ts#L9)*
+*Defined in [route/response/api.ts:10](https://github.com/claukers/miqro-express/blob/56b5831/src/route/response/api.ts#L10)*
 
 **Parameters:**
 

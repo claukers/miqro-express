@@ -13,9 +13,9 @@
 
 ### `Const` ProxyHandler
 
-▸ **ProxyHandler**(`options`: [ProxyOptionsInterface](../interfaces/_route_common_proxyutils_.proxyoptionsinterface.md), `logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
+▸ **ProxyHandler**(`options`: [ProxyOptionsInterface](../interfaces/_route_common_proxyutils_.proxyoptionsinterface.md), `logger?`: Logger): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/proxy.ts:12](https://github.com/claukers/miqro-express/blob/410db9f/src/route/proxy.ts#L12)*
+*Defined in [route/proxy.ts:13](https://github.com/claukers/miqro-express/blob/56b5831/src/route/proxy.ts#L13)*
 
 Wraps an axios request and add the response to req.results
 
@@ -24,7 +24,7 @@ Wraps an axios request and add the response to req.results
 Name | Type | Description |
 ------ | ------ | ------ |
 `options` | [ProxyOptionsInterface](../interfaces/_route_common_proxyutils_.proxyoptionsinterface.md) | IProxyOptions options for transforming requests into AxiosRequestConfig |
-`logger?` | any | logger for logging errors ´ILogger´.  |
+`logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
@@ -32,9 +32,9 @@ ___
 
 ### `Const` ProxyResponseHandler
 
-▸ **ProxyResponseHandler**(`logger?`: any): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
+▸ **ProxyResponseHandler**(`logger?`: Logger): *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*
 
-*Defined in [route/proxy.ts:41](https://github.com/claukers/miqro-express/blob/410db9f/src/route/proxy.ts#L41)*
+*Defined in [route/proxy.ts:42](https://github.com/claukers/miqro-express/blob/56b5831/src/route/proxy.ts#L42)*
 
 Express middleware that uses the last req.results to create a proxy response.
 
@@ -42,6 +42,6 @@ Express middleware that uses the last req.results to create a proxy response.
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`logger?` | any | logger for logging errors ´ILogger´.  |
+`logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[INextHandlerCallback](_route_common_handlerutils_.md#inexthandlercallback)*

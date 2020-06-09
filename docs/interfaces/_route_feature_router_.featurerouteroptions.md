@@ -20,7 +20,7 @@
 
 • **auth**? : *object*
 
-Defined in route/feature-router.ts:17
+*Defined in [route/feature-router.ts:18](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L18)*
 
 #### Type declaration:
 
@@ -34,7 +34,7 @@ ___
 
 • **features**: *SimpleMapInterface‹[FeatureRouterPathOptions](_route_feature_router_.featurerouterpathoptions.md)›*
 
-Defined in route/feature-router.ts:16
+*Defined in [route/feature-router.ts:17](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L17)*
 
 ___
 
@@ -42,4 +42,4 @@ ___
 
 • **only**? : *string[]*
 
-Defined in route/feature-router.ts:21
+*Defined in [route/feature-router.ts:22](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L22)*

@@ -21,7 +21,7 @@
 
 • **identifier**: *string*
 
-Defined in route/feature-router.ts:9
+*Defined in [route/feature-router.ts:10](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L10)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **implementation**: *[FeatureHandler](../modules/_route_feature_router_.md#featurehandler)*
 
-Defined in route/feature-router.ts:12
+*Defined in [route/feature-router.ts:13](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L13)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **methods**: *string[]*
 
-Defined in route/feature-router.ts:11
+*Defined in [route/feature-router.ts:12](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L12)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **path**: *string*
 
-Defined in route/feature-router.ts:10
+*Defined in [route/feature-router.ts:11](https://github.com/claukers/miqro-express/blob/56b5831/src/route/feature-router.ts#L11)*
