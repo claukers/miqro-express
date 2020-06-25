@@ -1,7 +1,6 @@
-import {Util} from "@miqro/core";
+import {Logger, Util} from "@miqro/core";
 import {Handler, INextHandlerCallback, NextErrorHandler} from "./common";
 import {inspect} from "util";
-import {Logger} from "winston";
 import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
 
 /**

@@ -1,8 +1,7 @@
-import {FeatureToggle, SimpleMapInterface, Util, VerifyTokenServiceInterface} from "@miqro/core";
+import {FeatureToggle, Logger, SimpleMapInterface, Util, VerifyTokenServiceInterface} from "@miqro/core";
 import {Router} from "express";
 import {INextHandlerCallback} from "./common";
 import {SessionHandler} from "./session";
-import {Logger} from "winston";
 
 export type FeatureHandler = (logger?: any) => INextHandlerCallback[];
 

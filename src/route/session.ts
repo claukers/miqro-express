@@ -2,6 +2,7 @@ import {
   ForbiddenError,
   GroupPolicy,
   GroupPolicyOptionsInterface,
+  Logger,
   ParseOptionsError,
   SessionInterface,
   UnAuthorizedError,
@@ -9,7 +10,6 @@ import {
   VerifyJWTEndpointService,
   VerifyTokenServiceInterface
 } from "@miqro/core";
-import {Logger} from "winston";
 import {INextHandlerCallback} from "./common";
 
 export const SessionHandler = (authService?: VerifyTokenServiceInterface, logger?: Logger): INextHandlerCallback => {

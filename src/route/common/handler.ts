@@ -1,4 +1,4 @@
-import {Util} from "@miqro/core";
+import {Logger, Util} from "@miqro/core";
 import {
   createErrorResponse,
   createServiceResponse,
@@ -7,7 +7,6 @@ import {
   IHandlerCallback,
   INextHandlerCallback
 } from "./handlerutils";
-import {Logger} from "winston";
 import {inspect} from "util";
 
 /**

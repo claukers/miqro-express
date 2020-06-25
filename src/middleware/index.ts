@@ -1,5 +1,4 @@
-import {FeatureToggle, Util} from "@miqro/core";
-import {Logger} from "winston";
+import {FeatureToggle, Logger, Util} from "@miqro/core";
 import * as bodyParser from "body-parser";
 import * as morgan from "morgan";
 import {ICallback, INextHandlerCallback} from "../route/common";
@@ -23,7 +22,13 @@ export const setupMiddleware = async (app, logger?: Logger): Promise<void> => {
   if (!process.env.MORGAN_FORMAT) {
     process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
   }
-  app.use(morgan(process.env.MORGAN_FORMAT, {stream: logger.stream}));
+  app.use(morgan(process.env.MORGAN_FORMAT, {
+    stream: {
+      write: (line: string) => {
+        logger.info(line);
+      }
+    }
+  }));
   // noinspection SpellCheckingInspection
   if (FeatureToggle.isFeatureEnabled("bodyparser")) {
     // noinspection SpellCheckingInspection
