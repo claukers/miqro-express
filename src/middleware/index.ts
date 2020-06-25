@@ -1,13 +1,60 @@
 import {FeatureToggle, Logger, Util} from "@miqro/core";
-import * as bodyParser from "body-parser";
-import * as morgan from "morgan";
-import {ICallback, INextHandlerCallback} from "../route/common";
+import {ICallback} from "../route/common";
 
-// noinspection JSUnusedLocalSymbols
-/* eslint-disable  @typescript-eslint/no-unused-vars */
-morgan.token("uuid", ((req, res) => {
-  return req.uuid;
-}) as ICallback);
+export const UUIDHandler = () =>
+  (req, res, next) => {
+    req.uuid = Util.uuid();
+    next();
+  };
+
+
+export const LoggerHandler = (logger?: Logger) => {
+  if (!logger) {
+    logger = Util.getLogger("LoggerHandler");
+  }
+  let morgan = null;
+  try {
+    morgan = require("morgan");
+  } catch (e) {
+    logger.error(`install "morgan" package manually.`);
+    throw e;
+  }
+  morgan.token("uuid", ((req) => {
+    return req.uuid;
+  }) as ICallback);
+  if (!process.env.MORGAN_FORMAT) {
+    process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
+  }
+  return morgan(process.env.MORGAN_FORMAT, {
+    stream: {
+      write: (line: string) => {
+        logger.info(line);
+      }
+    }
+  });
+}
+
+export const BodyParserConfiguratorHandler = (logger?: Logger) => {
+  if (!logger) {
+    logger = Util.getLogger("BodyParserConfiguratorHandler");
+  }
+  Util.checkEnvVariables(["BODY_PARSER_INFLATE", "BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"]);
+  let bodyParser = null;
+  try {
+    bodyParser = require("body-parser");
+  } catch (e) {
+    logger.error(`install "body-parser" package manually.`);
+    throw e;
+  }
+  return bodyParser.json({
+    inflate: process.env.BODYPARSER_INFLATE === "true",
+    limit: process.env.BODYPARSER_LIMIT,
+    // reviver: undefined,
+    strict: process.env.BODYPARSER_STRICT === "true",
+    type: process.env.BODYPARSER_TYPE
+    // verify: undefined
+  });
+};
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const setupMiddleware = async (app, logger?: Logger): Promise<void> => {
@@ -15,32 +62,12 @@ export const setupMiddleware = async (app, logger?: Logger): Promise<void> => {
     logger = Util.getLogger("setupMiddleware");
   }
   app.disable("x-powered-by");
-  app.use(((req, res, next) => {
-    req.uuid = Util.uuid();
-    next();
-  }) as INextHandlerCallback);
-  if (!process.env.MORGAN_FORMAT) {
-    process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
-  }
-  app.use(morgan(process.env.MORGAN_FORMAT, {
-    stream: {
-      write: (line: string) => {
-        logger.info(line);
-      }
-    }
-  }));
-  // noinspection SpellCheckingInspection
-  if (FeatureToggle.isFeatureEnabled("bodyparser")) {
-    // noinspection SpellCheckingInspection
-    Util.checkEnvVariables(["BODYPARSER_INFLATE", "BODYPARSER_LIMIT", "BODYPARSER_STRICT", "BODYPARSER_TYPE"]);
-    app.use(bodyParser.json({
-      inflate: process.env.BODYPARSER_INFLATE === "true",
-      limit: process.env.BODYPARSER_LIMIT,
-      // reviver: undefined,
-      strict: process.env.BODYPARSER_STRICT === "true",
-      type: process.env.BODYPARSER_TYPE
-      // verify: undefined
-    }));
+
+  app.use(UUIDHandler() as any);
+  app.use(LoggerHandler(logger) as any);
+
+  if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
+    app.use(BodyParserConfiguratorHandler(logger));
   }
   return app;
 };
