@@ -1,9 +1,9 @@
 import {APIResponse} from "./api";
-import {AxiosResponse} from "axios";
 import {Response} from "express";
+import {ProxyRequestResponse} from "../common/proxyutils";
 
 export class ProxyResponse extends APIResponse {
-  constructor(public response: AxiosResponse) {
+  constructor(public response: ProxyRequestResponse) {
     super();
   }
 

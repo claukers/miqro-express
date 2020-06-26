@@ -1,8 +1,57 @@
-import {AxiosRequestConfig} from "axios";
 import {ProxyResponse} from "../response/proxy";
 
+export interface RequestConfig {
+  url?: string;
+  method?: | 'get' | 'GET'
+    | 'delete' | 'DELETE'
+    | 'head' | 'HEAD'
+    | 'options' | 'OPTIONS'
+    | 'post' | 'POST'
+    | 'put' | 'PUT'
+    | 'patch' | 'PATCH'
+    | 'link' | 'LINK'
+    | 'unlink' | 'UNLINK';
+  baseURL?: string;
+  headers?: any;
+  params?: any;
+  data?: any;
+  timeout?: number;
+  timeoutErrorMessage?: string;
+  responseType?: | 'arraybuffer'
+    | 'blob'
+    | 'document'
+    | 'json'
+    | 'text'
+    | 'stream';
+  xsrfCookieName?: string;
+  xsrfHeaderName?: string;
+  maxContentLength?: number;
+  maxRedirects?: number;
+  socketPath?: string | null;
+  httpAgent?: any;
+  httpsAgent?: any;
+  proxy?: {
+    host: string;
+    port: number;
+    auth?: {
+      username: string;
+      password: string;
+    };
+    protocol?: string;
+  } | false;
+}
+
+export interface ProxyRequestResponse {
+  data: any;
+  status: number;
+  statusText: string;
+  headers: any;
+  config: RequestConfig;
+  request?: any;
+}
+
 export interface ProxyServiceInterface {
-  resolveRequest(req): Promise<AxiosRequestConfig>;
+  resolveRequest(req): Promise<RequestConfig>;
 }
 
 export interface ProxyOptionsInterface {

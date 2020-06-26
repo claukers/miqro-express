@@ -1,11 +1,16 @@
 import {FeatureToggle, Logger, Util} from "@miqro/core";
 import {ICallback} from "../route/common";
 
-export const UUIDHandler = () =>
-  (req, res, next) => {
-    req.uuid = Util.uuid();
+const uuidV4Module = "uuid";
+
+export const UUIDHandler = () => {
+  Util.checkModules([uuidV4Module]);
+  const {v4} = require(uuidV4Module);
+  return (req, res, next) => {
+    req.uuid = v4();
     next();
   };
+}
 
 
 export const LoggerHandler = (logger?: Logger) => {

@@ -3,6 +3,8 @@ import {Handler, INextHandlerCallback, NextErrorHandler} from "./common";
 import {inspect} from "util";
 import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
 
+const requestModule = "axios";
+
 /**
  * Wraps an axios request and add the response to req.results
  *
@@ -13,13 +15,15 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): I
   if (!logger) {
     logger = Util.getLogger("ProxyHandler");
   }
+  Util.checkModules([requestModule]);
+  const {request} = require(requestModule);
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   return Handler(async (req, res) => {
     const resolver = options.proxyService;
     const requestConfig = await resolver.resolveRequest(req);
     if (requestConfig) {
       try {
-        const response = await Util.request(requestConfig);
+        const response = await request(requestConfig);
         logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
         return response;
       } catch (e) {
