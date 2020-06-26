@@ -1,6 +1,5 @@
 import {FeatureToggle, Logger, SimpleMapInterface, Util, VerifyTokenServiceInterface} from "@miqro/core";
-import {Router} from "express";
-import {INextHandlerCallback} from "./common";
+import {expressModule, INextCallback, INextHandlerCallback} from "./common";
 import {SessionHandler} from "./session";
 
 export type FeatureHandler = (logger?: any) => INextHandlerCallback[];
@@ -23,10 +22,12 @@ export interface FeatureRouterOptions {
 
 const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
 
-export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
+export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): INextCallback => {
   if (!logger) {
     logger = Util.getComponentLogger("FeatureRouter");
   }
+  Util.checkModules([expressModule]);
+  const {Router} = require(expressModule);
   const toSetup = options.only ? options.only : Object.keys(options.features);
   const router = Router();
   if (options.auth) {

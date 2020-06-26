@@ -1,5 +1,4 @@
 import {APIResponse} from "./api";
-import {Response} from "express";
 import {ProxyRequestResponse} from "../common/proxyutils";
 
 export class ProxyResponse extends APIResponse {
@@ -7,7 +6,7 @@ export class ProxyResponse extends APIResponse {
     super();
   }
 
-  public async send(res: Response): Promise<void> {
+  public async send(res: any): Promise<void> {
     res.status(this.response.status);
     const keys = Object.keys(this.response.headers);
     for (const key of keys) {

@@ -1,4 +1,3 @@
-import {NextFunction, Request, Response} from "express";
 import {
   APIResponse,
   BadRequestResponse,
@@ -21,10 +20,13 @@ declare global {
   }
 }
 
-export type IErrorHandlerCallback = (err: Error, req: Request, res: Response, next: NextFunction) => Promise<any>;
-export type IHandlerCallback = (req: Request, res: Response) => Promise<any>;
-export type ICallback = (req: Request, res: Response) => any;
-export type INextHandlerCallback = (req: Request, res: Response, next: NextFunction) => Promise<any>;
+export type NextFunction = (e?: Error) => void;
+
+export type IErrorHandlerCallback = (err: Error, req: any, res: any, next: NextFunction) => Promise<any>;
+export type IHandlerCallback = (req: any, res: any) => Promise<any>;
+export type ICallback = (req: any, res: any) => any;
+export type INextCallback = (req: any, res: any, next: NextFunction) => any;
+export type INextHandlerCallback = (req: any, res: any, next: NextFunction) => Promise<any>;
 
 export const createErrorResponse = async (e: Error): Promise<APIResponse> => {
   if (!e.name || e.name === "Error") {
@@ -49,7 +51,7 @@ export const createErrorResponse = async (e: Error): Promise<APIResponse> => {
   }
 };
 
-export const createServiceResponse = async (req: Request): Promise<ServiceResponse> => {
+export const createServiceResponse = async (req: any): Promise<ServiceResponse> => {
   const {results} = req;
   if (!results || results.length === 0) {
     return null;
@@ -60,11 +62,11 @@ export const createServiceResponse = async (req: Request): Promise<ServiceRespon
   return new ServiceResponse(response);
 };
 
-export const setResults = (req: Request, results: any[]): void => {
+export const setResults = (req: any, results: any[]): void => {
   req.results = results;
 };
 
-export const getResults = (req: Request): any[] => {
+export const getResults = (req: any): any[] => {
   if (!(req.results)) {
     setResults(req, []);
   }

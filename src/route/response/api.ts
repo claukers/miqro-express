@@ -1,5 +1,3 @@
-import {Response} from "express";
-
 export class APIResponse {
   public status = 200;
 
@@ -7,7 +5,7 @@ export class APIResponse {
   constructor(public body?: any) {
   }
 
-  public async send(res: Response): Promise<void> {
+  public async send(res: any): Promise<void> {
     res.status(this.status);
     res.json(this.body);
   }
