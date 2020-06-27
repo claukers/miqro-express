@@ -36,7 +36,7 @@ export const LoggerHandler = (logger?: Logger) => {
   return morgan(process.env.MORGAN_FORMAT, {
     stream: {
       write: (line: string) => {
-        logger.info(line);
+        logger.info(line[line.length - 1] === "\n" ? line.substring(0, line.length - 1) : line);
       }
     }
   });
