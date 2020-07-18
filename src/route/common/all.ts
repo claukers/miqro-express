@@ -1,6 +1,6 @@
 import {getResults, INextHandlerCallback} from "./handlerutils";
 import {Handler} from "./handler";
-import {Logger} from "@miqro/core";
+import {Logger, Util} from "@miqro/core";
 
 export interface HandleAllOptionsOutput {
   req: any,
@@ -10,6 +10,9 @@ export interface HandleAllOptionsOutput {
 export type HandleAllOptions = (req: any) => Promise<HandleAllOptionsOutput[]>;
 
 export const HandleAll = (generator: HandleAllOptions, logger?: Logger): INextHandlerCallback => {
+  if (!logger) {
+    logger = Util.getLogger("HandleAll");
+  }
   return Handler(async (req: any) => {
     return Promise.all((await generator(req)).map((call) => {
       return new Promise((resolve, reject) => {

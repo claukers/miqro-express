@@ -27,6 +27,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): I
     logger = Util.getComponentLogger("FeatureRouter");
   }
   Util.checkModules([expressModule]);
+  /* eslint-disable  @typescript-eslint/no-var-requires */
   const {Router} = require(expressModule);
   const toSetup = options.only ? options.only : Object.keys(options.features);
   const router = Router();

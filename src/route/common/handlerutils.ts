@@ -51,6 +51,7 @@ export const createErrorResponse = async (e: Error): Promise<APIResponse> => {
   }
 };
 
+/* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const createServiceResponse = async (req: any): Promise<ServiceResponse> => {
   const {results} = req;
   if (!results || results.length === 0) {
@@ -62,10 +63,12 @@ export const createServiceResponse = async (req: any): Promise<ServiceResponse> 
   return new ServiceResponse(response);
 };
 
+/* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const setResults = (req: any, results: any[]): void => {
   req.results = results;
 };
 
+/* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const getResults = (req: any): any[] => {
   if (!(req.results)) {
     setResults(req, []);

@@ -6,6 +6,7 @@ export class ProxyResponse extends APIResponse {
     super();
   }
 
+  /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
   public async send(res: any): Promise<void> {
     res.status(this.response.status);
     const keys = Object.keys(this.response.headers);

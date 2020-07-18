@@ -16,6 +16,7 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): I
     logger = Util.getLogger("ProxyHandler");
   }
   Util.checkModules([requestModule]);
+  /* eslint-disable  @typescript-eslint/no-var-requires */
   const {request} = require(requestModule);
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   return Handler(async (req, res) => {
