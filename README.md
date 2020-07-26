@@ -4,35 +4,33 @@ this module provides some express middleware for.
 
 - request logging using **morgan** and **@miqro/core** configured via env vars.
 - request proxy using **axios** as the request module.
-- FeatureToggleRouter for enabling/disabling features via env vars.
+- **FeatureToggleRouter** for enabling/disabling features via env vars.
 - **body-parser** configuration and feature toggle via env vars.
 
 ## handlers
 
-##### basic result passing
+##### Handler(...) 
 
 ```javascript
 ...
-
-const getSomething = (param)=> {
-    return async ({params}) => {
-        const value = parseInt(params[param]);
-        return value;
-    }
-}
-
 app.get("/add/:a/:b/:c", [
-    Handler(getSomething("a")),
-    Handler(getSomething("b")),
-    Handler(getSomething("c")),
-    ResponseHandler() 
+    ...
+    Handler(async () => {
+        return 123; 
+    }),
+    Handler(()=>{
+        return 2; 
+    }),
+    (req, res, next)=>{
+        // req.results will have [123, 2]
+        next();    
+    },
+    ...
 ]);
 ....
 ```
 
-##### parallel result passing
-
-TODO
+##### HandleAll(...)
 
 ```javascript
 ...
@@ -55,14 +53,12 @@ app.use([
             handlers: [c, d,....]
          }, ...];  
     }),
-    ResponseHandler() // results will be passed the same way as Promise.all(...)
+    ResponseHandler() // req.results will be passed the same way as Promise.all(...)
 ]);
 ....
 ```
 
-##### req.session
-
-TODO
+##### SessionHandler(...)
 
 ```javascript
 ...
@@ -72,9 +68,7 @@ app.use(ErrorHandler(...)) // this is needed for resolving a failed session vali
 ...
 ```
 
-##### res.session.groups validation
-
-TODO
+##### GroupPolicyHandler(...)
 
 ```javascript
 ...
@@ -84,9 +78,7 @@ app.use(ErrorHandler(...)) // this is needed for resolving a failed session vali
 ...
 ```
 
-##### error handling
-
-TODO
+##### ErrorHandler(...)
 
 ```javascript
 ...
@@ -108,25 +100,7 @@ app.use(ErrorHandler(...))
 app.use(myFallBackerrorHandler) // this will catch all throws that are not reconized by ErrorHandler()
 ```
 
-## request logging, body-parser, uuid per request, disable powered by, etc
-
-```javascript
-...
-// put this at the start of the app setup
-app.use(setupMiddleware());
-...
-```
-
-## body-parser configuration
-
-```
-BODYPARSER_INFLATE=true
-BODYPARSER_LIMIT="100kb"
-BODYPARSER_STRICT=true
-BODYPARSER_TYPE="application/json"
-```
-
-## proxy handler
+##### ProxyHandler(...) and ProxyResponseHandler(...)
 
 ```javascript
 app.use([
@@ -141,7 +115,7 @@ app.use([
 ])
 ```
 
-## feature router
+##### FeatureRouter(...)
 
 ```javascript
 // ONLY if FeatureToggle.isFeatureEnabled(...) is true the feature will be enabled in the router
@@ -149,6 +123,54 @@ app.use(FeatureRouter({
     features: ....
     ....
 }, logger));
+```
+
+## middleware
+
+##### setupMiddleware(...)
+
+```javascript
+...
+// put this at the start of the app setup
+setupMiddleware(app, logger);
+...
+```
+
+or
+
+##### UUIDHandler(...), MorganHandler(...), BodyParserHandler(...)
+
+```javascript
+...
+// put this at the start of the app setup
+if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED")) {
+    app.disable("x-powered-by");
+}
+if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
+    app.use(UUIDHandler());
+}
+if (FeatureToggle.isFeatureEnabled("MORGAN")) {
+    app.use(MorganHandler(logger));
+}
+if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
+    app.use(BodyParserHandler(logger));
+}
+...
+```
+
+###### body-parser env vars
+
+```
+BODYPARSER_INFLATE=true
+BODYPARSER_LIMIT="100kb"
+BODYPARSER_STRICT=true
+BODYPARSER_TYPE="application/json"
+```
+
+###### morgan env vars
+
+```
+MORGAN_FORMAT="request[:uuid] [:method] [:url] [:status] [:response-time]ms"
 ```
 
 ## Documentation
