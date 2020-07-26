@@ -1,5 +1,7 @@
-import {FeatureToggle, Logger, NextCallback, SessionHandler, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
+import {FeatureToggle, Logger, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
 import {Router} from "express";
+import {SessionHandler} from "./session";
+import {NextCallback} from "./common";
 
 export type FeatureHandler = (logger?: any) => NextCallback[];
 

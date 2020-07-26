@@ -1,7 +1,7 @@
-import {Handler, Logger, NextCallback, Util} from "@miqro/core";
+import {Logger, Util} from "@miqro/core";
 import {inspect} from "util";
 import axios from "axios";
-import {createProxyResponse, ProxyOptionsInterface} from "./common";
+import {createProxyResponse, Handler, NextCallback, ProxyOptionsInterface} from "./common";
 
 /**
  * Wraps an axios request and add the response to req.results

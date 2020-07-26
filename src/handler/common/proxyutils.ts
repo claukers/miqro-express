@@ -1,5 +1,5 @@
-import {APIResponse} from "@miqro/core";
 import {Request} from "express";
+import {APIResponse} from "../responses";
 
 export class ProxyResponse extends APIResponse {
   constructor(public response: ProxyRequestResponse) {

@@ -1,9 +1,10 @@
-import {FeatureToggle, Handler, Logger, NextCallback, Util} from "@miqro/core";
+import {FeatureToggle, Logger, Util} from "@miqro/core";
 import {v4} from "uuid";
 import {json as bodyParserJSON} from "body-parser";
-import {Express, Response, Request} from "express";
+import {Express} from "express";
 import * as morgan from "morgan";
 import {token as morganToken} from "morgan";
+import {NextCallback} from "../handler/common";
 
 export const UUIDHandler = (): NextCallback => {
   return (req) => {
