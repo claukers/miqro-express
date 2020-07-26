@@ -1,9 +1,9 @@
 # @miqro/handlers
 
-this module provides very simple express middleware.
+this module provides some express middleware for.
 
-- proxy request handler using **axios** as the request module for following redirects.
-- feature toggle router for enabling/disabling routes via env vars.
+- request proxy using **axios** as the request module.
+- FeatureToggleRouter for enabling/disabling features via env vars.
 - morgan configuration and feature toggle via env vars.
 - **body-parser** configuration and feature toggle via env vars.
 
