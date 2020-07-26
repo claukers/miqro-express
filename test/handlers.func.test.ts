@@ -4,6 +4,7 @@ import * as express from "express";
 import * as path from "path";
 import * as request from "supertest";
 import {ParseOptionsError, Util} from "@miqro/core";
+import {setupMiddleware} from "../src/middleware";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 Util.loadConfig();
@@ -16,23 +17,33 @@ describe("handlers functional tests", function () {
       throw new ParseOptionsError("myerror");
     };
     const app = express();
-    app.get("/myFunc", myFunc);
-    app.use(ErrorHandler());
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    setupMiddleware(app).then((app) => {
+      app.get("/myFunc", myFunc);
+      app.use(ErrorHandler());
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '37')
-      .expect(400)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(false);
-          expect(res.body.message).to.be.equals("myerror");
-          done();
-        }
-      });
+      request(app)
+        .get('/myFunc')
+        .expect('Content-Type', /json/)
+        .expect('Content-Length', '37')
+        .expect(400)
+        .end((err, res) => {
+          if (err) {
+            done(err);
+          } else {
+            expect(res.body.success).to.be.equals(false);
+            expect(res.body.message).to.be.equals("myerror");
+            done();
+          }
+        });
+    }).catch(done);
   });
   it("ErrorHandler on 404", (done) => {
     const {ErrorHandler} = require("../src/");
@@ -202,6 +213,7 @@ describe("handlers functional tests", function () {
   it("Handler happy path aggregates results function Promise", (done) => {
     const {Handler, ResponseHandler} = require("../src/");
     let bla = 0;
+
     function myFunc() {
       return new Promise((resolve) => {
         resolve(++bla);
@@ -233,6 +245,7 @@ describe("handlers functional tests", function () {
   it("Handler happy path aggregates results function value", (done) => {
     const {Handler, ResponseHandler} = require("../src/");
     let bla = 0;
+
     function myFunc() {
       return ++bla;
     };

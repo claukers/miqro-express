@@ -7,8 +7,9 @@ import {token as morganToken} from "morgan";
 import {NextCallback} from "../handler/common";
 
 export const UUIDHandler = (): NextCallback => {
-  return (req) => {
+  return (req, res, next) => {
     req.uuid = v4();
+    next();
   };
 }
 
