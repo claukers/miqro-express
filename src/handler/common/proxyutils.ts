@@ -1,4 +1,4 @@
-import {Request} from "express";
+import {Request, Response} from "express";
 import {APIResponse} from "../responses";
 
 export class ProxyResponse extends APIResponse {
@@ -6,7 +6,7 @@ export class ProxyResponse extends APIResponse {
     super();
   }
 
-  public send(res: any): void {
+  public send(res: Response): void {
     res.status(this.response.status);
     const keys = Object.keys(this.response.headers);
     for (const key of keys) {
