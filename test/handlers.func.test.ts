@@ -25,25 +25,25 @@ describe("handlers functional tests", function () {
     process.env.BODY_PARSER_LIMIT = "100kb";
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
-    setupMiddleware(app).then((app) => {
-      app.get("/myFunc", myFunc);
-      app.use(ErrorHandler());
+    setupMiddleware(app);
+    app.get("/myFunc", myFunc);
+    app.use(ErrorHandler());
 
-      request(app)
-        .get('/myFunc')
-        .expect('Content-Type', /json/)
-        .expect('Content-Length', '37')
-        .expect(400)
-        .end((err, res) => {
-          if (err) {
-            done(err);
-          } else {
-            expect(res.body.success).to.be.equals(false);
-            expect(res.body.message).to.be.equals("myerror");
-            done();
-          }
-        });
-    }).catch(done);
+    request(app)
+      .get('/myFunc')
+      .expect('Content-Type', /json/)
+      .expect('Content-Length', '37')
+      .expect(400)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        } else {
+          expect(res.body.success).to.be.equals(false);
+          expect(res.body.message).to.be.equals("myerror");
+          done();
+        }
+      });
+
   });
   it("ErrorHandler on 404", (done) => {
     const {ErrorHandler} = require("../src/");
