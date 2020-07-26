@@ -1,6 +1,5 @@
-import {FeatureToggle, Logger, SimpleMapInterface, Util, VerifyTokenServiceInterface} from "@miqro/core";
-import {expressModule, INextCallback, INextHandlerCallback} from "./common";
-import {SessionHandler} from "./session";
+import {SessionHandler, VerifyTokenService, FeatureToggle, INextCallback, INextHandlerCallback, Logger, SimpleMap, Util} from "@miqro/core";
+import {Router} from "express";
 
 export type FeatureHandler = (logger?: any) => INextHandlerCallback[];
 
@@ -12,9 +11,9 @@ export interface FeatureRouterPathOptions {
 }
 
 export interface FeatureRouterOptions {
-  features: SimpleMapInterface<FeatureRouterPathOptions>;
+  features: SimpleMap<FeatureRouterPathOptions>;
   auth?: {
-    service: VerifyTokenServiceInterface;
+    service: VerifyTokenService;
     identifier: string;
   }; // if undefined all features in this router will be set without it;
   only?: string[]; // if undefined all features are set-up (adding some feature here doesnt by-pass the FeatureToggle.isFeatureEnabled(..) call)
@@ -26,9 +25,6 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): I
   if (!logger) {
     logger = Util.getComponentLogger("FeatureRouter");
   }
-  Util.checkModules([expressModule]);
-  /* eslint-disable  @typescript-eslint/no-var-requires */
-  const {Router} = require(expressModule);
   const toSetup = options.only ? options.only : Object.keys(options.features);
   const router = Router();
   if (options.auth) {

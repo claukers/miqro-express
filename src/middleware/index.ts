@@ -1,14 +1,9 @@
-import {FeatureToggle, Logger, Util} from "@miqro/core";
-import {ICallback, INextCallback} from "../route/common";
-
-const uuidV4Module = "uuid";
-const morganModule = "morgan";
-const bodyParserModule = "body-parser";
+import {ICallback, INextCallback, FeatureToggle, Logger, Util} from "@miqro/core";
+import {v4} from "uuid";
+import * as morgan from "morgan";
+import {json as bodyParserJSON} from "body-parser";
 
 export const UUIDHandler = (): INextCallback => {
-  Util.checkModules([uuidV4Module]);
-  /* eslint-disable  @typescript-eslint/no-var-requires */
-  const {v4} = require(uuidV4Module);
   return (req, res, next) => {
     req.uuid = v4();
     next();
@@ -20,9 +15,6 @@ export const LoggerHandler = (logger?: Logger): INextCallback => {
   if (!logger) {
     logger = Util.getLogger("LoggerHandler");
   }
-  Util.checkModules([morganModule]);
-  /* eslint-disable  @typescript-eslint/no-var-requires */
-  const morgan = require(morganModule);
   if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
     morgan.token("uuid", ((req) => {
       return req.uuid;
@@ -48,11 +40,8 @@ export const BodyParserConfiguratorHandler = (logger?: Logger): INextCallback =>
   if (!logger) {
     logger = Util.getLogger("BodyParserConfiguratorHandler");
   }
-  Util.checkEnvVariables(["BODY_PARSER_INFLATE", "BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"]);
-  Util.checkModules([bodyParserModule]);
-  /* eslint-disable  @typescript-eslint/no-var-requires */
-  const bodyParser = require(bodyParserModule);
-  return bodyParser.json({
+  Util.checkEnvVariables(["BODY_PARSER_INFLATE", "BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"])
+  return bodyParserJSON({
     inflate: process.env.BODYPARSER_INFLATE === "true",
     limit: process.env.BODYPARSER_LIMIT,
     // reviver: undefined,

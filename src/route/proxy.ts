@@ -1,9 +1,7 @@
-import {Logger, Util} from "@miqro/core";
-import {Handler, INextHandlerCallback, NextErrorHandler} from "./common";
+import {Handler, INextHandlerCallback, Logger, NextErrorHandler, Util} from "@miqro/core";
 import {inspect} from "util";
+import axios from "axios";
 import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
-
-const requestModule = "axios";
 
 /**
  * Wraps an axios request and add the response to req.results
@@ -15,16 +13,13 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): I
   if (!logger) {
     logger = Util.getLogger("ProxyHandler");
   }
-  Util.checkModules([requestModule]);
-  /* eslint-disable  @typescript-eslint/no-var-requires */
-  const {request} = require(requestModule);
   /* eslint-disable  @typescript-eslint/no-unused-vars */
   return Handler(async (req, res) => {
     const resolver = options.proxyService;
     const requestConfig = await resolver.resolveRequest(req);
     if (requestConfig) {
       try {
-        const response = await request(requestConfig);
+        const response = await axios.request(requestConfig);
         logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
         return response;
       } catch (e) {

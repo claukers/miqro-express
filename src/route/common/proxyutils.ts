@@ -1,4 +1,21 @@
-import {ProxyResponse} from "../response/proxy";
+import {APIResponse} from "@miqro/core";
+
+export class ProxyResponse extends APIResponse {
+  constructor(public response: ProxyRequestResponse) {
+    super();
+  }
+
+  /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
+  public async send(res: any): Promise<void> {
+    res.status(this.response.status);
+    const keys = Object.keys(this.response.headers);
+    for (const key of keys) {
+      res.set(key, this.response.headers[key]);
+    }
+    res.send(this.response.data);
+  }
+}
+
 
 export interface RequestConfig {
   url?: string;
