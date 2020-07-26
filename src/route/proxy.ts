@@ -1,7 +1,7 @@
-import {Handler, INextHandlerCallback, Logger, NextErrorHandler, Util} from "@miqro/core";
+import {Handler, Logger, NextCallback, Util} from "@miqro/core";
 import {inspect} from "util";
 import axios from "axios";
-import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
+import {createProxyResponse, ProxyOptionsInterface} from "./common";
 
 /**
  * Wraps an axios request and add the response to req.results
@@ -9,12 +9,12 @@ import {createProxyResponse, ProxyOptionsInterface} from "./common/proxyutils";
  * @param options IProxyOptions options for transforming requests into AxiosRequestConfig
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): INextHandlerCallback => {
+export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("ProxyHandler");
   }
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  return Handler(async (req, res) => {
+  return Handler(async (req) => {
     const resolver = options.proxyService;
     const requestConfig = await resolver.resolveRequest(req);
     if (requestConfig) {
@@ -38,17 +38,17 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): I
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ProxyResponseHandler = (logger?: Logger): INextHandlerCallback => {
+export const ProxyResponseHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }
-  return NextErrorHandler(async (req, res, next) => {
-    const response = await createProxyResponse(req);
+  return (req, res, next) => {
+    const response = createProxyResponse(req);
     logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
     if (!response) {
       next();
     } else {
-      await response.send(res);
+      response.send(res);
     }
-  }, logger);
+  };
 };

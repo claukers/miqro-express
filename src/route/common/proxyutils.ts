@@ -1,12 +1,12 @@
 import {APIResponse} from "@miqro/core";
+import {Request} from "express";
 
 export class ProxyResponse extends APIResponse {
   constructor(public response: ProxyRequestResponse) {
     super();
   }
 
-  /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-  public async send(res: any): Promise<void> {
+  public send(res: any): void {
     res.status(this.response.status);
     const keys = Object.keys(this.response.headers);
     for (const key of keys) {
@@ -68,14 +68,14 @@ export interface ProxyRequestResponse {
 }
 
 export interface ProxyServiceInterface {
-  resolveRequest(req): Promise<RequestConfig>;
+  resolveRequest(req: Request): Promise<RequestConfig>;
 }
 
 export interface ProxyOptionsInterface {
   proxyService: ProxyServiceInterface;
 }
 
-export const createProxyResponse = async ({results}: { results: any[] }): Promise<ProxyResponse> => {
+export const createProxyResponse = ({results}: { results: any[] }): ProxyResponse => {
   if (!results || results.length === 0) {
     return null;
   }

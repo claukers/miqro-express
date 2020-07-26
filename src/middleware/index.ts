@@ -1,24 +1,24 @@
-import {ICallback, INextCallback, FeatureToggle, Logger, Util} from "@miqro/core";
+import {FeatureToggle, Handler, Logger, NextCallback, Util} from "@miqro/core";
 import {v4} from "uuid";
-import * as morgan from "morgan";
 import {json as bodyParserJSON} from "body-parser";
+import {Express, Response, Request} from "express";
+import * as morgan from "morgan";
+import {token as morganToken} from "morgan";
 
-export const UUIDHandler = (): INextCallback => {
-  return (req, res, next) => {
+export const UUIDHandler = (): NextCallback => {
+  return (req) => {
     req.uuid = v4();
-    next();
   };
 }
 
-
-export const LoggerHandler = (logger?: Logger): INextCallback => {
+export const LoggerHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("LoggerHandler");
   }
   if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
-    morgan.token("uuid", ((req) => {
-      return req.uuid;
-    }) as ICallback);
+    morganToken("uuid", (req) => {
+      return (req as any).uuid;
+    });
     if (!process.env.MORGAN_FORMAT) {
       process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] [:response-time]ms";
     }
@@ -36,7 +36,7 @@ export const LoggerHandler = (logger?: Logger): INextCallback => {
   });
 }
 
-export const BodyParserConfiguratorHandler = (logger?: Logger): INextCallback => {
+export const BodyParserConfiguratorHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("BodyParserConfiguratorHandler");
   }
@@ -52,7 +52,7 @@ export const BodyParserConfiguratorHandler = (logger?: Logger): INextCallback =>
 };
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-export const setupMiddleware = async (app, logger?: Logger): Promise<void> => {
+export const setupMiddleware = async (app: Express, logger?: Logger): Promise<Express> => {
   if (!logger) {
     logger = Util.getLogger("setupMiddleware");
   }
@@ -60,10 +60,10 @@ export const setupMiddleware = async (app, logger?: Logger): Promise<void> => {
     app.disable("x-powered-by");
   }
   if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
-    app.use(UUIDHandler() as any);
+    app.use(UUIDHandler());
   }
   if (FeatureToggle.isFeatureEnabled("MORGAN")) {
-    app.use(LoggerHandler(logger) as any);
+    app.use(LoggerHandler(logger));
   }
   if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
     app.use(BodyParserConfiguratorHandler(logger));

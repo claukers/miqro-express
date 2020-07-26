@@ -1,56 +1,13 @@
 # @miqro/handlers
 
-**in early development not to use in production**
+this module provides very simple express middleware.
 
-this is a part of the ```@miqro``` modules and provides very simple express integration.
+- proxy request handler using **axios** as the request module for following redirects.
+- feature toggle router for enabling/disabling routes via env vars.
+- morgan configuration and feature toggle via env vars.
+- **body-parser** configuration and feature toggle via env vars.
 
-- some error handling.
-- some function result passing.
-- proxy request handler.
-- feature toggle router.
-- express logging integration with morgan.
-- **body-parser** configuration via Env vars
 
-## result passing
-
-```javascript
-...
-
-const getSomething = (param)=> {
-    return async ({params}) => {
-        const value = parseInt(params[param]);
-        return value;
-    }
-}
-
-app.get("/add/:a/:b/:c", [
-    Handler(getSomething("a")),
-    Handler(getSomething("b")),
-    Handler(getSomething("c")),
-    NextErrorHandler((req, res, next) => {
-        const results = getResults(req);
-        const ret = results.reduce((ag, value) => {
-            ag += value;
-        }, 0);
-        // clear prev results ?
-        setResults(req, [ret]);
-        next();
-    }), 
-    ResponseHandler()
-]);
-....
-```
-
-## error handling
-
-```javascript
-...
-app.use(.....)
-....
-// put this at the end of the setup of the app
-app.use(ErrorHandler())
-app.use(myFallBackerrorHandler) // this will catch all throws that are not reconized by ErrorHandler()
-```
 
 ## morgan, bodyparser, uuid per request, disable powered by, etc
 

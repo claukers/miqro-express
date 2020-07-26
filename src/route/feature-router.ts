@@ -1,7 +1,7 @@
-import {SessionHandler, VerifyTokenService, FeatureToggle, INextCallback, INextHandlerCallback, Logger, SimpleMap, Util} from "@miqro/core";
+import {FeatureToggle, Logger, NextCallback, SessionHandler, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
 import {Router} from "express";
 
-export type FeatureHandler = (logger?: any) => INextHandlerCallback[];
+export type FeatureHandler = (logger?: any) => NextCallback[];
 
 export interface FeatureRouterPathOptions {
   identifier: string;
@@ -21,7 +21,7 @@ export interface FeatureRouterOptions {
 
 const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
 
-export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): INextCallback => {
+export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
   if (!logger) {
     logger = Util.getComponentLogger("FeatureRouter");
   }
