@@ -173,6 +173,6 @@ BODYPARSER_TYPE="application/json"
 MORGAN_FORMAT="request[:uuid] [:method] [:url] [:status] [:response-time]ms"
 ```
 
-## Documentation
+### documentation
 
 [globals](docs/globals.md)
