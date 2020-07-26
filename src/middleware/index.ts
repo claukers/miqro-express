@@ -13,7 +13,7 @@ export const UUIDHandler = (): NextCallback => {
   };
 }
 
-export const LoggerHandler = (logger?: Logger): NextCallback => {
+export const MorganHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("LoggerHandler");
   }
@@ -38,7 +38,7 @@ export const LoggerHandler = (logger?: Logger): NextCallback => {
   });
 }
 
-export const BodyParserConfiguratorHandler = (logger?: Logger): NextCallback => {
+export const BodyParserHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("BodyParserConfiguratorHandler");
   }
@@ -54,7 +54,7 @@ export const BodyParserConfiguratorHandler = (logger?: Logger): NextCallback => 
 };
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-export const setupMiddleware = async (app: Express, logger?: Logger): Promise<Express> => {
+export const setupMiddleware = (app: Express, logger?: Logger): void => {
   if (!logger) {
     logger = Util.getLogger("setupMiddleware");
   }
@@ -65,10 +65,9 @@ export const setupMiddleware = async (app: Express, logger?: Logger): Promise<Ex
     app.use(UUIDHandler());
   }
   if (FeatureToggle.isFeatureEnabled("MORGAN")) {
-    app.use(LoggerHandler(logger));
+    app.use(MorganHandler(logger));
   }
   if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
-    app.use(BodyParserConfiguratorHandler(logger));
+    app.use(BodyParserHandler(logger));
   }
-  return app;
 };
