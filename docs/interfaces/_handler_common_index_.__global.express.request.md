@@ -20,7 +20,7 @@
 
 • **results**: *any[]*
 
-*Defined in [handler/common/index.ts:13](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/index.ts#L13)*
+*Defined in [handler/common/index.ts:13](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L13)*
 
 ___
 
@@ -28,7 +28,7 @@ ___
 
 • **session**? : *Session*
 
-*Defined in [handler/common/index.ts:14](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/index.ts#L14)*
+*Defined in [handler/common/index.ts:14](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L14)*
 
 ___
 
@@ -36,4 +36,4 @@ ___
 
 • **uuid**: *string*
 
-*Defined in [handler/common/index.ts:15](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/index.ts#L15)*
+*Defined in [handler/common/index.ts:15](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L15)*

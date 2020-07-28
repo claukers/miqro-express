@@ -17,7 +17,7 @@
 
 ▸ **ErrorHandler**(`logger?`: Logger): *[ErrorCallback](_handler_common_index_.md#errorcallback)‹void›*
 
-*Defined in [handler/response.ts:81](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/response.ts#L81)*
+*Defined in [handler/response.ts:81](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L81)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -35,7 +35,7 @@ ___
 
 ▸ **ResponseHandler**(`logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)‹void›*
 
-*Defined in [handler/response.ts:55](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/response.ts#L55)*
+*Defined in [handler/response.ts:55](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L55)*
 
 Express middleware that uses req.results to create a response.
 
@@ -53,7 +53,7 @@ ___
 
 ▸ **createErrorResponse**(`e`: Error): *[APIResponse](../classes/_handler_responses_api_.apiresponse.md)*
 
-*Defined in [handler/response.ts:15](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/response.ts#L15)*
+*Defined in [handler/response.ts:15](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L15)*
 
 **Parameters:**
 
@@ -69,7 +69,7 @@ ___
 
 ▸ **createServiceResponse**(`req`: Request): *[ServiceResponse](../classes/_handler_responses_service_.serviceresponse.md)*
 
-*Defined in [handler/response.ts:39](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/response.ts#L39)*
+*Defined in [handler/response.ts:39](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L39)*
 
 **Parameters:**
 

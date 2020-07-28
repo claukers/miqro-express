@@ -8,6 +8,7 @@ this module provides some express middleware for.
 
 - request logging using **morgan** and **@miqro/core** configured via env vars.
 - proxy request handler.
+- request uuid handler.
 - **FeatureToggleRouter** for enabling/disabling features via env vars.
 - **body-parser** configuration and feature toggle via env vars.
 

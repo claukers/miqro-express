@@ -18,7 +18,7 @@
 
 ▸ **resolveRequest**(`req`: Request): *Promise‹RequestOptions›*
 
-*Defined in [handler/common/proxyutils.ts:72](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L72)*
+*Defined in [handler/common/proxyutils.ts:72](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L72)*
 
 **Parameters:**
 

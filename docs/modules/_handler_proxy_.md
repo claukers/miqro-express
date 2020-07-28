@@ -15,7 +15,7 @@
 
 ▸ **ProxyHandler**(`options`: [ProxyOptionsInterface](../interfaces/_handler_common_proxyutils_.proxyoptionsinterface.md), `logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [handler/proxy.ts:11](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/proxy.ts#L11)*
+*Defined in [handler/proxy.ts:11](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/proxy.ts#L11)*
 
 Wraps a request and add the response to req.results
 
@@ -34,7 +34,7 @@ ___
 
 ▸ **ProxyResponseHandler**(`logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [handler/proxy.ts:40](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/proxy.ts#L40)*
+*Defined in [handler/proxy.ts:40](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/proxy.ts#L40)*
 
 Express middleware that uses the last req.results to create a proxy response.
 

@@ -34,7 +34,7 @@
 
 • **baseURL**? : *string*
 
-*Defined in [handler/common/proxyutils.ts:32](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L32)*
+*Defined in [handler/common/proxyutils.ts:32](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L32)*
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • **data**? : *any*
 
-*Defined in [handler/common/proxyutils.ts:35](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L35)*
+*Defined in [handler/common/proxyutils.ts:35](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L35)*
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 • **headers**? : *any*
 
-*Defined in [handler/common/proxyutils.ts:33](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L33)*
+*Defined in [handler/common/proxyutils.ts:33](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L33)*
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 • **httpAgent**? : *any*
 
-*Defined in [handler/common/proxyutils.ts:49](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L49)*
+*Defined in [handler/common/proxyutils.ts:49](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L49)*
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 • **httpsAgent**? : *any*
 
-*Defined in [handler/common/proxyutils.ts:50](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L50)*
+*Defined in [handler/common/proxyutils.ts:50](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L50)*
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 • **maxContentLength**? : *number*
 
-*Defined in [handler/common/proxyutils.ts:46](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L46)*
+*Defined in [handler/common/proxyutils.ts:46](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L46)*
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 • **maxRedirects**? : *number*
 
-*Defined in [handler/common/proxyutils.ts:47](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L47)*
+*Defined in [handler/common/proxyutils.ts:47](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L47)*
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 • **method**? : *"get" | "GET" | "delete" | "DELETE" | "head" | "HEAD" | "options" | "OPTIONS" | "post" | "POST" | "put" | "PUT" | "patch" | "PATCH" | "link" | "LINK" | "unlink" | "UNLINK"*
 
-*Defined in [handler/common/proxyutils.ts:23](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L23)*
+*Defined in [handler/common/proxyutils.ts:23](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L23)*
 
 ___
 
@@ -98,7 +98,7 @@ ___
 
 • **params**? : *any*
 
-*Defined in [handler/common/proxyutils.ts:34](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L34)*
+*Defined in [handler/common/proxyutils.ts:34](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L34)*
 
 ___
 
@@ -106,7 +106,7 @@ ___
 
 • **proxy**? : *object | false*
 
-*Defined in [handler/common/proxyutils.ts:51](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L51)*
+*Defined in [handler/common/proxyutils.ts:51](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L51)*
 
 ___
 
@@ -114,7 +114,7 @@ ___
 
 • **responseType**? : *"arraybuffer" | "blob" | "document" | "json" | "text" | "stream"*
 
-*Defined in [handler/common/proxyutils.ts:38](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L38)*
+*Defined in [handler/common/proxyutils.ts:38](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L38)*
 
 ___
 
@@ -122,7 +122,7 @@ ___
 
 • **socketPath**? : *string | null*
 
-*Defined in [handler/common/proxyutils.ts:48](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L48)*
+*Defined in [handler/common/proxyutils.ts:48](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L48)*
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 • **timeout**? : *number*
 
-*Defined in [handler/common/proxyutils.ts:36](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L36)*
+*Defined in [handler/common/proxyutils.ts:36](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L36)*
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 • **timeoutErrorMessage**? : *string*
 
-*Defined in [handler/common/proxyutils.ts:37](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L37)*
+*Defined in [handler/common/proxyutils.ts:37](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L37)*
 
 ___
 
@@ -146,7 +146,7 @@ ___
 
 • **url**? : *string*
 
-*Defined in [handler/common/proxyutils.ts:22](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L22)*
+*Defined in [handler/common/proxyutils.ts:22](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L22)*
 
 ___
 
@@ -154,7 +154,7 @@ ___
 
 • **xsrfCookieName**? : *string*
 
-*Defined in [handler/common/proxyutils.ts:44](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L44)*
+*Defined in [handler/common/proxyutils.ts:44](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L44)*
 
 ___
 
@@ -162,4 +162,4 @@ ___
 
 • **xsrfHeaderName**? : *string*
 
-*Defined in [handler/common/proxyutils.ts:45](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L45)*
+*Defined in [handler/common/proxyutils.ts:45](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L45)*
