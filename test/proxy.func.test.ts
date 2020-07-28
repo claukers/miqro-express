@@ -2,7 +2,7 @@ import {describe, it, before, after} from "mocha";
 import {expect} from "chai";
 import * as express from "express";
 import * as supertest from "supertest";
-import Axios, {AxiosRequestConfig} from "axios";
+import {RequestOptions} from "@miqro/core";
 
 describe("proxyhandler functional tests", function () {
   this.timeout(10000);
@@ -39,7 +39,7 @@ describe("proxyhandler functional tests", function () {
       app.use("/proxy", [
         ProxyHandler({
           proxyService: {
-            resolveRequest: async (req): Promise<AxiosRequestConfig> => {
+            resolveRequest: async (req): Promise<RequestOptions> => {
               return {
                 url: `http://localhost:9999/echo`,
                 method: req.method,
@@ -66,7 +66,7 @@ describe("proxyhandler functional tests", function () {
       });
       expect(response.status).to.be.equals(200);
       expect(Object.keys(response.body).length).to.be.equals(0);
-      expect(Object.keys(response.headers).length).to.be.equals(10);
+      expect(Object.keys(response.headers).length).to.be.equals(8);
       expect(response.headers.myheader).to.be.equals("echo");
     })().then(done).catch(done);
   });

@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 import {APIResponse} from "../responses";
+import {RequestOptions} from "@miqro/core";
 
 export class ProxyResponse extends APIResponse {
   constructor(public response: ProxyRequestResponse) {
@@ -68,7 +69,7 @@ export interface ProxyRequestResponse {
 }
 
 export interface ProxyServiceInterface {
-  resolveRequest(req: Request): Promise<RequestConfig>;
+  resolveRequest(req: Request): Promise<RequestOptions>;
 }
 
 export interface ProxyOptionsInterface {

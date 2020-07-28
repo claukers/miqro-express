@@ -1,12 +1,11 @@
 import {Logger, Util} from "@miqro/core";
 import {inspect} from "util";
-import axios from "axios";
 import {createProxyResponse, Handler, NextCallback, ProxyOptionsInterface} from "./common";
 
 /**
- * Wraps an axios request and add the response to req.results
+ * Wraps a request and add the response to req.results
  *
- * @param options IProxyOptions options for transforming requests into AxiosRequestConfig
+ * @param options IProxyOptions options for transforming requests into a request
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
 export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): NextCallback => {
@@ -19,7 +18,7 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): N
     const requestConfig = await resolver.resolveRequest(req);
     if (requestConfig) {
       try {
-        const response = await axios.request(requestConfig);
+        const response = await Util.request(requestConfig);
         logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
         return response;
       } catch (e) {

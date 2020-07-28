@@ -1,6 +1,5 @@
 import {inspect} from "util";
 import {decode as jwtDecode} from "jsonwebtoken";
-import axios from "axios";
 import {VerifyTokenService, Logger, Session, UnAuthorizedError, Util} from "@miqro/core";
 
 export class VerifyJWTEndpointService implements VerifyTokenService {
@@ -36,7 +35,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
       let response = null;
       switch (process.env.TOKEN_VERIFY_LOCATION) {
         case "header":
-          response = await axios.request({
+          response = await Util.request({
             url: `${process.env.TOKEN_VERIFY_ENDPOINT}`,
             headers: {
               [process.env.TOKEN_HEADER]: token
@@ -45,7 +44,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
           });
           break;
         case "query":
-          response = await axios.request({
+          response = await Util.request({
             url: `${process.env.TOKEN_VERIFY_ENDPOINT}?${process.env.TOKEN_QUERY}=${token}`,
             method: `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any
           });
