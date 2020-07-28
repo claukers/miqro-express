@@ -25,7 +25,7 @@
 
 ▸ **createProxyResponse**(`__namedParameters`: object): *[ProxyResponse](../classes/_handler_common_proxyutils_.proxyresponse.md)*
 
-*Defined in [handler/common/proxyutils.ts:78](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L78)*
+*Defined in [handler/common/proxyutils.ts:79](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L79)*
 
 **Parameters:**
 

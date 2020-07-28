@@ -32,7 +32,7 @@
 
 \+ **new VerifyJWTEndpointService**(): *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
-*Defined in [service/index.ts:16](https://github.com/claukers/miqro-express/blob/5fac12b/src/service/index.ts#L16)*
+*Defined in [service/index.ts:15](https://github.com/claukers/miqro-express/blob/e61598b/src/service/index.ts#L15)*
 
 **Returns:** *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
@@ -42,7 +42,7 @@
 
 • **logger**: *Logger* = null
 
-*Defined in [service/index.ts:16](https://github.com/claukers/miqro-express/blob/5fac12b/src/service/index.ts#L16)*
+*Defined in [service/index.ts:15](https://github.com/claukers/miqro-express/blob/e61598b/src/service/index.ts#L15)*
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 ▪ **instance**: *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)* = null
 
-*Defined in [service/index.ts:8](https://github.com/claukers/miqro-express/blob/5fac12b/src/service/index.ts#L8)*
+*Defined in [service/index.ts:7](https://github.com/claukers/miqro-express/blob/e61598b/src/service/index.ts#L7)*
 
 ## Methods
 
@@ -58,7 +58,7 @@ ___
 
 ▸ **verify**(`__namedParameters`: object): *Promise‹Session›*
 
-*Defined in [service/index.ts:33](https://github.com/claukers/miqro-express/blob/5fac12b/src/service/index.ts#L33)*
+*Defined in [service/index.ts:32](https://github.com/claukers/miqro-express/blob/e61598b/src/service/index.ts#L32)*
 
 **Parameters:**
 
@@ -76,6 +76,6 @@ ___
 
 ▸ **getInstance**(): *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
-*Defined in [service/index.ts:10](https://github.com/claukers/miqro-express/blob/5fac12b/src/service/index.ts#L10)*
+*Defined in [service/index.ts:9](https://github.com/claukers/miqro-express/blob/e61598b/src/service/index.ts#L9)*
 
 **Returns:** *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*

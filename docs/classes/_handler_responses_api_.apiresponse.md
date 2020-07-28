@@ -41,7 +41,7 @@
 
 \+ **new APIResponse**(`body?`: any): *[APIResponse](_handler_responses_api_.apiresponse.md)*
 
-*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/responses/api.ts#L4)*
+*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/responses/api.ts#L4)*
 
 **Parameters:**
 
@@ -57,7 +57,7 @@ Name | Type |
 
 • **body**? : *any*
 
-*Defined in [handler/responses/api.ts:7](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/responses/api.ts#L7)*
+*Defined in [handler/responses/api.ts:7](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/responses/api.ts#L7)*
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 • **status**: *number* = 200
 
-*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/responses/api.ts#L4)*
+*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/responses/api.ts#L4)*
 
 ## Methods
 
@@ -73,7 +73,7 @@ ___
 
 ▸ **send**(`res`: Response): *void*
 
-*Defined in [handler/responses/api.ts:10](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/responses/api.ts#L10)*
+*Defined in [handler/responses/api.ts:10](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/responses/api.ts#L10)*
 
 **Parameters:**
 

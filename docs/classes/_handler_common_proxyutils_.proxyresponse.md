@@ -32,7 +32,7 @@
 
 *Overrides [APIResponse](_handler_responses_api_.apiresponse.md).[constructor](_handler_responses_api_.apiresponse.md#constructor)*
 
-*Defined in [handler/common/proxyutils.ts:4](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L4)*
+*Defined in [handler/common/proxyutils.ts:5](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L5)*
 
 **Parameters:**
 
@@ -50,7 +50,7 @@ Name | Type |
 
 *Inherited from [APIResponse](_handler_responses_api_.apiresponse.md).[body](_handler_responses_api_.apiresponse.md#optional-body)*
 
-*Defined in [handler/responses/api.ts:7](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/responses/api.ts#L7)*
+*Defined in [handler/responses/api.ts:7](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/responses/api.ts#L7)*
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 • **response**: *[ProxyRequestResponse](../interfaces/_handler_common_proxyutils_.proxyrequestresponse.md)*
 
-*Defined in [handler/common/proxyutils.ts:5](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L5)*
+*Defined in [handler/common/proxyutils.ts:6](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L6)*
 
 ___
 
@@ -68,7 +68,7 @@ ___
 
 *Inherited from [APIResponse](_handler_responses_api_.apiresponse.md).[status](_handler_responses_api_.apiresponse.md#status)*
 
-*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/responses/api.ts#L4)*
+*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/responses/api.ts#L4)*
 
 ## Methods
 
@@ -78,7 +78,7 @@ ___
 
 *Overrides [APIResponse](_handler_responses_api_.apiresponse.md).[send](_handler_responses_api_.apiresponse.md#send)*
 
-*Defined in [handler/common/proxyutils.ts:9](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L9)*
+*Defined in [handler/common/proxyutils.ts:10](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L10)*
 
 **Parameters:**
 

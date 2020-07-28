@@ -7,7 +7,7 @@
 this module provides some express middleware for.
 
 - request logging using **morgan** and **@miqro/core** configured via env vars.
-- request proxy using **axios** as the request module.
+- proxy request handler.
 - **FeatureToggleRouter** for enabling/disabling features via env vars.
 - **body-parser** configuration and feature toggle via env vars.
 
@@ -177,6 +177,6 @@ BODYPARSER_TYPE="application/json"
 MORGAN_FORMAT="request[:uuid] [:method] [:url] [:status] [:response-time]ms"
 ```
 
-## Documentation
+### documentation
 
 [globals](docs/globals.md)

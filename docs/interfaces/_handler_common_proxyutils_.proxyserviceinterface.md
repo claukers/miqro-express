@@ -16,9 +16,9 @@
 
 ###  resolveRequest
 
-▸ **resolveRequest**(`req`: Request): *Promise‹[RequestConfig](_handler_common_proxyutils_.requestconfig.md)›*
+▸ **resolveRequest**(`req`: Request): *Promise‹RequestOptions›*
 
-*Defined in [handler/common/proxyutils.ts:71](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L71)*
+*Defined in [handler/common/proxyutils.ts:72](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L72)*
 
 **Parameters:**
 
@@ -26,4 +26,4 @@ Name | Type |
 ------ | ------ |
 `req` | Request |
 
-**Returns:** *Promise‹[RequestConfig](_handler_common_proxyutils_.requestconfig.md)›*
+**Returns:** *Promise‹RequestOptions›*

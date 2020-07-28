@@ -15,15 +15,15 @@
 
 ▸ **ProxyHandler**(`options`: [ProxyOptionsInterface](../interfaces/_handler_common_proxyutils_.proxyoptionsinterface.md), `logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [handler/proxy.ts:12](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/proxy.ts#L12)*
+*Defined in [handler/proxy.ts:11](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/proxy.ts#L11)*
 
-Wraps an axios request and add the response to req.results
+Wraps a request and add the response to req.results
 
 **Parameters:**
 
 Name | Type | Description |
 ------ | ------ | ------ |
-`options` | [ProxyOptionsInterface](../interfaces/_handler_common_proxyutils_.proxyoptionsinterface.md) | IProxyOptions options for transforming requests into AxiosRequestConfig |
+`options` | [ProxyOptionsInterface](../interfaces/_handler_common_proxyutils_.proxyoptionsinterface.md) | IProxyOptions options for transforming requests into a request |
 `logger?` | Logger | logger for logging errors ´ILogger´.  |
 
 **Returns:** *[NextCallback](_handler_common_index_.md#nextcallback)*
@@ -34,7 +34,7 @@ ___
 
 ▸ **ProxyResponseHandler**(`logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [handler/proxy.ts:41](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/proxy.ts#L41)*
+*Defined in [handler/proxy.ts:40](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/proxy.ts#L40)*
 
 Express middleware that uses the last req.results to create a proxy response.
 

@@ -23,7 +23,7 @@
 
 • **config**: *[RequestConfig](_handler_common_proxyutils_.requestconfig.md)*
 
-*Defined in [handler/common/proxyutils.ts:66](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L66)*
+*Defined in [handler/common/proxyutils.ts:67](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L67)*
 
 ___
 
@@ -31,7 +31,7 @@ ___
 
 • **data**: *any*
 
-*Defined in [handler/common/proxyutils.ts:62](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L62)*
+*Defined in [handler/common/proxyutils.ts:63](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L63)*
 
 ___
 
@@ -39,7 +39,7 @@ ___
 
 • **headers**: *any*
 
-*Defined in [handler/common/proxyutils.ts:65](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L65)*
+*Defined in [handler/common/proxyutils.ts:66](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L66)*
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • **request**? : *any*
 
-*Defined in [handler/common/proxyutils.ts:67](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L67)*
+*Defined in [handler/common/proxyutils.ts:68](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L68)*
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • **status**: *number*
 
-*Defined in [handler/common/proxyutils.ts:63](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L63)*
+*Defined in [handler/common/proxyutils.ts:64](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L64)*
 
 ___
 
@@ -63,4 +63,4 @@ ___
 
 • **statusText**: *string*
 
-*Defined in [handler/common/proxyutils.ts:64](https://github.com/claukers/miqro-express/blob/5fac12b/src/handler/common/proxyutils.ts#L64)*
+*Defined in [handler/common/proxyutils.ts:65](https://github.com/claukers/miqro-express/blob/e61598b/src/handler/common/proxyutils.ts#L65)*

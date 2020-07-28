@@ -17,7 +17,7 @@
 
 ▸ **BodyParserHandler**(`logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [middleware/index.ts:41](https://github.com/claukers/miqro-express/blob/5fac12b/src/middleware/index.ts#L41)*
+*Defined in [middleware/index.ts:41](https://github.com/claukers/miqro-express/blob/e61598b/src/middleware/index.ts#L41)*
 
 **Parameters:**
 
@@ -33,7 +33,7 @@ ___
 
 ▸ **MorganHandler**(`logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [middleware/index.ts:16](https://github.com/claukers/miqro-express/blob/5fac12b/src/middleware/index.ts#L16)*
+*Defined in [middleware/index.ts:16](https://github.com/claukers/miqro-express/blob/e61598b/src/middleware/index.ts#L16)*
 
 **Parameters:**
 
@@ -49,7 +49,7 @@ ___
 
 ▸ **UUIDHandler**(): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [middleware/index.ts:9](https://github.com/claukers/miqro-express/blob/5fac12b/src/middleware/index.ts#L9)*
+*Defined in [middleware/index.ts:9](https://github.com/claukers/miqro-express/blob/e61598b/src/middleware/index.ts#L9)*
 
 **Returns:** *[NextCallback](_handler_common_index_.md#nextcallback)*
 
@@ -59,7 +59,7 @@ ___
 
 ▸ **setupMiddleware**(`app`: Express, `logger?`: Logger): *void*
 
-*Defined in [middleware/index.ts:57](https://github.com/claukers/miqro-express/blob/5fac12b/src/middleware/index.ts#L57)*
+*Defined in [middleware/index.ts:57](https://github.com/claukers/miqro-express/blob/e61598b/src/middleware/index.ts#L57)*
 
 **Parameters:**
 
