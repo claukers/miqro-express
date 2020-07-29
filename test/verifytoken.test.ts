@@ -1,6 +1,7 @@
 import {after, before, describe, it} from 'mocha';
 import {expect} from 'chai';
-import * as express from "express";
+import express, {Express} from "express";
+import {Server} from "http";
 
 process.env.TOKEN_HEADER = "Authorization";
 
@@ -16,8 +17,8 @@ describe(`verifytokenendpointservice func tests`, () => {
     }
   ]) {
     describe(`verifytokenendpointservice [${TOKENVARS.location}]func tests`, () => {
-      let fakeAuthServer = null;
-      let server = null;
+      let fakeAuthServer: Express;
+      let server: Server;
       const fakeSession1 = {
         username: "usera",
         account: "ble",
@@ -27,12 +28,12 @@ describe(`verifytokenendpointservice func tests`, () => {
       const jwt = require("jsonwebtoken");
       const goodToken1 = jwt.sign(fakeSession1, fakeSecret);
 
-      let fakeValidate = null;
+      let fakeValidate: any = null;
 
       before((done) => {
         (async () => {
           fakeAuthServer = express();
-          fakeAuthServer.get("/validate", (req, res) => {
+          fakeAuthServer.get("/validate", (req: any, res: any) => {
             fakeValidate(req, res);
           });
           server = fakeAuthServer.listen(9999);
@@ -58,10 +59,10 @@ describe(`verifytokenendpointservice func tests`, () => {
       it("happy path mix tape 1 valid auth", (done) => {
         (async () => {
           const {VerifyJWTEndpointService} = require("../src");
-          fakeValidate = (req, res) => {
+          fakeValidate = (req: any, res: any) => {
             const token = TOKENVARS.location === "header" ?
-              req.headers[process.env.TOKEN_HEADER.toLowerCase()] :
-              req.query[process.env.TOKEN_QUERY];
+              req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()] :
+              req.query[process.env.TOKEN_QUERY as string];
             expect(token).to.be.equals(goodToken1);
             const verified = jwt.verify(token, fakeSecret);
             expect(verified.username).to.be.equals(fakeSession1.username);

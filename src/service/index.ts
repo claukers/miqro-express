@@ -1,10 +1,10 @@
 import {inspect} from "util";
 import {decode as jwtDecode} from "jsonwebtoken";
-import {VerifyTokenService, Logger, Session, UnAuthorizedError, Util} from "@miqro/core";
+import {Logger, Session, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
 
 export class VerifyJWTEndpointService implements VerifyTokenService {
 
-  protected static instance: VerifyJWTEndpointService = null;
+  protected static instance: VerifyJWTEndpointService;
 
   public static getInstance(): VerifyJWTEndpointService {
     VerifyJWTEndpointService.instance =
@@ -12,7 +12,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
     return VerifyJWTEndpointService.instance;
   }
 
-  protected logger: Logger = null;
+  protected logger: Logger;
 
   constructor() {
     Util.checkEnvVariables(["TOKEN_VERIFY_ENDPOINT", "TOKEN_VERIFY_ENDPOINT_METHOD", "TOKEN_VERIFY_LOCATION"]);
@@ -29,7 +29,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
     this.logger = Util.getLogger("VerifyTokenEndpointService");
   }
 
-  public async verify({token}: { token: string }): Promise<Session> {
+  public async verify({token}: { token: string }): Promise<Session | null> {
     try {
       this.logger.debug(`verifying [${token}] on [${process.env.TOKEN_VERIFY_ENDPOINT}].header[${process.env.TOKEN_HEADER}]`);
       let response = null;
@@ -38,7 +38,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
           response = await Util.request({
             url: `${process.env.TOKEN_VERIFY_ENDPOINT}`,
             headers: {
-              [process.env.TOKEN_HEADER]: token
+              [process.env.TOKEN_HEADER as string]: token
             },
             method: `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any
           });
@@ -55,16 +55,21 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
       if (response) {
         /* eslint-disable  @typescript-eslint/no-var-requires */
         const session = jwtDecode(token);
-        Util.parseOptions("session", session, [
-          {name: "username", required: true, type: "string"},
-          {name: "account", required: true, type: "string"},
-          {name: "groups", required: true, type: "array", arrayType: "string"}
-        ], "add_extra");
-        this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
-        return {
-          token,
-          ...session
-        };
+        if (session && typeof session !== "string") {
+          Util.parseOptions("session", session, [
+            {name: "username", required: true, type: "string"},
+            {name: "account", required: true, type: "string"},
+            {name: "groups", required: true, type: "array", arrayType: "string"}
+          ], "add_extra");
+          this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
+          return {
+            token,
+            ...session
+          } as Session;
+        } else {
+          this.logger.warn(`unauthorized token not valid [${token}]`);
+          return null;
+        }
       } else {
         this.logger.warn(`unauthorized token not valid [${token}]`);
         return null;

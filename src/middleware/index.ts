@@ -2,8 +2,7 @@ import {FeatureToggle, Logger, Util} from "@miqro/core";
 import {v4} from "uuid";
 import {json as bodyParserJSON} from "body-parser";
 import {Express} from "express";
-import * as morgan from "morgan";
-import {token as morganToken} from "morgan";
+import morgan, {token as morganToken} from "morgan";
 import {NextCallback} from "../handler/common";
 
 export const UUIDHandler = (): NextCallback => {
@@ -32,7 +31,9 @@ export const MorganHandler = (logger?: Logger): NextCallback => {
   return morgan(process.env.MORGAN_FORMAT, {
     stream: {
       write: (line: string) => {
-        logger.info(line[line.length - 1] === "\n" ? line.substring(0, line.length - 1) : line);
+        if (logger) {
+          logger.info(line[line.length - 1] === "\n" ? line.substring(0, line.length - 1) : line);
+        }
       }
     }
   });

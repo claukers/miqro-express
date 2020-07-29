@@ -1,8 +1,8 @@
 import {describe, it} from "mocha";
 import {expect} from "chai";
-import * as express from "express";
-import * as sinon from "sinon";
-import * as request from "supertest";
+import express from "express";
+import sinon from "sinon";
+import request from "supertest";
 
 
 describe("session functional tests", () => {
@@ -30,12 +30,12 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}) => {
+          verify: sinon.fake(async ({token}: { token: any }) => {
             expect(token).to.be.equals(fakeToken);
             return fakeSession;
           })
         };
-        const finalHandler = sinon.fake((req, res) => {
+        const finalHandler = sinon.fake((req: any, res: any) => {
           expect(req.session).to.be.equals(fakeSession);
           res.json(true);
         });
@@ -88,12 +88,12 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}) => {
+          verify: sinon.fake(async ({token}: any) => {
             expect(token).to.be.equals(fakeToken);
             return fakeSession;
           })
         };
-        const finalHandler = sinon.fake((req, res) => {
+        const finalHandler = sinon.fake((req: any, res: any) => {
           expect(req.session).to.be.equals(fakeSession);
           res.json(true);
         });
@@ -145,10 +145,10 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}) => {
+          verify: sinon.fake(async ({token}: any) => {
           })
         };
-        const finalHandler = sinon.fake((req, res) => {
+        const finalHandler = sinon.fake((req: any, res: any) => {
           res.json("asdlkjasdliasjdaijal");
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);
@@ -200,13 +200,13 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}) => {
+          verify: sinon.fake(async ({token}: any) => {
             throw {
               blaError: true
             }
           })
         };
-        const finalHandler = sinon.fake((req, res) => {
+        const finalHandler = sinon.fake((req: any, res: any) => {
           res.json("asdlkjasdliasjdaijal");
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);

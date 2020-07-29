@@ -19,10 +19,14 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): N
     if (requestConfig) {
       try {
         const response = await Util.request(requestConfig);
-        logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+        if (logger) {
+          logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+        }
         return response;
       } catch (e) {
-        logger.error(`request[${req.uuid}] Error connecting to endpoint in [${requestConfig.url}] [${e.message}]`);
+        if (logger) {
+          logger.error(`request[${req.uuid}] Error connecting to endpoint in [${requestConfig.url}] [${e.message}]`);
+        }
         if (e.response) {
           return e.response;
         }
@@ -43,7 +47,9 @@ export const ProxyResponseHandler = (logger?: Logger): NextCallback => {
   }
   return (req, res, next) => {
     const response = createProxyResponse(req);
-    logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+    if (logger) {
+      logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+    }
     if (!response) {
       next();
     } else {

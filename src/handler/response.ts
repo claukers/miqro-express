@@ -12,7 +12,7 @@ import {Logger, Util} from "@miqro/core";
 import {ErrorCallback, NextCallback} from "./common";
 import {Request} from "express";
 
-export const createErrorResponse = (e: Error): APIResponse => {
+export const createErrorResponse = (e: Error): APIResponse | null => {
   if (!e.name || e.name === "Error") {
     return null;
   } else {
@@ -36,7 +36,7 @@ export const createErrorResponse = (e: Error): APIResponse => {
 };
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-export const createServiceResponse = (req: Request): ServiceResponse => {
+export const createServiceResponse = (req: Request): ServiceResponse | null => {
   const {results} = req;
   if (!results || results.length === 0) {
     return null;
@@ -59,14 +59,14 @@ export const ResponseHandler = (logger?: Logger): NextCallback<void> => {
   return (req, res, next) => {
     try {
       const response = createServiceResponse(req);
-      logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+      (logger as Logger).debug(`request[${req.uuid}] response[${inspect(response)}]`);
       if (!response) {
         next();
       } else {
         response.send(res);
       }
     } catch (e) {
-      logger.error(e);
+      (logger as Logger).error(e);
       next(e);
     }
   };
@@ -84,7 +84,7 @@ export const ErrorHandler = (logger?: Logger): ErrorCallback<void> => {
   }
   return (err: Error, req, res, next): void => {
     try {
-      logger.error(`request[${req.uuid}] ${inspect(err)}`);
+      (logger as Logger).error(`request[${req.uuid}] ${inspect(err)}`);
       const response = createErrorResponse(err);
       if (response) {
         response.send(res);
@@ -92,7 +92,7 @@ export const ErrorHandler = (logger?: Logger): ErrorCallback<void> => {
         next(err);
       }
     } catch (e) {
-      logger.error(e);
+      (logger as Logger).error(e);
       next(e);
     }
   };

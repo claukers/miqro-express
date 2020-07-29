@@ -68,9 +68,10 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
             for (const method of methods) {
               if (FEATURE_ROUTER_METHODS.indexOf(method) === -1) {
                 throw new Error(`feature [${featureName}] method [${method}] not defined! use only [${FEATURE_ROUTER_METHODS.join(",")}]`);
+              } else {
+                logger.info(`setting up [${featureName}] on [${method}][${path}]`);
+                (router as any)[method](path, implementation(Util.getComponentLogger(identifier)));
               }
-              logger.info(`setting up [${featureName}] on [${method}][${path}]`);
-              router[method](path, implementation(Util.getComponentLogger(identifier)));
             }
           } else {
             throw new Error(`feature [${featureName}] no methods defined`);

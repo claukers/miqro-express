@@ -34,30 +34,30 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
       let token = null;
       switch (process.env.TOKEN_LOCATION) {
         case "header":
-          token = req.headers[process.env.TOKEN_HEADER.toLowerCase()] as string
+          token = req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()] as string
           break;
         case "query":
-          token = req.query[process.env.TOKEN_QUERY] as string;
+          token = req.query[process.env.TOKEN_QUERY as string] as string;
           break;
       }
       if (!token) {
         const message = `No token provided!`;
-        logger.error(message);
+        (logger as Logger).error(message);
         next(new ParseOptionsError(message));
       } else {
         const session = await authService.verify({token});
         if (!session) {
           const message = `Fail to authenticate token [${token}]!`;
-          logger.warn(message);
+          (logger as Logger).warn(message);
           next(new UnAuthorizedError(`Fail to authenticate token!`));
         } else {
           req.session = session;
-          logger.info(`Token [${token}] authenticated!`);
+          (logger as Logger).info(`Token [${token}] authenticated!`);
           next();
         }
       }
     } catch (e) {
-      logger.error(e);
+      (logger as Logger).error(e);
       if (e.name) {
         next(e);
       } else {
@@ -76,19 +76,21 @@ export const GroupPolicyHandler = (options: GroupPolicyOptions, logger?: Logger)
       if (!req.session) {
         next(new ParseOptionsError(`No Session!`));
       } else {
-        const result = await GroupPolicy.validateSession(req.session, options, logger);
+        const result = await GroupPolicy.validateSession(req.session, options, logger as Logger);
         if (result) {
-          logger.info(`request[${req.uuid}] ` +
+          (logger as Logger).info(`request[${req.uuid}] ` +
             `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
+
           next();
         } else {
-          logger.warn(`request[${req.uuid}] ` +
+          (logger as Logger).warn(`request[${req.uuid}] ` +
             `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
+
           next(new UnAuthorizedError(`Invalid session. You are not permitted to do this!`));
         }
       }
     } catch (e) {
-      logger.warn(e);
+      (logger as Logger).warn(e);
       if (e.name && e.name !== "Error") {
         next(e);
       } else {

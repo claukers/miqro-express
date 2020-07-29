@@ -1,9 +1,13 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "strict": true,
     "outDir": "./dist/",
     "removeComments": true,
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
     "sourceMap": false,
+    "esModuleInterop": true,
     "declaration": true,
     "moduleResolution": "node",
     "module": "commonjs",
@@ -13,7 +17,7 @@
     ]
   },
   "include": [
-    "src/**/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",

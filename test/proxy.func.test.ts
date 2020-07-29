@@ -1,13 +1,14 @@
 import {describe, it, before, after} from "mocha";
 import {expect} from "chai";
-import * as express from "express";
-import * as supertest from "supertest";
+import express, {Request} from "express";
+import supertest from "supertest";
 import {RequestOptions} from "@miqro/core";
+import {Server} from "http";
 
 describe("proxyhandler functional tests", function () {
   this.timeout(10000);
 
-  let server = null;
+  let server: Server;
 
   before((done) => {
     (async () => {
@@ -39,7 +40,7 @@ describe("proxyhandler functional tests", function () {
       app.use("/proxy", [
         ProxyHandler({
           proxyService: {
-            resolveRequest: async (req): Promise<RequestOptions> => {
+            resolveRequest: async (req: Request): Promise<RequestOptions> => {
               return {
                 url: `http://localhost:9999/echo`,
                 method: req.method,

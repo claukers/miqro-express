@@ -1,8 +1,8 @@
 import {describe, it} from "mocha";
 import {expect} from "chai";
-import * as express from "express";
-import * as path from "path";
-import * as request from "supertest";
+import express, {NextFunction, Request, Response} from "express";
+import path from "path";
+import request from "supertest";
 import {ParseOptionsError, Util} from "@miqro/core";
 import {setupMiddleware} from "../src/middleware";
 
@@ -99,7 +99,7 @@ describe("handlers functional tests", function () {
     const app = express();
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
-    app.use((err, req, res, next) => {
+    app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
       expect(err.message).to.be.equals("bla");
       res.status(500);
       res.json({
@@ -112,11 +112,11 @@ describe("handlers functional tests", function () {
       .expect('Content-Type', /json/)
       .expect('Content-Length', '12')
       .expect(500)
-      .end((err, res) => {
+      .end((err: Error | null, res: any) => {
         if (err) {
           done(err);
         } else {
-          expect(res.body.bla).to.be.equals(true);
+          expect((res as any).body.bla).to.be.equals(true);
           done();
         }
       });
@@ -366,7 +366,7 @@ describe("handlers functional tests", function () {
     ]);
     app.use(ErrorHandler());
     let dCallCount = 0;
-    app.use((e, req, res, next) => {
+    app.use((e: Error, req: Request, res: Response, next: NextFunction) => {
       dCallCount++;
       next(e);
     });

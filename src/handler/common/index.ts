@@ -49,15 +49,19 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
     logger = Util.getLogger("Handler");
   }
   return (req, res, next) => {
-    let handleError = (err: Error) => {
-      logger.error(err);
+    let handleError: ((err: Error) => void) | null = (err: Error) => {
+      if (logger) {
+        logger.error(err);
+      }
       handleError = null;
       next(err);
     }
     try {
       const p = fn(req, res);
-      let handleResult = (result) => {
-        logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
+      let handleResult: ((result: any) => void) | null = (result: any) => {
+        if (logger) {
+          logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
+        }
         getResults(req).push(result);
         next();
         handleResult = null;
@@ -94,7 +98,7 @@ export const HandleAll = (generator: HandleAllOptions, logger?: Logger): NextCal
           if (!handler) {
             resolve(getResults(call.req))
           } else {
-            handler(call.req, null, (e?: any) => {
+            handler(call.req, null as unknown as Response, (e?: any) => {
               if (e) {
                 reject(e);
               } else {
