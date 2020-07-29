@@ -23,9 +23,9 @@
 
 ### `Const` createProxyResponse
 
-▸ **createProxyResponse**(`__namedParameters`: object): *[ProxyResponse](../classes/_handler_common_proxyutils_.proxyresponse.md)*
+▸ **createProxyResponse**(`__namedParameters`: object): *[ProxyResponse](../classes/_handler_common_proxyutils_.proxyresponse.md) | null*
 
-*Defined in [handler/common/proxyutils.ts:79](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L79)*
+*Defined in [handler/common/proxyutils.ts:79](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/proxyutils.ts#L79)*
 
 **Parameters:**
 
@@ -35,4 +35,4 @@ Name | Type |
 ------ | ------ |
 `results` | any[] |
 
-**Returns:** *[ProxyResponse](../classes/_handler_common_proxyutils_.proxyresponse.md)*
+**Returns:** *[ProxyResponse](../classes/_handler_common_proxyutils_.proxyresponse.md) | null*

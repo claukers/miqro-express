@@ -32,7 +32,7 @@
 
 \+ **new VerifyJWTEndpointService**(): *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
-*Defined in [service/index.ts:15](https://github.com/claukers/miqro-express/blob/8fe809c/src/service/index.ts#L15)*
+*Defined in [service/index.ts:15](https://github.com/claukers/miqro-express/blob/70eb4a6/src/service/index.ts#L15)*
 
 **Returns:** *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
@@ -40,25 +40,25 @@
 
 ### `Protected` logger
 
-• **logger**: *Logger* = null
+• **logger**: *Logger*
 
-*Defined in [service/index.ts:15](https://github.com/claukers/miqro-express/blob/8fe809c/src/service/index.ts#L15)*
+*Defined in [service/index.ts:15](https://github.com/claukers/miqro-express/blob/70eb4a6/src/service/index.ts#L15)*
 
 ___
 
 ### `Static` `Protected` instance
 
-▪ **instance**: *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)* = null
+▪ **instance**: *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
-*Defined in [service/index.ts:7](https://github.com/claukers/miqro-express/blob/8fe809c/src/service/index.ts#L7)*
+*Defined in [service/index.ts:7](https://github.com/claukers/miqro-express/blob/70eb4a6/src/service/index.ts#L7)*
 
 ## Methods
 
 ###  verify
 
-▸ **verify**(`__namedParameters`: object): *Promise‹Session›*
+▸ **verify**(`__namedParameters`: object): *Promise‹Session | null›*
 
-*Defined in [service/index.ts:32](https://github.com/claukers/miqro-express/blob/8fe809c/src/service/index.ts#L32)*
+*Defined in [service/index.ts:32](https://github.com/claukers/miqro-express/blob/70eb4a6/src/service/index.ts#L32)*
 
 **Parameters:**
 
@@ -68,7 +68,7 @@ Name | Type |
 ------ | ------ |
 `token` | string |
 
-**Returns:** *Promise‹Session›*
+**Returns:** *Promise‹Session | null›*
 
 ___
 
@@ -76,6 +76,6 @@ ___
 
 ▸ **getInstance**(): *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*
 
-*Defined in [service/index.ts:9](https://github.com/claukers/miqro-express/blob/8fe809c/src/service/index.ts#L9)*
+*Defined in [service/index.ts:9](https://github.com/claukers/miqro-express/blob/70eb4a6/src/service/index.ts#L9)*
 
 **Returns:** *[VerifyJWTEndpointService](_service_index_.verifyjwtendpointservice.md)*

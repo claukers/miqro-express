@@ -18,4 +18,4 @@
 
 • **proxyService**: *[ProxyServiceInterface](_handler_common_proxyutils_.proxyserviceinterface.md)*
 
-*Defined in [handler/common/proxyutils.ts:76](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/proxyutils.ts#L76)*
+*Defined in [handler/common/proxyutils.ts:76](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/proxyutils.ts#L76)*

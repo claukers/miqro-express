@@ -18,15 +18,9 @@
 
 ### `Optional` auth
 
-• **auth**? : *object*
+• **auth**? : *undefined | object*
 
-*Defined in [handler/feature-router.ts:17](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L17)*
-
-#### Type declaration:
-
-* **identifier**: *string*
-
-* **service**: *VerifyTokenService*
+*Defined in [handler/feature-router.ts:17](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L17)*
 
 ___
 
@@ -34,7 +28,7 @@ ___
 
 • **features**: *SimpleMap‹[FeatureRouterPathOptions](_handler_feature_router_.featurerouterpathoptions.md)›*
 
-*Defined in [handler/feature-router.ts:16](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L16)*
+*Defined in [handler/feature-router.ts:16](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L16)*
 
 ___
 
@@ -42,4 +36,4 @@ ___
 
 • **only**? : *string[]*
 
-*Defined in [handler/feature-router.ts:21](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L21)*
+*Defined in [handler/feature-router.ts:21](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L21)*

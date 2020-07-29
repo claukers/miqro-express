@@ -79,7 +79,7 @@ ___
 
 Ƭ **AsyncCallback**: *function*
 
-*Defined in [handler/common/index.ts:23](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L23)*
+*Defined in [handler/common/index.ts:23](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L23)*
 
 #### Type declaration:
 
@@ -98,7 +98,7 @@ ___
 
 Ƭ **AsyncNextCallback**: *function*
 
-*Defined in [handler/common/index.ts:26](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L26)*
+*Defined in [handler/common/index.ts:26](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L26)*
 
 #### Type declaration:
 
@@ -118,7 +118,7 @@ ___
 
 Ƭ **Callback**: *function*
 
-*Defined in [handler/common/index.ts:22](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L22)*
+*Defined in [handler/common/index.ts:22](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L22)*
 
 #### Type declaration:
 
@@ -137,7 +137,7 @@ ___
 
 Ƭ **ErrorCallback**: *function*
 
-*Defined in [handler/common/index.ts:20](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L20)*
+*Defined in [handler/common/index.ts:20](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L20)*
 
 #### Type declaration:
 
@@ -158,7 +158,7 @@ ___
 
 Ƭ **HandleAllOptions**: *function*
 
-*Defined in [handler/common/index.ts:82](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L82)*
+*Defined in [handler/common/index.ts:86](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L86)*
 
 #### Type declaration:
 
@@ -176,7 +176,7 @@ ___
 
 Ƭ **NextCallback**: *function*
 
-*Defined in [handler/common/index.ts:25](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L25)*
+*Defined in [handler/common/index.ts:25](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L25)*
 
 #### Type declaration:
 
@@ -196,7 +196,7 @@ Name | Type |
 
 ▸ **HandleAll**(`generator`: [HandleAllOptions](_handler_common_index_.md#handlealloptions), `logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [handler/common/index.ts:84](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L84)*
+*Defined in [handler/common/index.ts:88](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L88)*
 
 **Parameters:**
 
@@ -213,7 +213,7 @@ ___
 
 ▸ **Handler**(`fn`: [AsyncCallback](_handler_common_index_.md#asynccallback) | [Callback](_handler_common_index_.md#callback), `logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)*
 
-*Defined in [handler/common/index.ts:47](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L47)*
+*Defined in [handler/common/index.ts:47](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L47)*
 
 Wraps an async express request handler but catches the return value and appends it to req.results
 
@@ -232,7 +232,7 @@ ___
 
 ▸ **getResults**(`req`: Request): *any[]*
 
-*Defined in [handler/common/index.ts:34](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L34)*
+*Defined in [handler/common/index.ts:34](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L34)*
 
 **Parameters:**
 
@@ -248,7 +248,7 @@ ___
 
 ▸ **setResults**(`req`: Request, `results`: any[]): *void*
 
-*Defined in [handler/common/index.ts:29](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/common/index.ts#L29)*
+*Defined in [handler/common/index.ts:29](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/common/index.ts#L29)*
 
 **Parameters:**
 

@@ -17,7 +17,7 @@
 
 ▸ **ErrorHandler**(`logger?`: Logger): *[ErrorCallback](_handler_common_index_.md#errorcallback)‹void›*
 
-*Defined in [handler/response.ts:81](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L81)*
+*Defined in [handler/response.ts:81](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/response.ts#L81)*
 
 Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
 
@@ -35,7 +35,7 @@ ___
 
 ▸ **ResponseHandler**(`logger?`: Logger): *[NextCallback](_handler_common_index_.md#nextcallback)‹void›*
 
-*Defined in [handler/response.ts:55](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L55)*
+*Defined in [handler/response.ts:55](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/response.ts#L55)*
 
 Express middleware that uses req.results to create a response.
 
@@ -51,9 +51,9 @@ ___
 
 ### `Const` createErrorResponse
 
-▸ **createErrorResponse**(`e`: Error): *[APIResponse](../classes/_handler_responses_api_.apiresponse.md)*
+▸ **createErrorResponse**(`e`: Error): *[APIResponse](../classes/_handler_responses_api_.apiresponse.md) | null*
 
-*Defined in [handler/response.ts:15](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L15)*
+*Defined in [handler/response.ts:15](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/response.ts#L15)*
 
 **Parameters:**
 
@@ -61,15 +61,15 @@ Name | Type |
 ------ | ------ |
 `e` | Error |
 
-**Returns:** *[APIResponse](../classes/_handler_responses_api_.apiresponse.md)*
+**Returns:** *[APIResponse](../classes/_handler_responses_api_.apiresponse.md) | null*
 
 ___
 
 ### `Const` createServiceResponse
 
-▸ **createServiceResponse**(`req`: Request): *[ServiceResponse](../classes/_handler_responses_service_.serviceresponse.md)*
+▸ **createServiceResponse**(`req`: Request): *[ServiceResponse](../classes/_handler_responses_service_.serviceresponse.md) | null*
 
-*Defined in [handler/response.ts:39](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/response.ts#L39)*
+*Defined in [handler/response.ts:39](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/response.ts#L39)*
 
 **Parameters:**
 
@@ -77,4 +77,4 @@ Name | Type |
 ------ | ------ |
 `req` | Request |
 
-**Returns:** *[ServiceResponse](../classes/_handler_responses_service_.serviceresponse.md)*
+**Returns:** *[ServiceResponse](../classes/_handler_responses_service_.serviceresponse.md) | null*

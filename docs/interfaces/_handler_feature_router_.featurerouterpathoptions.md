@@ -21,7 +21,7 @@
 
 • **identifier**: *string*
 
-*Defined in [handler/feature-router.ts:9](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L9)*
+*Defined in [handler/feature-router.ts:9](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L9)*
 
 ___
 
@@ -29,7 +29,7 @@ ___
 
 • **implementation**: *[FeatureHandler](../modules/_handler_feature_router_.md#featurehandler)*
 
-*Defined in [handler/feature-router.ts:12](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L12)*
+*Defined in [handler/feature-router.ts:12](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L12)*
 
 ___
 
@@ -37,7 +37,7 @@ ___
 
 • **methods**: *string[]*
 
-*Defined in [handler/feature-router.ts:11](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L11)*
+*Defined in [handler/feature-router.ts:11](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L11)*
 
 ___
 
@@ -45,4 +45,4 @@ ___
 
 • **path**: *string*
 
-*Defined in [handler/feature-router.ts:10](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/feature-router.ts#L10)*
+*Defined in [handler/feature-router.ts:10](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/feature-router.ts#L10)*

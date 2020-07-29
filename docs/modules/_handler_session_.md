@@ -15,7 +15,7 @@
 
 ▸ **GroupPolicyHandler**(`options`: GroupPolicyOptions, `logger?`: Logger): *[AsyncNextCallback](_handler_common_index_.md#asyncnextcallback)‹void›*
 
-*Defined in [handler/session.ts:70](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/session.ts#L70)*
+*Defined in [handler/session.ts:70](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/session.ts#L70)*
 
 **Parameters:**
 
@@ -32,7 +32,7 @@ ___
 
 ▸ **SessionHandler**(`authService`: VerifyTokenService, `logger?`: Logger): *[AsyncNextCallback](_handler_common_index_.md#asyncnextcallback)‹void›*
 
-*Defined in [handler/session.ts:13](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/session.ts#L13)*
+*Defined in [handler/session.ts:13](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/session.ts#L13)*
 
 **Parameters:**
 

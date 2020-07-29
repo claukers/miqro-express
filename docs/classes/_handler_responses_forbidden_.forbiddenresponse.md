@@ -31,7 +31,7 @@
 
 *Overrides [APIResponse](_handler_responses_api_.apiresponse.md).[constructor](_handler_responses_api_.apiresponse.md#constructor)*
 
-*Defined in [handler/responses/forbidden.ts:3](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/responses/forbidden.ts#L3)*
+*Defined in [handler/responses/forbidden.ts:3](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/responses/forbidden.ts#L3)*
 
 **Parameters:**
 
@@ -49,7 +49,7 @@ Name | Type |
 
 *Inherited from [APIResponse](_handler_responses_api_.apiresponse.md).[body](_handler_responses_api_.apiresponse.md#optional-body)*
 
-*Defined in [handler/responses/api.ts:7](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/responses/api.ts#L7)*
+*Defined in [handler/responses/api.ts:7](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/responses/api.ts#L7)*
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 *Inherited from [APIResponse](_handler_responses_api_.apiresponse.md).[status](_handler_responses_api_.apiresponse.md#status)*
 
-*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/responses/api.ts#L4)*
+*Defined in [handler/responses/api.ts:4](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/responses/api.ts#L4)*
 
 ## Methods
 
@@ -69,7 +69,7 @@ ___
 
 *Inherited from [APIResponse](_handler_responses_api_.apiresponse.md).[send](_handler_responses_api_.apiresponse.md#send)*
 
-*Defined in [handler/responses/api.ts:10](https://github.com/claukers/miqro-express/blob/8fe809c/src/handler/responses/api.ts#L10)*
+*Defined in [handler/responses/api.ts:10](https://github.com/claukers/miqro-express/blob/70eb4a6/src/handler/responses/api.ts#L10)*
 
 **Parameters:**
 
