@@ -1,16 +1,14 @@
 import {describe, it} from "mocha";
-import express, {Express, NextFunction, Request, Response} from "express";
+import express, {NextFunction, Request, Response} from "express";
 import path from "path";
 import {strictEqual} from "assert";
-import {ParseOptionsError, ResponseError, Util} from "@miqro/core";
+import {ParseOptionsError, Util} from "@miqro/core";
 import {setupMiddleware} from "../src/middleware";
-import {existsSync, unlinkSync} from "fs";
 import {FuncTestHelper} from "./func_test_helper";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
 Util.loadConfig();
-
 
 
 describe("handlers functional tests", function () {
@@ -374,6 +372,58 @@ describe("handlers functional tests", function () {
         strictEqual(data.message, undefined);
         strictEqual(dCallCount, 1);
         done();
+      });
+  });
+
+  it("HandlerAll happy path aggregates results async", (done) => {
+    const {HandleAll, Handler, ResponseHandler} = require("../src/");
+    let bla = 0;
+    const myFunc = async () => {
+      return ++bla;
+    };
+    const app = express();
+    app.get("/myFunc", [
+      HandleAll((req: Request) => {
+        return [
+          {
+            req: {
+              ...req,
+              results: []
+            },
+            handlers: [Handler(myFunc), Handler(myFunc)]
+          }
+        ]
+      }),
+      ResponseHandler()
+    ]);
+
+
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "33");
+        strictEqual(data.success, true);
+        strictEqual(data.result[0][0], 1);
+        strictEqual(data.result[0][1], 2);
+        FuncTestHelper({
+            app,
+            url: "/myFunc",
+            method: "get",
+          },
+          ({status, headers, data}) => {
+            strictEqual(status, 200);
+            strictEqual(headers['content-type'], "application/json; charset=utf-8");
+            strictEqual(headers['content-length'], "33");
+            strictEqual(data.success, true);
+            strictEqual(data.result[0][0], 3);
+            strictEqual(data.result[0][1], 4);
+            done();
+          });
       });
   });
 
