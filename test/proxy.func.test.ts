@@ -1,9 +1,9 @@
 import {describe, it, before, after} from "mocha";
 import {expect} from "chai";
-import express, {Request} from "express";
-import supertest from "supertest";
-import {RequestOptions} from "@miqro/core";
+import express, {Express, Request} from "express";
+import {RequestOptions, ResponseError, Util} from "@miqro/core";
 import {Server} from "http";
+import {FuncTestHelper} from "./func_test_helper";
 
 describe("proxyhandler functional tests", function () {
   this.timeout(10000);
@@ -55,18 +55,16 @@ describe("proxyhandler functional tests", function () {
         ProxyResponseHandler()
       ] as any);
       const response: any = await new Promise((resolve, reject) => {
-        supertest(app)
-          .get('/proxy')
-          .end((err, res) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(res);
-            }
-          });
+        FuncTestHelper({
+          app,
+          url: '/proxy',
+          method: "get"
+        }, (res)=>{
+          resolve(res);
+        });
       });
       expect(response.status).to.be.equals(200);
-      expect(Object.keys(response.body).length).to.be.equals(0);
+      expect(Object.keys(response.data).length).to.be.equals(0);
       expect(Object.keys(response.headers).length).to.be.equals(8);
       expect(response.headers.myheader).to.be.equals("echo");
     })().then(done).catch(done);

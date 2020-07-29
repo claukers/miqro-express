@@ -1,9 +1,7 @@
 import {describe, it} from "mocha";
 import {expect} from "chai";
 import express from "express";
-import sinon from "sinon";
-import request from "supertest";
-
+import {fake, FuncTestHelper} from "./func_test_helper";
 
 describe("session functional tests", () => {
   for (const TOKENVARS of [
@@ -30,43 +28,51 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}: { token: any }) => {
+          verify: fake(async ({token}: { token: any }) => {
             expect(token).to.be.equals(fakeToken);
             return fakeSession;
           })
         };
-        const finalHandler = sinon.fake((req: any, res: any) => {
+        const finalHandler = fake((req: any, res: any) => {
           expect(req.session).to.be.equals(fakeSession);
           res.json(true);
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);
         const response = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            request(app)
-              .get('/user')
-              .set({[`${TOKENVARS.locationRef}`]: fakeToken})
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '4')
-              .expect(200)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: "/user",
+              method: "get",
+              headers: {
+                [`${TOKENVARS.locationRef}`]: fakeToken
+              }
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("4");
+                expect(res.status).to.be.equals(200);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }) :
           await new Promise((resolve, reject) => {
-            request(app)
-              .get(`/user?${TOKENVARS.locationRef}=${fakeToken}`)
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '4')
-              .expect(200)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: `/user?${TOKENVARS.locationRef}=${fakeToken}`,
+              method: "get",
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("4");
+                expect(res.status).to.be.equals(200);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }));
         expect(finalHandler.callCount).to.be.equals(1);
         expect(authService.verify.callCount).to.be.equals(1);
@@ -88,12 +94,12 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}: any) => {
+          verify: fake(async ({token}: any) => {
             expect(token).to.be.equals(fakeToken);
             return fakeSession;
           })
         };
-        const finalHandler = sinon.fake((req: any, res: any) => {
+        const finalHandler = fake((req: any, res: any) => {
           expect(req.session).to.be.equals(fakeSession);
           res.json(true);
         });
@@ -102,31 +108,39 @@ describe("session functional tests", () => {
 
         const response: any = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            request(app)
-              .get('/user')
-              .set({[`${TOKENVARS.locationRef}`]: fakeToken})
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '57')
-              .expect(401)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: "/user",
+              method: "get",
+              headers: {
+                [`${TOKENVARS.locationRef}`]: fakeToken
+              }
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("57");
+                expect(res.status).to.be.equals(401);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }) :
           await new Promise((resolve, reject) => {
-            request(app)
-              .get(`/user?${TOKENVARS.locationRef}=${fakeToken}`)
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '57')
-              .expect(401)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: `/user?${TOKENVARS.locationRef}=${fakeToken}`,
+              method: "get",
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("57");
+                expect(res.status).to.be.equals(401);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }));
         expect(finalHandler.callCount).to.be.equals(0);
         expect(authService.verify.callCount).to.be.equals(1);
@@ -145,10 +159,10 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}: any) => {
+          verify: fake(async ({token}: any) => {
           })
         };
-        const finalHandler = sinon.fake((req: any, res: any) => {
+        const finalHandler = fake((req: any, res: any) => {
           res.json("asdlkjasdliasjdaijal");
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);
@@ -156,30 +170,36 @@ describe("session functional tests", () => {
 
         const response: any = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            request(app)
-              .get('/user')
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '48')
-              .expect(400)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: `/user`,
+              method: "get",
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("48");
+                expect(res.status).to.be.equals(400);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }) :
           await new Promise((resolve, reject) => {
-            request(app)
-              .get(`/user`)
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '48')
-              .expect(400)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: `/user`,
+              method: "get",
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("48");
+                expect(res.status).to.be.equals(400);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }));
         expect(finalHandler.callCount).to.be.equals(0);
         expect(authService.verify.callCount).to.be.equals(0);
@@ -200,13 +220,13 @@ describe("session functional tests", () => {
 
         const app = express();
         const authService = {
-          verify: sinon.fake(async ({token}: any) => {
+          verify: fake(async ({token}: any) => {
             throw {
               blaError: true
             }
           })
         };
-        const finalHandler = sinon.fake((req: any, res: any) => {
+        const finalHandler = fake((req: any, res: any) => {
           res.json("asdlkjasdliasjdaijal");
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);
@@ -214,32 +234,39 @@ describe("session functional tests", () => {
 
         const response: any = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            request(app)
-              .get('/user')
-              .set({'TOKEN_HEADER': fakeToken})
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '57')
-              .expect(401)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: "/user",
+              method: "get",
+              headers: {
+                [`${TOKENVARS.locationRef}`]: fakeToken
+              }
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("57");
+                expect(res.status).to.be.equals(401);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }) :
           await new Promise((resolve, reject) => {
-            request(app)
-              .get(`/user?${TOKENVARS.locationRef}=${fakeToken}`)
-              .set({'TOKEN_HEADER': fakeToken})
-              .expect('Content-Type', /json/)
-              .expect('Content-Length', '57')
-              .expect(401)
-              .end((err, res) => {
-                if (err) reject(err);
-                else {
-                  resolve(res);
-                }
-              });
+            FuncTestHelper({
+              app,
+              url: `/user?${TOKENVARS.locationRef}=${fakeToken}`,
+              method: "get",
+            }, (res) => {
+              try {
+                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
+                expect(res.headers["content-length"]).to.be.equals("57");
+                expect(res.status).to.be.equals(401);
+                resolve(res);
+              } catch (e) {
+                reject(e);
+              }
+            });
           }));
         expect(finalHandler.callCount).to.be.equals(0);
         expect(authService.verify.callCount).to.be.equals(1);

@@ -1,13 +1,17 @@
 import {describe, it} from "mocha";
 import {expect} from "chai";
-import express, {NextFunction, Request, Response} from "express";
+import express, {Express, NextFunction, Request, Response} from "express";
 import path from "path";
-import request from "supertest";
-import {ParseOptionsError, Util} from "@miqro/core";
+import {ParseOptionsError, ResponseError, Util} from "@miqro/core";
 import {setupMiddleware} from "../src/middleware";
+import {existsSync, unlinkSync} from "fs";
+import {FuncTestHelper} from "./func_test_helper";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
+
 Util.loadConfig();
+
+
 
 describe("handlers functional tests", function () {
   this.timeout(10000);
@@ -29,20 +33,18 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '37')
-      .expect(400)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(false);
-          expect(res.body.message).to.be.equals("myerror");
-          done();
-        }
-      });
+    FuncTestHelper({
+      app,
+      url: `/myFunc`,
+      method: "get"
+    }, ({status, data, headers}) => {
+      expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+      expect(headers['content-length']).to.be.equals("37");
+      expect(status).to.be.equals(400);
+      expect(data.success).to.be.equals(false);
+      expect(data.message).to.be.equals("myerror");
+      done();
+    });
 
   });
   it("ErrorHandler on 404", (done) => {
@@ -54,21 +56,20 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    request(app)
-      .get('/myFunc2')
-      .expect('Content-Type', /html/)
-      .expect('Content-Length', '146')
-      .expect(404)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(Object.keys(res.body).length).to.be.equals(0);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc2",
+        method: "",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(404);
+        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("146");
+        expect(data.length).to.be.equals(146);
+        done();
       });
   });
-  it("ErrorHandler on unkown error is skipped", (done) => {
+  it("ErrorHandler on unknown error is skipped", (done) => {
     const {ErrorHandler} = require("../src/");
     const myFunc = () => {
       throw Error("bla");
@@ -77,21 +78,18 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /html/)
-      // .expect('Content-Length', '3337')
-      .expect(500)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(Object.keys(res.body).length).to.be.equals(0);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(500);
+        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
+        done();
       });
   });
-  it("ErrorHandler on unkown error is skipped and passed to the next error handler", (done) => {
+  it("ErrorHandler on unknown error is skipped and passed to the next error handler", (done) => {
     const {ErrorHandler} = require("../src/");
     const myFunc = () => {
       throw Error("bla");
@@ -107,18 +105,17 @@ describe("handlers functional tests", function () {
       });
     });
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '12')
-      .expect(500)
-      .end((err: Error | null, res: any) => {
-        if (err) {
-          done(err);
-        } else {
-          expect((res as any).body.bla).to.be.equals(true);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(500);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("12");
+        expect(data.bla).to.be.equals(true);
+        done();
       });
   });
   it("Handler happy path aggregates results", (done) => {
@@ -134,20 +131,19 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '31')
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result[0]).to.be.equals(1);
-          expect(res.body.result[1]).to.be.equals(2);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(200);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("31");
+        expect(data.success).to.be.equals(true);
+        expect(data.result[0]).to.be.equals(1);
+        expect(data.result[1]).to.be.equals(2);
+        done();
       });
   });
   it("Handler happy path aggregates results async", (done) => {
@@ -163,20 +159,20 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '31')
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result[0]).to.be.equals(1);
-          expect(res.body.result[1]).to.be.equals(2);
-          done();
-        }
+
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(200);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("31");
+        expect(data.success).to.be.equals(true);
+        expect(data.result[0]).to.be.equals(1);
+        expect(data.result[1]).to.be.equals(2);
+        done();
       });
   });
   it("Handler happy path aggregates results Promise", (done) => {
@@ -194,20 +190,19 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '31')
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result[0]).to.be.equals(1);
-          expect(res.body.result[1]).to.be.equals(2);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(200);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("31");
+        expect(data.success).to.be.equals(true);
+        expect(data.result[0]).to.be.equals(1);
+        expect(data.result[1]).to.be.equals(2);
+        done();
       });
   });
   it("Handler happy path aggregates results function Promise", (done) => {
@@ -226,20 +221,19 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '31')
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result[0]).to.be.equals(1);
-          expect(res.body.result[1]).to.be.equals(2);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(200);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("31");
+        expect(data.success).to.be.equals(true);
+        expect(data.result[0]).to.be.equals(1);
+        expect(data.result[1]).to.be.equals(2);
+        done();
       });
   });
   it("Handler happy path aggregates results function value", (done) => {
@@ -256,23 +250,22 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '31')
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result[0]).to.be.equals(1);
-          expect(res.body.result[1]).to.be.equals(2);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(200);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("31");
+        expect(data.success).to.be.equals(true);
+        expect(data.result[0]).to.be.equals(1);
+        expect(data.result[1]).to.be.equals(2);
+        done();
       });
   });
-  it("Handler happy path agregates results to one if only one result", (done) => {
+  it("Handler happy path aggregates results to one if only one result", (done) => {
     const {Handler, ResponseHandler} = require("../src/");
     let bla = 0;
     const myFunc = () => {
@@ -284,19 +277,18 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      .expect('Content-Length', '27')
-      .expect(200)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result).to.be.equals(1);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(200);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        expect(headers['content-length']).to.be.equals("27");
+        expect(data.success).to.be.equals(true);
+        expect(data.result).to.be.equals(1);
+        done();
       });
   });
   it("Handler throws", (done) => {
@@ -310,19 +302,18 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /html/)
-      // .expect('Content-Length', '3571')
-      .expect(500)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(undefined);
-          expect(res.body.result).to.be.equals(undefined);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(500);
+        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
+        // expect(headers['content-length']).to.be.equals("27");
+        expect(data.success).to.be.equals(undefined);
+        expect(data.result).to.be.equals(undefined);
+        done();
       });
   });
 
@@ -338,23 +329,22 @@ describe("handlers functional tests", function () {
     ]);
     app.use(ErrorHandler());
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /json/)
-      // .expect('Content-Length', '3571')
-      .expect(400)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(false);
-          expect(res.body.message).to.be.equals("asd");
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(400);
+        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
+        // expect(headers['content-length']).to.be.equals("27");
+        expect(data.success).to.be.equals(false);
+        expect(data.message).to.be.equals("asd");
+        done();
       });
   });
 
-  it("Handler throws unkonen and  ErrorHandler ignores it", (done) => {
+  it("Handler throws unknown and  ErrorHandler ignores it", (done) => {
     const {Handler, ResponseHandler, ErrorHandler} = require("../src/");
     const myFunc = () => {
       throw new Error("asd");
@@ -371,20 +361,19 @@ describe("handlers functional tests", function () {
       next(e);
     });
 
-    request(app)
-      .get('/myFunc')
-      .expect('Content-Type', /html/)
-      // .expect('Content-Length', '3571')
-      .expect(500)
-      .end((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          expect(res.body.success).to.be.equals(undefined);
-          expect(res.body.message).to.be.equals(undefined);
-          expect(dCallCount).to.be.equals(1);
-          done();
-        }
+    FuncTestHelper({
+        app,
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+        expect(status).to.be.equals(500);
+        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
+        // expect(headers['content-length']).to.be.equals("27");
+        expect(data.success).to.be.equals(undefined);
+        expect(data.message).to.be.equals(undefined);
+        expect(dCallCount).to.be.equals(1);
+        done();
       });
   });
 
