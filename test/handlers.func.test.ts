@@ -1,7 +1,7 @@
 import {describe, it} from "mocha";
-import {expect} from "chai";
 import express, {Express, NextFunction, Request, Response} from "express";
 import path from "path";
+import {strictEqual} from "assert";
 import {ParseOptionsError, ResponseError, Util} from "@miqro/core";
 import {setupMiddleware} from "../src/middleware";
 import {existsSync, unlinkSync} from "fs";
@@ -38,11 +38,11 @@ describe("handlers functional tests", function () {
       url: `/myFunc`,
       method: "get"
     }, ({status, data, headers}) => {
-      expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-      expect(headers['content-length']).to.be.equals("37");
-      expect(status).to.be.equals(400);
-      expect(data.success).to.be.equals(false);
-      expect(data.message).to.be.equals("myerror");
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "37");
+      strictEqual(status, 400);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "myerror");
       done();
     });
 
@@ -62,10 +62,10 @@ describe("handlers functional tests", function () {
         method: "",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(404);
-        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("146");
-        expect(data.length).to.be.equals(146);
+        strictEqual(status, 404);
+        strictEqual(headers['content-type'], "text/html; charset=utf-8");
+        strictEqual(headers['content-length'], "146");
+        strictEqual(data.length, 146);
         done();
       });
   });
@@ -84,8 +84,8 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(500);
-        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
+        strictEqual(status, 500);
+        strictEqual(headers['content-type'], "text/html; charset=utf-8");
         done();
       });
   });
@@ -98,7 +98,7 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-      expect(err.message).to.be.equals("bla");
+      strictEqual(err.message, "bla");
       res.status(500);
       res.json({
         bla: true
@@ -111,10 +111,10 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(500);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("12");
-        expect(data.bla).to.be.equals(true);
+        strictEqual(status, 500);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "12");
+        strictEqual(data.bla, true);
         done();
       });
   });
@@ -137,12 +137,12 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(200);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("31");
-        expect(data.success).to.be.equals(true);
-        expect(data.result[0]).to.be.equals(1);
-        expect(data.result[1]).to.be.equals(2);
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "31");
+        strictEqual(data.success, true);
+        strictEqual(data.result[0], 1);
+        strictEqual(data.result[1], 2);
         done();
       });
   });
@@ -166,12 +166,12 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(200);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("31");
-        expect(data.success).to.be.equals(true);
-        expect(data.result[0]).to.be.equals(1);
-        expect(data.result[1]).to.be.equals(2);
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "31");
+        strictEqual(data.success, true);
+        strictEqual(data.result[0], 1);
+        strictEqual(data.result[1], 2);
         done();
       });
   });
@@ -196,12 +196,12 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(200);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("31");
-        expect(data.success).to.be.equals(true);
-        expect(data.result[0]).to.be.equals(1);
-        expect(data.result[1]).to.be.equals(2);
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "31");
+        strictEqual(data.success, true);
+        strictEqual(data.result[0], 1);
+        strictEqual(data.result[1], 2);
         done();
       });
   });
@@ -227,12 +227,12 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(200);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("31");
-        expect(data.success).to.be.equals(true);
-        expect(data.result[0]).to.be.equals(1);
-        expect(data.result[1]).to.be.equals(2);
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "31");
+        strictEqual(data.success, true);
+        strictEqual(data.result[0], 1);
+        strictEqual(data.result[1], 2);
         done();
       });
   });
@@ -256,12 +256,12 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(200);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("31");
-        expect(data.success).to.be.equals(true);
-        expect(data.result[0]).to.be.equals(1);
-        expect(data.result[1]).to.be.equals(2);
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "31");
+        strictEqual(data.success, true);
+        strictEqual(data.result[0], 1);
+        strictEqual(data.result[1], 2);
         done();
       });
   });
@@ -283,11 +283,11 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(200);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        expect(headers['content-length']).to.be.equals("27");
-        expect(data.success).to.be.equals(true);
-        expect(data.result).to.be.equals(1);
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "27");
+        strictEqual(data.success, true);
+        strictEqual(data.result, 1);
         done();
       });
   });
@@ -308,11 +308,11 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(500);
-        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
-        // expect(headers['content-length']).to.be.equals("27");
-        expect(data.success).to.be.equals(undefined);
-        expect(data.result).to.be.equals(undefined);
+        strictEqual(status, 500);
+        strictEqual(headers['content-type'], "text/html; charset=utf-8");
+        // strictEqual(headers['content-length'], "27");
+        strictEqual(data.success, undefined);
+        strictEqual(data.result, undefined);
         done();
       });
   });
@@ -335,11 +335,11 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(400);
-        expect(headers['content-type']).to.be.equals("application/json; charset=utf-8");
-        // expect(headers['content-length']).to.be.equals("27");
-        expect(data.success).to.be.equals(false);
-        expect(data.message).to.be.equals("asd");
+        strictEqual(status, 400);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        // strictEqual(headers['content-length'], "27");
+        strictEqual(data.success, false);
+        strictEqual(data.message, "asd");
         done();
       });
   });
@@ -367,12 +367,12 @@ describe("handlers functional tests", function () {
         method: "get",
       },
       ({status, headers, data}) => {
-        expect(status).to.be.equals(500);
-        expect(headers['content-type']).to.be.equals("text/html; charset=utf-8");
-        // expect(headers['content-length']).to.be.equals("27");
-        expect(data.success).to.be.equals(undefined);
-        expect(data.message).to.be.equals(undefined);
-        expect(dCallCount).to.be.equals(1);
+        strictEqual(status, 500);
+        strictEqual(headers['content-type'], "text/html; charset=utf-8");
+        // strictEqual(headers['content-length'], "27");
+        strictEqual(data.success, undefined);
+        strictEqual(data.message, undefined);
+        strictEqual(dCallCount, 1);
         done();
       });
   });
@@ -389,15 +389,15 @@ describe("handlers functional tests", function () {
     ]);
     request(app)
       .get('/myFunc')
-      .expect('Content-Type', /json/)
-      // .expect('Content-Length', '3571')
-      .expect(200)
+      .strictEqual('Content-Type', /json/)
+      // .strictEqual('Content-Length', '3571')
+      .strictEqual(200)
       .end((err, res) => {
         if (err) {
           done(err);
         } else {
-          expect(res.body.success).to.be.equals(true);
-          expect(res.body.result).to.be.equals("hello\n");
+          strictEqual(res.body.success, true);
+          strictEqual(res.body.result, "hello\n");
           done();
         }
       });

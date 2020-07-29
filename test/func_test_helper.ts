@@ -1,7 +1,6 @@
 import {Express} from "express";
 import {ResponseError, Util} from "@miqro/core";
 import {existsSync, unlinkSync} from "fs";
-import {OutgoingHttpHeaders} from "http";
 
 const SOCKET_PATH = "/tmp/socket.1231";
 if (existsSync(SOCKET_PATH)) {

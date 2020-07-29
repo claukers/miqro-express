@@ -1,5 +1,5 @@
 import {describe, it} from "mocha";
-import {expect} from "chai";
+import {strictEqual} from "assert";
 import express from "express";
 import {fake, FuncTestHelper} from "./func_test_helper";
 
@@ -29,12 +29,12 @@ describe("session functional tests", () => {
         const app = express();
         const authService = {
           verify: fake(async ({token}: { token: any }) => {
-            expect(token).to.be.equals(fakeToken);
+            strictEqual(token, fakeToken);
             return fakeSession;
           })
         };
         const finalHandler = fake((req: any, res: any) => {
-          expect(req.session).to.be.equals(fakeSession);
+          strictEqual(req.session, fakeSession);
           res.json(true);
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);
@@ -49,9 +49,9 @@ describe("session functional tests", () => {
               }
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("4");
-                expect(res.status).to.be.equals(200);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "4");
+                strictEqual(res.status, 200);
                 resolve(res);
               } catch (e) {
                 reject(e);
@@ -65,17 +65,17 @@ describe("session functional tests", () => {
               method: "get",
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("4");
-                expect(res.status).to.be.equals(200);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "4");
+                strictEqual(res.status, 200);
                 resolve(res);
               } catch (e) {
                 reject(e);
               }
             });
           }));
-        expect(finalHandler.callCount).to.be.equals(1);
-        expect(authService.verify.callCount).to.be.equals(1);
+        strictEqual(finalHandler.callCount, 1);
+        strictEqual(authService.verify.callCount, 1);
       })().then(done).catch(done);
     });
 
@@ -95,12 +95,12 @@ describe("session functional tests", () => {
         const app = express();
         const authService = {
           verify: fake(async ({token}: any) => {
-            expect(token).to.be.equals(fakeToken);
+            strictEqual(token, fakeToken);
             return fakeSession;
           })
         };
         const finalHandler = fake((req: any, res: any) => {
-          expect(req.session).to.be.equals(fakeSession);
+          strictEqual(req.session, fakeSession);
           res.json(true);
         });
         app.get("/user", [SessionHandler(authService), finalHandler]);
@@ -117,9 +117,9 @@ describe("session functional tests", () => {
               }
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("57");
-                expect(res.status).to.be.equals(401);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "57");
+                strictEqual(res.status, 401);
                 resolve(res);
               } catch (e) {
                 reject(e);
@@ -133,17 +133,17 @@ describe("session functional tests", () => {
               method: "get",
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("57");
-                expect(res.status).to.be.equals(401);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "57");
+                strictEqual(res.status, 401);
                 resolve(res);
               } catch (e) {
                 reject(e);
               }
             });
           }));
-        expect(finalHandler.callCount).to.be.equals(0);
-        expect(authService.verify.callCount).to.be.equals(1);
+        strictEqual(finalHandler.callCount, 0);
+        strictEqual(authService.verify.callCount, 1);
       })().then(done).catch(done);
     });
 
@@ -176,9 +176,9 @@ describe("session functional tests", () => {
               method: "get",
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("48");
-                expect(res.status).to.be.equals(400);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "48");
+                strictEqual(res.status, 400);
                 resolve(res);
               } catch (e) {
                 reject(e);
@@ -192,17 +192,17 @@ describe("session functional tests", () => {
               method: "get",
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("48");
-                expect(res.status).to.be.equals(400);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "48");
+                strictEqual(res.status, 400);
                 resolve(res);
               } catch (e) {
                 reject(e);
               }
             });
           }));
-        expect(finalHandler.callCount).to.be.equals(0);
-        expect(authService.verify.callCount).to.be.equals(0);
+        strictEqual(finalHandler.callCount, 0);
+        strictEqual(authService.verify.callCount, 0);
       })().then(done).catch(done);
     });
 
@@ -243,9 +243,9 @@ describe("session functional tests", () => {
               }
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("57");
-                expect(res.status).to.be.equals(401);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "57");
+                strictEqual(res.status, 401);
                 resolve(res);
               } catch (e) {
                 reject(e);
@@ -259,17 +259,17 @@ describe("session functional tests", () => {
               method: "get",
             }, (res) => {
               try {
-                expect(res.headers["content-type"]).to.be.equals("application/json; charset=utf-8");
-                expect(res.headers["content-length"]).to.be.equals("57");
-                expect(res.status).to.be.equals(401);
+                strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                strictEqual(res.headers["content-length"], "57");
+                strictEqual(res.status, 401);
                 resolve(res);
               } catch (e) {
                 reject(e);
               }
             });
           }));
-        expect(finalHandler.callCount).to.be.equals(0);
-        expect(authService.verify.callCount).to.be.equals(1);
+        strictEqual(finalHandler.callCount, 0);
+        strictEqual(authService.verify.callCount, 1);
       })().then(done).catch(done);
     });
   }

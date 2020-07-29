@@ -1,5 +1,5 @@
 import {after, before, describe, it} from 'mocha';
-import {expect} from 'chai';
+import {strictEqual} from 'assert';
 import express, {Express} from "express";
 import {Server} from "http";
 
@@ -63,14 +63,14 @@ describe(`verifytokenendpointservice func tests`, () => {
             const token = TOKENVARS.location === "header" ?
               req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()] :
               req.query[process.env.TOKEN_QUERY as string];
-            expect(token).to.be.equals(goodToken1);
+            strictEqual(token, goodToken1);
             const verified = jwt.verify(token, fakeSecret);
-            expect(verified.username).to.be.equals(fakeSession1.username);
-            expect(verified.account).to.be.equals(fakeSession1.account);
-            expect(verified.groups.length).to.be.equals(fakeSession1.groups.length);
-            expect(verified.groups[0]).to.be.equals(fakeSession1.groups[0]);
-            expect(verified.groups[1]).to.be.equals(fakeSession1.groups[1]);
-            expect(verified.token).to.be.equals(undefined);
+            strictEqual(verified.username, fakeSession1.username);
+            strictEqual(verified.account, fakeSession1.account);
+            strictEqual(verified.groups.length, fakeSession1.groups.length);
+            strictEqual(verified.groups[0], fakeSession1.groups[0]);
+            strictEqual(verified.groups[1], fakeSession1.groups[1]);
+            strictEqual(verified.token, undefined);
             res.sendStatus(200);
           };
           const instance = VerifyJWTEndpointService.getInstance();
@@ -78,12 +78,12 @@ describe(`verifytokenendpointservice func tests`, () => {
             token: goodToken1
           };
           const session = await instance.verify(args);
-          expect(session.username).to.be.equals(fakeSession1.username);
-          expect(session.account).to.be.equals(fakeSession1.account);
-          expect(session.groups.length).to.be.equals(fakeSession1.groups.length);
-          expect(session.groups[0]).to.be.equals(fakeSession1.groups[0]);
-          expect(session.groups[1]).to.be.equals(fakeSession1.groups[1]);
-          expect(session.token).to.be.equals(args.token);
+          strictEqual(session.username, fakeSession1.username);
+          strictEqual(session.account, fakeSession1.account);
+          strictEqual(session.groups.length, fakeSession1.groups.length);
+          strictEqual(session.groups[0], fakeSession1.groups[0]);
+          strictEqual(session.groups[1], fakeSession1.groups[1]);
+          strictEqual(session.token, args.token);
         })().then(done).catch(done);
       });
     });

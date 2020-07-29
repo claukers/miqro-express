@@ -1,5 +1,5 @@
 import {describe, it, before, after} from "mocha";
-import {expect} from "chai";
+import {strictEqual} from "assert";
 import express, {Express, Request} from "express";
 import {RequestOptions, ResponseError, Util} from "@miqro/core";
 import {Server} from "http";
@@ -63,10 +63,10 @@ describe("proxyhandler functional tests", function () {
           resolve(res);
         });
       });
-      expect(response.status).to.be.equals(200);
-      expect(Object.keys(response.data).length).to.be.equals(0);
-      expect(Object.keys(response.headers).length).to.be.equals(8);
-      expect(response.headers.myheader).to.be.equals("echo");
+      strictEqual(response.status, 200);
+      strictEqual(Object.keys(response.data).length, 0);
+      strictEqual(Object.keys(response.headers).length, 8);
+      strictEqual(response.headers.myheader, "echo");
     })().then(done).catch(done);
   });
 });
