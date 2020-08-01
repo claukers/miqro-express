@@ -1,8 +1,8 @@
 import {AsyncNextCallback} from "./common";
 import {
   ForbiddenError,
+  GroupPolicyValidator,
   GroupPolicy,
-  GroupPolicyOptions,
   Logger,
   ParseOptionsError,
   UnAuthorizedError,
@@ -67,7 +67,7 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
   };
 };
 
-export const GroupPolicyHandler = (options: GroupPolicyOptions, logger?: Logger): AsyncNextCallback<void> => {
+export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): AsyncNextCallback<void> => {
   if (!logger) {
     logger = Util.getLogger("GroupPolicyHandler");
   }
@@ -76,7 +76,7 @@ export const GroupPolicyHandler = (options: GroupPolicyOptions, logger?: Logger)
       if (!req.session) {
         next(new ParseOptionsError(`No Session!`));
       } else {
-        const result = await GroupPolicy.validateSession(req.session, options, logger as Logger);
+        const result = await GroupPolicyValidator.validate(req.session, options, logger as Logger);
         if (result) {
           (logger as Logger).info(`request[${req.uuid}] ` +
             `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
