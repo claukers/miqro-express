@@ -4,7 +4,7 @@ import path from "path";
 import {strictEqual} from "assert";
 import {ParseOptionsError, Util} from "@miqro/core";
 import {setupMiddleware} from "../src/middleware";
-import {FuncTestHelper} from "./func_test_helper";
+import {TestHelper as FuncTestHelper} from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
@@ -31,8 +31,8 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    FuncTestHelper({
-      app,
+    FuncTestHelper(app,{
+
       url: `/myFunc`,
       method: "get"
     }, ({status, data, headers}) => {
@@ -54,8 +54,8 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc2",
         method: "",
       },
@@ -76,8 +76,8 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -103,8 +103,8 @@ describe("handlers functional tests", function () {
       });
     });
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -129,8 +129,8 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -158,8 +158,8 @@ describe("handlers functional tests", function () {
     ]);
 
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -188,8 +188,8 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -219,8 +219,8 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -248,8 +248,8 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -275,8 +275,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
         url: "/myFunc",
         method: "get",
       },
@@ -300,8 +299,8 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -327,8 +326,8 @@ describe("handlers functional tests", function () {
     ]);
     app.use(ErrorHandler());
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -359,8 +358,8 @@ describe("handlers functional tests", function () {
       next(e);
     });
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -398,8 +397,8 @@ describe("handlers functional tests", function () {
     ]);
 
 
-    FuncTestHelper({
-        app,
+    FuncTestHelper(app,{
+
         url: "/myFunc",
         method: "get",
       },
@@ -410,8 +409,8 @@ describe("handlers functional tests", function () {
         strictEqual(data.success, true);
         strictEqual(data.result[0][0], 1);
         strictEqual(data.result[0][1], 2);
-        FuncTestHelper({
-            app,
+        FuncTestHelper(app,{
+
             url: "/myFunc",
             method: "get",
           },

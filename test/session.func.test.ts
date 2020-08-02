@@ -1,7 +1,8 @@
 import {describe, it} from "mocha";
 import {strictEqual} from "assert";
 import express from "express";
-import {fake, FuncTestHelper} from "./func_test_helper";
+import {fake} from "@miqro/core";
+import {TestHelper as FuncTestHelper} from "../src";
 
 describe("session functional tests", () => {
   for (const TOKENVARS of [
@@ -40,8 +41,8 @@ describe("session functional tests", () => {
         app.get("/user", [SessionHandler(authService), finalHandler]);
         const response = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: "/user",
               method: "get",
               headers: {
@@ -59,8 +60,8 @@ describe("session functional tests", () => {
             });
           }) :
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: `/user?${TOKENVARS.locationRef}=${fakeToken}`,
               method: "get",
             }, (res) => {
@@ -108,8 +109,8 @@ describe("session functional tests", () => {
 
         const response: any = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: "/user",
               method: "get",
               headers: {
@@ -127,8 +128,8 @@ describe("session functional tests", () => {
             });
           }) :
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: `/user?${TOKENVARS.locationRef}=${fakeToken}`,
               method: "get",
             }, (res) => {
@@ -170,8 +171,8 @@ describe("session functional tests", () => {
 
         const response: any = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: `/user`,
               method: "get",
             }, (res) => {
@@ -186,8 +187,8 @@ describe("session functional tests", () => {
             });
           }) :
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: `/user`,
               method: "get",
             }, (res) => {
@@ -234,8 +235,8 @@ describe("session functional tests", () => {
 
         const response: any = (TOKENVARS.location === "header" ?
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: "/user",
               method: "get",
               headers: {
@@ -253,8 +254,8 @@ describe("session functional tests", () => {
             });
           }) :
           await new Promise((resolve, reject) => {
-            FuncTestHelper({
-              app,
+            FuncTestHelper(app, {
+
               url: `/user?${TOKENVARS.locationRef}=${fakeToken}`,
               method: "get",
             }, (res) => {

@@ -3,10 +3,10 @@ import {strictEqual} from "assert";
 import express, {Express, Request} from "express";
 import {RequestOptions, ResponseError, Util} from "@miqro/core";
 import {Server} from "http";
-import {FuncTestHelper} from "./func_test_helper";
+import {TestHelper as FuncTestHelper} from "../src";
 
 describe("proxyhandler functional tests", function () {
-  this.timeout(10000);
+  this.timeout(100000);
 
   let server: Server;
 
@@ -55,8 +55,7 @@ describe("proxyhandler functional tests", function () {
         ProxyResponseHandler()
       ] as any);
       const response: any = await new Promise((resolve, reject) => {
-        FuncTestHelper({
-          app,
+        FuncTestHelper(app,{
           url: '/proxy',
           method: "get"
         }, (res)=>{
@@ -65,7 +64,7 @@ describe("proxyhandler functional tests", function () {
       });
       strictEqual(response.status, 200);
       strictEqual(Object.keys(response.data).length, 0);
-      strictEqual(Object.keys(response.headers).length, 8);
+      strictEqual(Object.keys(response.headers).length, 9);
       strictEqual(response.headers.myheader, "echo");
     })().then(done).catch(done);
   });
