@@ -35,7 +35,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
   const files = readdirSync(dirname);
   for (const f of files) {
     const fParsed = parse(f);
-    if ((fParsed.ext === ".ts" && fParsed.name.slice(-2) !== ".d") || fParsed.ext === ".js") {
+    if ((fParsed.name !== "index" && (fParsed.ext === ".ts" && fParsed.name.slice(-2) !== ".d") || fParsed.ext === ".js")) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const feature: APIRoute = require(join(dirname, fParsed.name));
       feature.path = `/api/${apiName}${feature.path}`;
