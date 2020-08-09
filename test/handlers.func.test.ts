@@ -31,7 +31,7 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
       url: `/myFunc`,
       method: "get"
@@ -54,7 +54,7 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc2",
         method: "",
@@ -76,7 +76,7 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -103,7 +103,7 @@ describe("handlers functional tests", function () {
       });
     });
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -129,7 +129,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -158,7 +158,7 @@ describe("handlers functional tests", function () {
     ]);
 
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -188,7 +188,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -219,7 +219,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -232,6 +232,33 @@ describe("handlers functional tests", function () {
         strictEqual(data.result[0], 1);
         strictEqual(data.result[1], 2);
         done();
+      });
+  });
+  it("Handler happy path aggregates empty list", (done) => {
+    const {Handler, ResponseHandler} = require("../src/");
+
+    function myFunc() {
+      return [];
+    };
+    const app = express();
+    app.get("/myFunc", [
+      Handler(myFunc),
+      ResponseHandler()
+    ]);
+
+    FuncTestHelper(app, {
+        url: "/myFunc",
+        method: "get",
+      },
+      ({status, headers, data}) => {
+
+        strictEqual(status, 200);
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "28");
+        strictEqual(data.success, true);
+        strictEqual(data.result.length, 0);
+        done();
+
       });
   });
   it("Handler happy path aggregates results function value", (done) => {
@@ -248,7 +275,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -275,7 +302,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
         url: "/myFunc",
         method: "get",
       },
@@ -299,7 +326,7 @@ describe("handlers functional tests", function () {
       ResponseHandler()
     ]);
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -326,7 +353,7 @@ describe("handlers functional tests", function () {
     ]);
     app.use(ErrorHandler());
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -358,7 +385,7 @@ describe("handlers functional tests", function () {
       next(e);
     });
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -397,7 +424,7 @@ describe("handlers functional tests", function () {
     ]);
 
 
-    FuncTestHelper(app,{
+    FuncTestHelper(app, {
 
         url: "/myFunc",
         method: "get",
@@ -409,8 +436,7 @@ describe("handlers functional tests", function () {
         strictEqual(data.success, true);
         strictEqual(data.result[0][0], 1);
         strictEqual(data.result[0][1], 2);
-        FuncTestHelper(app,{
-
+        FuncTestHelper(app, {
             url: "/myFunc",
             method: "get",
           },

@@ -1,23 +1,32 @@
-import {RequestOptions, ResponseError, Util} from "@miqro/core";
+import {RequestOptions, RequestResponse, ResponseError, Util} from "@miqro/core";
 import {existsSync, unlinkSync} from "fs";
 import {Express} from "express";
 
-export const TestHelper = (app: Express, options: RequestOptions, cb: (args: { status: number; data: any; headers: any; }) => void, unixSocket = "/tmp/socket.12345"): void => {
+export const TestHelper = async (app: Express, options: RequestOptions, cb?: (response: RequestResponse) => void, unixSocket = "/tmp/socket.12345"): Promise<RequestResponse | void> => {
   if (existsSync(unixSocket)) {
     unlinkSync(unixSocket);
   }
   const server = app.listen(unixSocket);
-  Util.request({
-    url: options.url,
-    headers: options.headers,
-    socketPath: unixSocket,
-    method: options.method
-  }).then(({status, data, headers}) => {
-    server.close();
-    cb({status, data, headers});
-  }).catch((e: ResponseError) => {
-    server.close();
-    const {status, data, headers} = e as any;
-    cb({status, data, headers});
+  return new Promise<RequestResponse | void>((resolve, reject) => {
+    Util.request({
+      url: options.url,
+      headers: options.headers,
+      socketPath: unixSocket,
+      method: options.method
+    }).then((response) => {
+      server.close();
+      if (cb) {
+        cb(response);
+      }
+      resolve(response);
+    }).catch((e: ResponseError) => {
+      server.close();
+      if (cb) {
+        cb(e as any);
+        resolve();
+      } else {
+        reject(e);
+      }
+    });
   });
 }
