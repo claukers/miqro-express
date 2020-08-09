@@ -3,7 +3,7 @@ import {Router} from "express";
 import {SessionHandler} from "./session";
 import {NextCallback} from "./common";
 
-export type FeatureHandler = (logger?: any) => NextCallback[];
+export type FeatureHandler = (logger?: Logger) => NextCallback[] | NextCallback;
 
 export interface FeatureRouterPathOptions {
   identifier: string;
@@ -45,7 +45,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
       );
     }
   } else {
-    logger.warn(`NOT setting up session handler on features [${toSetup.join(",")}]`);
+    logger.debug(`NOT setting up session handler on features [${toSetup.join(",")}]`);
   }
   for (const featureName of toSetup) {
     const handlerOptions = options.features[featureName];
@@ -77,7 +77,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
             throw new Error(`feature [${featureName}] no methods defined`);
           }
         } else {
-          logger.warn(`feature [${featureName}] disabled`);
+          logger.info(`feature [${featureName}] disabled`);
         }
       }
     }
