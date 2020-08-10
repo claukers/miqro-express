@@ -51,18 +51,18 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
           implementation,
           identifier: featureName
         };
+      } else if (fParsed.name !== "index" && ((fParsed.ext === ".ts" || fParsed.ext === ".js") && fParsed.name.slice(-2) !== ".d")) {
+        const feature: APIRoute = require(join(dirname, fParsed.name));
+        const path = `/api/${apiName}${feature.path ? feature.path : "/"}`;
+        const featureName = feature.identifier ? feature.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
+        features.features[featureName] = {
+          path,
+          methods: feature.methods,
+          implementation: feature.handler,
+          identifier: featureName
+        };
       }
-    } else if (fParsed.name !== "index" && ((fParsed.ext === ".ts" && f.slice(-2) !== ".d") || (fParsed.ext === ".js"))) {
-      const feature: APIRoute = require(join(dirname, fParsed.name));
-      const path = `/api/${apiName}${feature.path ? feature.path : "/"}`;
-      const featureName = feature.identifier ? feature.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
-      features.features[featureName] = {
-        path,
-        methods: feature.methods,
-        implementation: feature.handler,
-        identifier: featureName
-      };
     }
+    return FeatureRouter(features, logger);
   }
-  return FeatureRouter(features, logger);
-};
+  ;
