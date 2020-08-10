@@ -27,7 +27,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
   if (!logger) {
     logger = Util.getComponentLogger(`api.${apiName}.router`);
   }
-  logger.info(`loading api features from [${dirname}]`);
+  logger.debug(`loading api features from [${dirname}]`);
   const features: FeatureRouterOptions = {
     auth: options.auth,
     only: options.only,
