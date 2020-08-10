@@ -3,7 +3,7 @@ import {Router} from "express";
 import {SessionHandler} from "./session";
 import {NextCallback} from "./common";
 
-export type FeatureHandler = (logger?: Logger) => NextCallback[] | NextCallback;
+export type FeatureHandler = (logger: Logger) => NextCallback[] | NextCallback;
 
 export interface FeatureRouterPathOptions {
   identifier: string;

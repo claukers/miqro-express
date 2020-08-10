@@ -9,20 +9,26 @@ export const TestHelper = async (app: Express, options: RequestOptions, cb?: (re
   const server = app.listen(unixSocket);
   return new Promise<RequestResponse | void>((resolve, reject) => {
     Util.request({
-      url: options.url,
-      headers: options.headers,
-      socketPath: unixSocket,
-      method: options.method
+      ...options,
+      socketPath: unixSocket
     }).then((response) => {
       server.close();
       if (cb) {
-        cb(response);
+        try {
+          cb(response);
+        } catch (ee) {
+          reject(ee);
+        }
       }
       resolve(response);
     }).catch((e: ResponseError) => {
       server.close();
       if (cb) {
-        cb(e as any);
+        try {
+          cb(e as any);
+        } catch (ee) {
+          reject(ee);
+        }
         resolve();
       } else {
         reject(e);

@@ -1,5 +1,5 @@
 import {basename, join, parse} from "path";
-import {readdirSync} from "fs";
+import {existsSync, lstatSync, readdirSync, readFileSync} from "fs";
 import {Router} from "express";
 import {Logger, Util, VerifyTokenService} from "@miqro/core";
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
@@ -34,17 +34,23 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
   };
   const files = readdirSync(dirname);
   for (const f of files) {
-    const fParsed = parse(f);
-    if ((fParsed.name !== "index" && (fParsed.ext === ".ts" && fParsed.name.slice(-2) !== ".d") || fParsed.ext === ".js")) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const feature: APIRoute = require(join(dirname, fParsed.name));
-      feature.path = `/api/${apiName}${feature.path}`;
-      features.features[`API_${apiName}_${fParsed.name}`.toUpperCase()] = {
-        path: feature.path,
-        methods: feature.methods,
-        implementation: feature.handler as any,
-        identifier: `api.${apiName}.${fParsed.name}`
-      };
+    if (lstatSync(join(dirname, f)).isDirectory()) {
+      const handlerJSONPath = join(dirname, f, "handler.json");
+      // check if route path
+      if (existsSync(handlerJSONPath)) {
+        const handlerData = JSON.parse(readFileSync(handlerJSONPath).toString());
+        const fParsed = parse(f);
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const implementation: FeatureHandler = require(join(dirname, fParsed.name));
+        const path = `/api/${apiName}${handlerData.path}`;
+        const featureName = handlerData.identifier ? handlerData.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
+        features.features[featureName] = {
+          path,
+          methods: handlerData.methods,
+          implementation,
+          identifier: featureName
+        };
+      }
     }
   }
   return FeatureRouter(features, logger);
