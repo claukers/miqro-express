@@ -5,7 +5,8 @@ import {Logger, Util, VerifyTokenService} from "@miqro/core";
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
 
 export interface APIRoute {
-  path: string;
+  identifier?: string;
+  path?: string;
   methods: string[];
   handler: FeatureHandler;
 }
@@ -34,15 +35,15 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
   };
   const files = readdirSync(dirname);
   for (const f of files) {
+    const fParsed = parse(f);
     if (lstatSync(join(dirname, f)).isDirectory()) {
       const handlerJSONPath = join(dirname, f, "handler.json");
       // check if route path
       if (existsSync(handlerJSONPath)) {
         const handlerData = JSON.parse(readFileSync(handlerJSONPath).toString());
-        const fParsed = parse(f);
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const implementation: FeatureHandler = require(join(dirname, fParsed.name));
-        const path = `/api/${apiName}${handlerData.path}`;
+        const path = `/api/${apiName}${handlerData.path ? handlerData.path : "/"}`;
         const featureName = handlerData.identifier ? handlerData.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
         features.features[featureName] = {
           path,
@@ -51,6 +52,16 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
           identifier: featureName
         };
       }
+    } else if (fParsed.name !== "index" && ((fParsed.ext === ".ts" && f.slice(-2) !== ".d") || (fParsed.ext === ".js"))) {
+      const feature: APIRoute = require(join(dirname, fParsed.name));
+      const path = `/api/${apiName}${feature.path ? feature.path : "/"}`;
+      const featureName = feature.identifier ? feature.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
+      features.features[featureName] = {
+        path,
+        methods: feature.methods,
+        implementation: feature.handler,
+        identifier: featureName
+      };
     }
   }
   return FeatureRouter(features, logger);

@@ -24,6 +24,7 @@ describe("api-router functional tests", function () {
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
     process.env.FEATURE_TOGGLE_API_APINAMEBLA_ECHO = "true";
+    process.env.FEATURE_TOGGLE_API_APINAMEBLA_OTHER_ECHO = "true";
     setupMiddleware(app);
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
@@ -59,6 +60,7 @@ describe("api-router functional tests", function () {
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
     process.env.FEATURE_TOGGLE_API_APINAMEBLA_ECHO = "true";
+    process.env.FEATURE_TOGGLE_API_APINAMEBLA_OTHER_ECHO = "true";
     setupMiddleware(app);
     app.use("/", APIRouter({
       dirname: resolve(__dirname, "apidata"),
@@ -85,7 +87,41 @@ describe("api-router functional tests", function () {
       }
 
     })().then(done).catch(done);
+  });
 
+  it("other echo", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_API_APINAMEBLA_ECHO = "true";
+    process.env.FEATURE_TOGGLE_API_APINAMEBLA_OTHER_ECHO = "true";
+    setupMiddleware(app);
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/other/echo`,
+      method: "post",
+      data: {
+        bla: 1
+      }
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result.bla, 1);
+      done();
+    });
 
   });
 });
