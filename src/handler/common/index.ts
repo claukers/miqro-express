@@ -22,8 +22,8 @@ export type ErrorCallback<T = void> = (err: Error, req: Request, res: Response, 
 export type Callback<T = any> = (req: Request, res: Response) => T;
 export type AsyncCallback<T = any> = (req: Request, res: Response) => Promise<T>;
 
-export type NextCallback<T = void> = (req: Request, res: Response, next: NextFunction) => T;
-export type AsyncNextCallback<T = void> = (req: Request, res: Response, next: NextFunction) => Promise<T>;
+export type NextCallback = (req: Request, res: Response, next: NextFunction) => void;
+export type AsyncNextCallback = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const setResults = (req: Request, results: any[]): void => {
@@ -39,38 +39,53 @@ export const getResults = (req: Request): any[] => {
 };
 
 /**
- * Wraps an async express request handler but catches the return value and appends it to req.results
+ * Wraps an async express request handler but catches the return value and appends it to req.results before calling next(). if the function throws the error is passed as next(..)
  *
  * @param fn  express request handler ´async function´.
- * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
+ * @param logger  [OPTIONAL] logger for logging errors ´Logger´.
  */
 export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("Handler");
   }
-  return (req, res, next) => {
-    let handleError: ((err: Error) => void) | null = (err: Error) => {
+  return CatchHandler(async (req, res, next) => {
+    const result = await fn(req, res);
+    if (logger) {
+      logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
+    }
+    const results = getResults(req)
+    results.push(result);
+    setResults(req, results);
+    next();
+  }, logger);
+};
+
+/**
+ * Wraps an async express handler with next argument and if the function throws it's passed as next(...)
+ *
+ * @param fn  express request handler ´async function´.
+ * @param logger  [OPTIONAL] logger for logging errors ´Logger´.
+ */
+export const CatchHandler = (fn: AsyncNextCallback, logger?: Logger): NextCallback => {
+  if (!logger) {
+    logger = Util.getLogger("NextHandler");
+  }
+  return async (req, res, next) => {
+    let handleError: ((err: Error) => void) | any = (err: Error) => {
       if (logger) {
-        logger.error(err);
+        logger.error(`request[${req.uuid}] message[${err.message}] stack[${err.stack}]`);
       }
       handleError = null;
       next(err);
     }
     try {
-      const p = fn(req, res);
-      let handleResult: ((result: any) => void) | null = (result: any) => {
-        if (logger) {
-          logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
+      await fn(req, res, (err?: any) => {
+        if (err) {
+          handleError(err);
+        } else {
+          next();
         }
-        getResults(req).push(result);
-        next();
-        handleResult = null;
-      }
-      if (p instanceof Promise) {
-        p.then(handleResult).catch(handleError);
-      } else {
-        handleResult(p);
-      }
+      });
     } catch (e) {
       handleError(e);
     }
