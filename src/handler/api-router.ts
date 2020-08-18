@@ -53,6 +53,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
         };
       }
     } else if (fParsed.name !== "index" && ((fParsed.ext === ".ts" || fParsed.ext === ".js") && fParsed.name.slice(-2) !== ".d")) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const feature: APIRoute = require(join(dirname, fParsed.name));
       const path = `/api/${apiName}${feature.path ? feature.path : "/"}`;
       const featureName = feature.identifier ? feature.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
