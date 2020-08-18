@@ -10,7 +10,7 @@ import {
   VerifyTokenService
 } from "@miqro/core";
 
-export const SessionHandler = (authService: VerifyTokenService, logger?: Logger): AsyncNextCallback<void> => {
+export const SessionHandler = (authService: VerifyTokenService, logger?: Logger): AsyncNextCallback => {
   Util.checkEnvVariables(["TOKEN_LOCATION"]);
   switch (process.env.TOKEN_LOCATION) {
     case "header":
@@ -52,12 +52,12 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
           next(new UnAuthorizedError(`Fail to authenticate token!`));
         } else {
           req.session = session;
-          (logger as Logger).info(`Token [${token}] authenticated!`);
+          (logger as Logger).info(`request[${req.uuid}] Token [${token}] authenticated!`);
           next();
         }
       }
     } catch (e) {
-      (logger as Logger).error(e);
+      (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       if (e.name) {
         next(e);
       } else {
@@ -67,7 +67,7 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
   };
 };
 
-export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): AsyncNextCallback<void> => {
+export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): AsyncNextCallback => {
   if (!logger) {
     logger = Util.getLogger("GroupPolicyHandler");
   }
@@ -90,7 +90,7 @@ export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): Async
         }
       }
     } catch (e) {
-      (logger as Logger).warn(e);
+      (logger as Logger).warn(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       if (e.name && e.name !== "Error") {
         next(e);
       } else {

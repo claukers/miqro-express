@@ -47,6 +47,8 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
   } else {
     logger.debug(`NOT setting up session handler on features [${toSetup.join(",")}]`);
   }
+  const enabled: string[] = [];
+  const disabled: string[] = [];
   for (const featureName of toSetup) {
     const handlerOptions = options.features[featureName];
     if (!handlerOptions) {
@@ -64,6 +66,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
       } else {
         if (FeatureToggle.isFeatureEnabled(featureName)) {
           logger.debug(`feature [${featureName}] enabled`);
+          enabled.push(featureName);
           if (methods.length > 0) {
             for (const method of methods) {
               if (FEATURE_ROUTER_METHODS.indexOf(method) === -1) {
@@ -77,10 +80,17 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
             throw new Error(`feature [${featureName}] no methods defined`);
           }
         } else {
-          logger.info(`feature [${featureName}] disabled`);
+          logger.debug(`feature [${featureName}] disabled`);
+          disabled.push(featureName);
         }
       }
     }
+  }
+  if (enabled.length > 0) {
+    logger.info(`enabled features [${enabled.join(",")}]`);
+  }
+  if (disabled.length > 0) {
+    logger.info(`disabled features [${disabled.join(",")}]`);
   }
   return router;
 };

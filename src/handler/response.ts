@@ -52,21 +52,21 @@ export const createServiceResponse = (req: Request): ServiceResponse | null => {
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ResponseHandler = (logger?: Logger): NextCallback<void> => {
+export const ResponseHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }
   return (req, res, next) => {
     try {
       const response = createServiceResponse(req);
-      (logger as Logger).debug(`request[${req.uuid}] response[${inspect(response)}]`);
+      (logger as Logger).debug(`request[${req.uuid}] results[${inspect(response)}]`);
       if (!response) {
         next();
       } else {
         response.send(res);
       }
     } catch (e) {
-      (logger as Logger).error(e);
+      (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       next(e);
     }
   };
@@ -78,13 +78,13 @@ export const ResponseHandler = (logger?: Logger): NextCallback<void> => {
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ErrorHandler = (logger?: Logger): ErrorCallback<void> => {
+export const ErrorHandler = (logger?: Logger): ErrorCallback => {
   if (!logger) {
     logger = Util.getLogger("ErrorHandler");
   }
   return (err: Error, req, res, next): void => {
     try {
-      (logger as Logger).error(`request[${req.uuid}] ${inspect(err)}`);
+      (logger as Logger).error(`request[${req.uuid}] message[${err.message}] stack[${err.stack}]`);
       const response = createErrorResponse(err);
       if (response) {
         response.send(res);
@@ -92,7 +92,7 @@ export const ErrorHandler = (logger?: Logger): ErrorCallback<void> => {
         next(err);
       }
     } catch (e) {
-      (logger as Logger).error(e);
+      (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       next(e);
     }
   };

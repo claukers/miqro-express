@@ -31,7 +31,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
 
   public async verify({token}: { token: string }): Promise<Session | null> {
     try {
-      this.logger.debug(`verifying [${token}] on [${process.env.TOKEN_VERIFY_ENDPOINT}].header[${process.env.TOKEN_HEADER}]`);
+      this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${process.env.TOKEN_HEADER}]`);
       let response = null;
       switch (process.env.TOKEN_VERIFY_LOCATION) {
         case "header":

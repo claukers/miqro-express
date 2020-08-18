@@ -18,6 +18,9 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): N
     const requestConfig = await resolver.resolveRequest(req);
     if (requestConfig) {
       try {
+        if (logger) {
+          logger.debug(`request[${req.uuid}] proxy resolveRequest to [${inspect(requestConfig)}]`);
+        }
         const response = await Util.request(requestConfig);
         if (logger) {
           logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
