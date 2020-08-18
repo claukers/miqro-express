@@ -108,18 +108,22 @@ export const HandleAll = (generator: HandleAllOptions, logger?: Logger): NextCal
     return Promise.all((await generator(req)).map((call) => {
       return new Promise((resolve, reject) => {
         const toCall = call.handlers.reverse();
-        const nextCaller = () => {
-          const handler = toCall.pop();
-          if (!handler) {
-            resolve(getResults(call.req))
-          } else {
-            handler(call.req, null as unknown as Response, (e?: any) => {
-              if (e) {
-                reject(e);
-              } else {
-                setTimeout(nextCaller, 0);
-              }
-            });
+        const nextCaller = async () => {
+          try {
+            const handler = toCall.pop();
+            if (!handler) {
+              resolve(getResults(call.req))
+            } else {
+              await handler(call.req, null as unknown as Response, (e?: any) => {
+                if (e) {
+                  reject(e);
+                } else {
+                  setTimeout(nextCaller, 0);
+                }
+              });
+            }
+          } catch (e) {
+            reject(e);
           }
         };
         setTimeout(nextCaller, 0);
