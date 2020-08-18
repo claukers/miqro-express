@@ -145,16 +145,19 @@ or
 ...
 // put this at the start of the app setup
 if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED")) {
-    app.disable("x-powered-by");
+  app.disable("x-powered-by");
 }
 if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
-    app.use(UUIDHandler());
+  app.use(UUIDHandler());
 }
 if (FeatureToggle.isFeatureEnabled("MORGAN")) {
-    app.use(MorganHandler(logger));
+  app.use(MorganHandler(logger));
 }
 if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
-    app.use(BodyParserHandler(logger));
+  app.use(JSONBodyParserHandler());
+}
+if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED")) {
+  app.use(URLEncodedBodyParserHandler());
 }
 ...
 ```
@@ -162,14 +165,21 @@ if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
 ###### body-parser env vars
 
 ```
-BODYPARSER_INFLATE=true
-BODYPARSER_LIMIT="100kb"
-BODYPARSER_STRICT=true
-BODYPARSER_TYPE="application/json"
+FEATURE_TOGGLE_BODY_PARSER=true
+BODY_PARSER_INFLATE=true
+BODY_PARSER_LIMIT=100kb
+BODY_PARSER_STRICT=true
+BODY_PARSER_TYPE=application/json
+
+FEATURE_TOGGLE_BODY_PARSER_URL_ENCODED=true
+BODY_PARSER_URL_ENCODED_INFLATE=true
+BODY_PARSER_URL_ENCODED_LIMIT=100kb
+BODY_PARSER_URL_ENCODED_EXTENDED=true
+BODY_PARSER_URL_ENCODED_TYPE=application/x-www-form-urlencoded
 ```
 
 ###### morgan env vars
 
 ```
-MORGAN_FORMAT="request[:uuid] [:method] [:url] [:status] [:response-time]ms"
+MORGAN_FORMAT=request[:uuid] [:method] [:url] [:status] [:response-time]ms
 ```
