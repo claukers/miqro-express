@@ -54,7 +54,11 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
       if (route.path instanceof Array) {
         for (let i = 0; i < route.path.length; i++) {
           const p = route.path[i];
-          const newFeatureSubPath = `${featureName}_${name}_${i}`.toUpperCase();
+          if (typeof p !== "string" || !p) {
+            throw new Error(`${resolve(dirname, name)} doesnt export path as a string or a string array`);
+          }
+          const subName = p.replace(/[^a-z0-9+]+/gi, '_');
+          const newFeatureSubPath = `${featureName}_${name}_${subName}`.toUpperCase();
           features.features[newFeatureSubPath] = {
             path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
             methods: [name],

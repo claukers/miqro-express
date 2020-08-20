@@ -63,8 +63,8 @@ describe("api-router functional tests", function () {
     process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
     process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
     process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
-    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_0 = "true";
-    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_1 = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH__NAME = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH__BLA_NAME = "true";
     setupMiddleware(app);
     app.use("/api", APIRouter({
       dirname: resolve(__dirname, "apidata"),
@@ -100,8 +100,8 @@ describe("api-router functional tests", function () {
     process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
     process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
     process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
-    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_0 = "true";
-    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_1 = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH__NAME = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH__BLA_NAME = "true";
     setupMiddleware(app);
     app.use("/api", APIRouter({
       dirname: resolve(__dirname, "apidata"),
