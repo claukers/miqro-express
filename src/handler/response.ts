@@ -16,7 +16,6 @@ export const createErrorResponse = (e: Error): APIResponse | null => {
   if (!e.name || e.name === "Error") {
     return null;
   } else {
-    // noinspection SpellCheckingInspection
     switch (e.name) {
       case "MethodNotImplementedError":
         return new NotFoundResponse();

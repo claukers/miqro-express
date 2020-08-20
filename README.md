@@ -101,6 +101,42 @@ app.use(ErrorHandler(...))
 app.use(myFallBackerrorHandler) // this will catch all throws that are not reconized by ErrorHandler()
 ```
 
+or to catch common errors with custom handler
+
+```javascript
+...
+app.post(..., ()=>{
+    throw new UnAuthorizedError(...);
+});
+...
+app.use((err, next, req)=>{
+  if (!e.name || e.name === "Error") {
+    ... // unknown error ?
+  } else {
+    // try to capture common errors
+    switch (e.name) {
+      case "MethodNotImplementedError":
+        // 404
+        ...
+      case "ForbiddenError":
+        // 403 
+        ...
+      case "UnAuthorizedError":
+        // 401
+        ...
+      case "ParseOptionsError":  
+      case "SequelizeValidationError":
+      case "SequelizeEagerLoadingError": 
+      case "SequelizeUniqueConstraintError":
+        // 400 
+        ...
+      default:
+        ...
+    }
+  }
+})
+```
+
 ##### ProxyHandler(...) and ProxyResponseHandler(...)
 
 ```javascript
