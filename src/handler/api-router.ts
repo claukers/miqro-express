@@ -39,11 +39,17 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
       if ((route as any).default && (route as any).__esModule === true) {
         route = (route as any).default;
       }
-      if (typeof route.path !== "string" && typeof route.path !== "undefined") {
-        throw new Error(`${resolve(dirname, name)} doesnt export path as a string`);
-      }
-      if (typeof route.handler !== "function" || typeof route.handler === "undefined") {
-        throw new Error(`${resolve(dirname, name)} doesnt export handler as a function`);
+      if (typeof route === "function") {
+        route = {
+          handler: route
+        };
+      } else {
+        if (typeof route.path !== "string" && typeof route.path !== "undefined") {
+          throw new Error(`${resolve(dirname, name)} doesnt export path as a string`);
+        }
+        if (typeof route.handler !== "function" || typeof route.handler === "undefined") {
+          throw new Error(`${resolve(dirname, name)} doesnt export handler as a function`);
+        }
       }
       features.features[newFeature] = {
         path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
