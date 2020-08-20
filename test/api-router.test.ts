@@ -13,6 +13,42 @@ Util.loadConfig();
 
 describe("api-router functional tests", function () {
   this.timeout(10000);
+
+  it("root post", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
+    setupMiddleware(app);
+    app.use("/api", APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla`,
+      method: "post"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "45");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result.message, "hello");
+      done();
+    });
+
+  });
+
   it("simple echo", (done) => {
     const app = express();
     process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
@@ -23,10 +59,12 @@ describe("api-router functional tests", function () {
     process.env.BODY_PARSER_LIMIT = "100kb";
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
-    process.env.FEATURE_TOGGLE_API_APINAMEBLA_ECHO = "true";
-    process.env.FEATURE_TOGGLE_API_APINAMEBLA_OTHER_ECHO = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
     setupMiddleware(app);
-    app.use(APIRouter({
+    app.use("/api", APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla"
     }))
@@ -59,12 +97,15 @@ describe("api-router functional tests", function () {
     process.env.BODY_PARSER_LIMIT = "100kb";
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
-    process.env.FEATURE_TOGGLE_API_APINAMEBLA_ECHO = "true";
-    process.env.FEATURE_TOGGLE_API_APINAMEBLA_OTHER_ECHO = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
     setupMiddleware(app);
     app.use("/", APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }));
 
     (async () => {
@@ -99,16 +140,19 @@ describe("api-router functional tests", function () {
     process.env.BODY_PARSER_LIMIT = "100kb";
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
-    process.env.FEATURE_TOGGLE_API_APINAMEBLA_ECHO = "true";
-    process.env.FEATURE_TOGGLE_API_APINAMEBLA_OTHER_ECHO = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
     setupMiddleware(app);
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo"
     }))
 
     FuncTestHelper(app, {
-      url: `/api/apiNameBla/other/echo`,
+      url: `/api/apiNameBlo/echo/other`,
       method: "post",
       data: {
         bla: 1

@@ -1,5 +1,5 @@
 import {FeatureToggle, Logger, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
-import {Router} from "express";
+import {Router, RouterOptions} from "express";
 import {SessionHandler} from "./session";
 import {NextCallback} from "./common";
 
@@ -13,6 +13,7 @@ export interface FeatureRouterPathOptions {
 }
 
 export interface FeatureRouterOptions {
+  options?: RouterOptions,
   features: SimpleMap<FeatureRouterPathOptions>;
   auth?: {
     service: VerifyTokenService;
@@ -21,14 +22,14 @@ export interface FeatureRouterOptions {
   only?: string[]; // if undefined all features are set-up (adding some feature here doesnt by-pass the FeatureToggle.isFeatureEnabled(..) call)
 }
 
-const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
+export const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
 
 export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
   if (!logger) {
     logger = Util.getComponentLogger("FeatureRouter");
   }
   const toSetup = options.only ? options.only : Object.keys(options.features);
-  const router = Router();
+  const router = Router(options.options);
   if (options.auth) {
     const {service, identifier} = options.auth;
     if (!service) {
@@ -64,20 +65,21 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
       } else if (!path) {
         throw new Error(`no path for feature [${featureName}]`);
       } else {
+        if (methods.length > 0) {
+          for (const method of methods) {
+            if (FEATURE_ROUTER_METHODS.indexOf(method.toLowerCase()) === -1) {
+              throw new Error(`feature [${featureName}] method [${method.toLowerCase()}] not defined! use only [${FEATURE_ROUTER_METHODS.join(",")}]`);
+            }
+          }
+        } else {
+          throw new Error(`feature [${featureName}] no methods defined`);
+        }
         if (FeatureToggle.isFeatureEnabled(featureName)) {
           logger.debug(`feature [${featureName}] enabled`);
           enabled.push(featureName);
-          if (methods.length > 0) {
-            for (const method of methods) {
-              if (FEATURE_ROUTER_METHODS.indexOf(method) === -1) {
-                throw new Error(`feature [${featureName}] method [${method}] not defined! use only [${FEATURE_ROUTER_METHODS.join(",")}]`);
-              } else {
-                logger.info(`setting up [${featureName}] on [${method}][${path}]`);
-                (router as any)[method](path, implementation(Util.getComponentLogger(identifier)));
-              }
-            }
-          } else {
-            throw new Error(`feature [${featureName}] no methods defined`);
+          for (const method of methods) {
+            logger.debug(`setting up feature [${featureName}] on [${method.toLowerCase()}][${path}]`);
+            (router as any)[method.toLowerCase()](path, implementation(Util.getComponentLogger(identifier)));
           }
         } else {
           logger.debug(`feature [${featureName}] disabled`);
