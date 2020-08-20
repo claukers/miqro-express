@@ -46,7 +46,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const implementation: FeatureHandler = require(join(dirname, fParsed.name));
         const path = `/api/${apiPath}${handlerData.path ? handlerData.path : "/"}`;
-        const featureName = handlerData.identifier ? `API_${apiName}_${handlerData.identifier.toUpperCase()}` : `API_${apiName}_${fParsed.name}`.toUpperCase();
+        const featureName = handlerData.identifier ? `API_${apiName}_${handlerData.identifier}`.toUpperCase() : `API_${apiName}_${fParsed.name}`.toUpperCase();
         features.features[featureName] = {
           path,
           methods: handlerData.methods,
@@ -58,7 +58,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const feature: APIRoute = require(join(dirname, fParsed.name));
       const path = `/api/${apiPath}${feature.path ? feature.path : "/"}`;
-      const featureName = feature.identifier ? `API_${apiName}_${feature.identifier.toUpperCase()}` : `API_${apiName}_${fParsed.name}`.toUpperCase();
+      const featureName = feature.identifier ? `API_${apiName}_${feature.identifier}`.toUpperCase() : `API_${apiName}_${fParsed.name}`.toUpperCase();
       features.features[featureName] = {
         path,
         methods: feature.methods,
