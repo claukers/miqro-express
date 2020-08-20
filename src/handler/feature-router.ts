@@ -78,7 +78,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
           logger.debug(`feature [${featureName}] enabled`);
           enabled.push(featureName);
           for (const method of methods) {
-            logger.debug(`setting up feature [${featureName}] on [${method.toLowerCase()}][${path}]`);
+            logger.info(`setting up feature [${featureName}] on [${method.toLowerCase()}][${path}]`);
             (router as any)[method.toLowerCase()](path, implementation(Util.getComponentLogger(identifier)));
           }
         } else {
