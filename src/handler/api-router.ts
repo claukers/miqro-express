@@ -5,7 +5,7 @@ import {Logger, Util, VerifyTokenService} from "@miqro/core";
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
 
 export interface APIRoute {
-  path?: string;
+  path?: string | string[];
   handler: FeatureHandler;
 }
 
@@ -44,19 +44,32 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
           handler: route
         };
       } else {
-        if (typeof route.path !== "string" && typeof route.path !== "undefined") {
-          throw new Error(`${resolve(dirname, name)} doesnt export path as a string`);
+        if (typeof route.path !== "string" && typeof route.path !== "undefined" && !(route.path instanceof Array)) {
+          throw new Error(`${resolve(dirname, name)} doesnt export path as a string or a string array`);
         }
         if (typeof route.handler !== "function" || typeof route.handler === "undefined") {
           throw new Error(`${resolve(dirname, name)} doesnt export handler as a function`);
         }
       }
-      features.features[newFeature] = {
-        path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
-        methods: [name],
-        implementation: route.handler,
-        identifier: newFeature
-      };
+      if (route.path instanceof Array) {
+        for (let i = 0; i < route.path.length; i++) {
+          const p = route.path[i];
+          const newFeatureSubPath = `${featureName}_${name}_${i}`.toUpperCase();
+          features.features[newFeatureSubPath] = {
+            path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
+            methods: [name],
+            implementation: route.handler,
+            identifier: newFeatureSubPath
+          };
+        }
+      } else {
+        features.features[newFeature] = {
+          path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
+          methods: [name],
+          implementation: route.handler,
+          identifier: newFeature
+        };
+      }
     }
   }
   return features;

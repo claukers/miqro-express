@@ -49,6 +49,80 @@ describe("api-router functional tests", function () {
 
   });
 
+  it("root patch with param", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_0 = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_1 = "true";
+    setupMiddleware(app);
+    app.use("/api", APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/blo`,
+      method: "patch"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye blo");
+      done();
+    });
+
+  });
+
+  it("root patch with nested param", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_0 = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH_1 = "true";
+    setupMiddleware(app);
+    app.use("/api", APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/bla/blo`,
+      method: "patch"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye blo");
+      done();
+    });
+
+  });
+
   it("root get with param", (done) => {
     const app = express();
     process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
