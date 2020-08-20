@@ -11,4 +11,7 @@ const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => 
   ];
 }
 
-module.exports = echo;
+module.exports = {
+  path: "/",
+  handler: echo
+};

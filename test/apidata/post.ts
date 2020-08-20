@@ -12,4 +12,7 @@ const hello: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback =>
   ];
 }
 
-module.exports = hello;
+module.exports = {
+  path: "/",
+  handler: hello
+};

@@ -4,11 +4,14 @@ import {Logger} from "@miqro/core";
 const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => {
   return [
     Handler(async (req) => {
-      logger.info(req.body);
-      return req.body;
+      logger.info(req.params.name);
+      return `hello ${req.params.name}`
     }, logger),
     ResponseHandler(logger)
   ];
 }
 
-module.exports = echo;
+module.exports = {
+  path: "/:name",
+  handler: echo
+};

@@ -1,8 +1,13 @@
-import {basename, join, parse} from "path";
+import {basename, join, parse, resolve} from "path";
 import {lstatSync, readdirSync} from "fs";
 import {Router, RouterOptions} from "express";
 import {Logger, Util, VerifyTokenService} from "@miqro/core";
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
+
+export interface APIRoute {
+  path?: string;
+  handler: FeatureHandler;
+}
 
 export interface APIRouterOptions {
   dirname: string;
@@ -30,11 +35,20 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
     if (name !== "index" && ((ext === ".ts" || ext === ".js") && name.slice(-2) !== ".d")) {
       const newFeature = `${featureName}_${name}`.toUpperCase();
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const implementation: FeatureHandler = require(join(dirname, name));
+      let route: APIRoute = require(join(dirname, name));
+      if ((route as any).default && (route as any).__esModule === true) {
+        route = (route as any).default;
+      }
+      if (typeof route.path !== "string" && typeof route.path !== undefined) {
+        throw new Error(`${resolve(dirname, name)} doesnt export path as a string`);
+      }
+      if (typeof route.handler !== "function" || typeof route.handler === undefined) {
+        throw new Error(`${resolve(dirname, name)} doesnt export handler as a function`);
+      }
       features.features[newFeature] = {
-        path: basePath,
+        path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
         methods: [name],
-        implementation,
+        implementation: route.handler,
         identifier: newFeature
       };
     }

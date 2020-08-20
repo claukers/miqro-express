@@ -49,6 +49,42 @@ describe("api-router functional tests", function () {
 
   });
 
+  it("root get with param", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_GET = "true";
+    setupMiddleware(app);
+    app.use("/api", APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/blo`,
+      method: "get"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye blo");
+      done();
+    });
+
+  });
+
   it("simple echo", (done) => {
     const app = express();
     process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
@@ -164,6 +200,43 @@ describe("api-router functional tests", function () {
       strictEqual(status, 200);
       strictEqual(data.success, true);
       strictEqual(data.result.bla, 1);
+      done();
+    });
+
+  });
+
+  it("other echo get with param", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_GET="true";
+    setupMiddleware(app);
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/echo/other/myname`,
+      method: "get"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "40");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "hello myname");
       done();
     });
 
