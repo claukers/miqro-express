@@ -89,11 +89,13 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
     }
   }
   if (enabled.length > 0) {
-    logger.info(`enabled features [${enabled.join(",")}]`);
+    logger.debug(`enabled features [${enabled.join(",")}]`);
   }
   if (disabled.length > 0) {
-    logger.info(`disabled features [${disabled.join(",")}]`);
-    logger.info(`to enable them just add the env var FEATURE_TOGGLE_<feature>=true`);
+    logger.warn(`disabled features [${disabled.join(",")}]`);
+    logger.warn(`to enable them just add the env var FEATURE_TOGGLE_<feature>=true`);
+  } else {
+    logger.debug(`no features disabled`);
   }
   return router;
 };
