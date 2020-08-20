@@ -14,6 +14,7 @@ export interface APIRoute {
 export interface APIRouterOptions {
   dirname: string;
   apiName?: string;
+  path?: string;
   auth?: {
     service: VerifyTokenService;
     identifier: string;
@@ -24,6 +25,7 @@ export interface APIRouterOptions {
 export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router => {
   const {dirname} = options;
   const apiName = options.apiName ? options.apiName : basename(dirname);
+  const apiPath = options.path ? options.path : apiName;
   if (!logger) {
     logger = Util.getComponentLogger(`api.${apiName}.router`);
   }
@@ -43,7 +45,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
         const handlerData = JSON.parse(readFileSync(handlerJSONPath).toString());
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const implementation: FeatureHandler = require(join(dirname, fParsed.name));
-        const path = `/api/${apiName}${handlerData.path ? handlerData.path : "/"}`;
+        const path = `/api/${apiPath}${handlerData.path ? handlerData.path : "/"}`;
         const featureName = handlerData.identifier ? handlerData.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
         features.features[featureName] = {
           path,
@@ -55,7 +57,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
     } else if (fParsed.name !== "index" && ((fParsed.ext === ".ts" || fParsed.ext === ".js") && fParsed.name.slice(-2) !== ".d")) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const feature: APIRoute = require(join(dirname, fParsed.name));
-      const path = `/api/${apiName}${feature.path ? feature.path : "/"}`;
+      const path = `/api/${apiPath}${feature.path ? feature.path : "/"}`;
       const featureName = feature.identifier ? feature.identifier : `API_${apiName}_${fParsed.name}`.toUpperCase();
       features.features[featureName] = {
         path,
