@@ -49,6 +49,70 @@ describe("api-router functional tests", function () {
 
   });
 
+  it("root put custom", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_MYCUSTOM = "true";
+    setupMiddleware(app);
+    app.use("/api", APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla`,
+      method: "put"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "46");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result.message, "custom");
+      done();
+    });
+
+  });
+
+  it("root delete custom", (done) => {
+    const app = express();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    process.env.FEATURE_TOGGLE_APINAMEBLA_MYCUSTOM = "true";
+    setupMiddleware(app);
+    app.use("/api", APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla`,
+      method: "delete"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "46");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result.message, "custom");
+      done();
+    });
+
+  });
+
   it("root patch with param", (done) => {
     const app = express();
     process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";

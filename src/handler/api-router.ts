@@ -5,6 +5,8 @@ import {Logger, Util, VerifyTokenService} from "@miqro/core";
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
 
 export interface APIRoute {
+  name?: string;
+  methods?: string[];
   path?: string | string[];
   handler: FeatureHandler;
 }
@@ -33,22 +35,33 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
   for (const f of methods) {
     const {name, ext} = parse(f);
     if (name !== "index" && ((ext === ".ts" || ext === ".js") && name.slice(-2) !== ".d")) {
-      const newFeature = `${featureName}_${name}`.toUpperCase();
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       let route: APIRoute = require(join(dirname, name));
       if ((route as any).default && (route as any).__esModule === true) {
         route = (route as any).default;
       }
+      const methods = [name];
       if (typeof route === "function") {
         route = {
           handler: route
         };
       } else {
+        if (typeof route.methods !== "undefined" && !(route.methods instanceof Array)) {
+          throw new Error(`${resolve(dirname, name)} doesnt export methods as a string array`);
+        } else if (typeof route.methods !== "undefined") {
+          methods.splice(0, methods.length);
+          for (const m of route.methods) {
+            methods.push(m);
+          }
+        }
         if (typeof route.path !== "string" && typeof route.path !== "undefined" && !(route.path instanceof Array)) {
           throw new Error(`${resolve(dirname, name)} doesnt export path as a string or a string array`);
         }
         if (typeof route.handler !== "function" || typeof route.handler === "undefined") {
           throw new Error(`${resolve(dirname, name)} doesnt export handler as a function`);
+        }
+        if (typeof route.name !== "string" && typeof route.name !== "undefined") {
+          throw new Error(`${resolve(dirname, name)} doesnt export name as a string`);
         }
       }
       if (route.path instanceof Array) {
@@ -58,18 +71,19 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
             throw new Error(`${resolve(dirname, name)} doesnt export path as a string or a string array`);
           }
           const subName = p.replace(/[^a-z0-9+]+/gi, '_');
-          const newFeatureSubPath = `${featureName}_${name}_${subName}`.toUpperCase();
+          const newFeatureSubPath = `${featureName}_${route.name ? route.name : name}_${subName}`.toUpperCase();
           features.features[newFeatureSubPath] = {
             path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
-            methods: [name],
+            methods,
             implementation: route.handler,
             identifier: newFeatureSubPath
           };
         }
       } else {
+        const newFeature = `${featureName}_${route.name ? route.name : name}`.toUpperCase();
         features.features[newFeature] = {
           path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
-          methods: [name],
+          methods,
           implementation: route.handler,
           identifier: newFeature
         };
