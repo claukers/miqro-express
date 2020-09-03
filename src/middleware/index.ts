@@ -14,7 +14,7 @@ export const UUIDHandler = (): NextCallback => {
 
 export const MorganHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
-    logger = Util.getComponentLogger("MorganHandler");
+    logger = Util.getLogger("MorganHandler");
   }
   if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
     morganToken("uuid", (req) => {

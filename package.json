@@ -20,7 +20,7 @@
   "author": "claukers",
   "license": "ISC",
   "dependencies": {
-    "@miqro/core": "^0.7.17",
+    "@miqro/core": "^0.8.1",
     "body-parser": "^1.19.0",
     "morgan": "^1.10.0",
     "jsonwebtoken": "^8.5.1",

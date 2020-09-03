@@ -26,7 +26,7 @@ export const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "p
 
 export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
   if (!logger) {
-    logger = Util.getComponentLogger("FeatureRouter");
+    logger = Util.getLogger("FeatureRouter");
   }
   const toSetup = options.only ? options.only : Object.keys(options.features);
   const router = Router(options.options);
@@ -41,7 +41,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
       router.use(
         SessionHandler(
           service,
-          Util.getComponentLogger(identifier)
+          Util.getLogger(identifier)
         ) as any
       );
     }
@@ -79,7 +79,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
           enabled.push(featureName);
           for (const method of methods) {
             logger.info(`setting up feature [${featureName}] on [${method.toLowerCase()}][${path}]`);
-            (router as any)[method.toLowerCase()](path, implementation(Util.getComponentLogger(identifier)));
+            (router as any)[method.toLowerCase()](path, implementation(Util.getLogger(identifier)));
           }
         } else {
           logger.debug(`feature [${featureName}] disabled`);
