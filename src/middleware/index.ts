@@ -3,6 +3,7 @@ import {v4} from "uuid";
 import {json as bodyParserJSON, urlencoded as bodyParserURLEncoded} from "body-parser";
 import {Express} from "express";
 import morgan, {token as morganToken} from "morgan";
+import cors from "cors";
 import {NextCallback} from "../handler/common";
 
 export const UUIDHandler = (): NextCallback => {
@@ -40,44 +41,56 @@ export const MorganHandler = (logger?: Logger): NextCallback => {
 }
 
 export const JSONBodyParserHandler = (): NextCallback => {
-  Util.checkEnvVariables(["BODY_PARSER_INFLATE", "BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"])
+  const [inflate, limit, strict, type] =
+    Util.checkEnvVariables(["BODY_PARSER_INFLATE", "BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], ["true", "100kb", "true", "application/json"])
   return bodyParserJSON({
-    inflate: process.env.BODYPARSER_INFLATE === "true",
-    limit: process.env.BODYPARSER_LIMIT,
+    inflate: inflate === "true",
+    limit,
     // reviver: undefined,
-    strict: process.env.BODYPARSER_STRICT === "true",
-    type: process.env.BODYPARSER_TYPE
+    strict: strict === "true",
+    type
     // verify: undefined
   });
 };
 
 export const URLEncodedBodyParserHandler = (): NextCallback => {
-  Util.checkEnvVariables(["BODY_PARSER_URL_ENCODED_EXTENDED", "BODY_PARSER_URL_ENCODED_INFLATE", "BODY_PARSER_URL_ENCODED_LIMIT", "BODY_PARSER_URL_ENCODED_TYPE"])
+  const [extended, inflate, limit, type] =
+    Util.checkEnvVariables(["BODY_PARSER_URL_ENCODED_EXTENDED", "BODY_PARSER_URL_ENCODED_INFLATE", "BODY_PARSER_URL_ENCODED_LIMIT", "BODY_PARSER_URL_ENCODED_TYPE"], ["true", "true", "100kb", "application/x-www-form-urlencoded"])
   return bodyParserURLEncoded({
-    inflate: process.env.BODY_PARSER_URL_ENCODED_INFLATE === "true",
-    limit: process.env.BODY_PARSER_URL_ENCODED_LIMIT,
+    inflate: inflate === "true",
+    limit,
     // reviver: undefined,
-    extended: process.env.BODY_PARSER_URL_ENCODED_EXTENDED === "true",
-    type: process.env.BODY_PARSER_URL_ENCODED_TYPE
+    extended: extended === "true",
+    type
     // verify: undefined
   });
 };
 
+export const CorsHandler = (): NextCallback => {
+  const [origin] = Util.checkEnvVariables(["CORS_ORIGIN"], ["*"])
+  return cors({
+    origin
+  });
+}
+
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const setupMiddleware = (app: Express, logger?: Logger): void => {
-  if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED")) {
+  if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED"), true) {
     app.disable("x-powered-by");
   }
-  if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
+  if (FeatureToggle.isFeatureEnabled("REQUEST_UUID"), true) {
     app.use(UUIDHandler());
   }
-  if (FeatureToggle.isFeatureEnabled("MORGAN")) {
+  if (FeatureToggle.isFeatureEnabled("MORGAN"), true) {
     app.use(MorganHandler(logger));
   }
-  if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
+  if (FeatureToggle.isFeatureEnabled("BODY_PARSER"), true) {
     app.use(JSONBodyParserHandler());
   }
-  if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED")) {
+  if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED"), true) {
     app.use(URLEncodedBodyParserHandler());
+  }
+  if (FeatureToggle.isFeatureEnabled("CORS"), true) {
+    app.use(CorsHandler());
   }
 };
