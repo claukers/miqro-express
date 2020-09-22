@@ -1,8 +1,8 @@
 import {AsyncNextCallback} from "./common";
 import {
   ForbiddenError,
-  GroupPolicyValidator,
   GroupPolicy,
+  GroupPolicyValidator,
   Logger,
   ParseOptionsError,
   UnAuthorizedError,
@@ -11,16 +11,16 @@ import {
 } from "@miqro/core";
 
 export const SessionHandler = (authService: VerifyTokenService, logger?: Logger): AsyncNextCallback => {
-  Util.checkEnvVariables(["TOKEN_LOCATION"]);
-  switch (process.env.TOKEN_LOCATION) {
+  const [tokenLocation] = Util.checkEnvVariables(["TOKEN_LOCATION"], ["header"]);
+  switch (tokenLocation) {
     case "header":
-      Util.checkEnvVariables(["TOKEN_HEADER"]);
+      Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
       break;
     case "query":
-      Util.checkEnvVariables(["TOKEN_QUERY"]);
+      Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
       break;
     default:
-      throw new Error(`TOKEN_LOCATION=${process.env.TOKEN_LOCATION} not supported use (header or query)`);
+      throw new Error(`TOKEN_LOCATION=${tokenLocation} not supported use (header or query)`);
   }
 
   if (!logger) {
@@ -31,13 +31,16 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
   }
   return async (req, res, next) => {
     try {
+      const [tokenLocation] = Util.checkEnvVariables(["TOKEN_LOCATION"], ["header"]);
       let token = null;
-      switch (process.env.TOKEN_LOCATION) {
+      switch (tokenLocation) {
         case "header":
-          token = req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()] as string
+          const [tokenHeaderLocation] = Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
+          token = req.headers[(tokenHeaderLocation).toLowerCase()] as string
           break;
         case "query":
-          token = req.query[process.env.TOKEN_QUERY as string] as string;
+          const [tokenQueryLocation] = Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
+          token = req.query[tokenQueryLocation] as string;
           break;
       }
       if (!token) {

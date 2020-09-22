@@ -15,42 +15,48 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
   protected logger: Logger;
 
   constructor() {
-    Util.checkEnvVariables(["TOKEN_VERIFY_ENDPOINT", "TOKEN_VERIFY_ENDPOINT_METHOD", "TOKEN_VERIFY_LOCATION"]);
-    switch (process.env.TOKEN_VERIFY_LOCATION) {
+    Util.checkEnvVariables(["TOKEN_VERIFY_ENDPOINT", "TOKEN_VERIFY_ENDPOINT_METHOD"]);
+    const [tokenVerifyLocation] = Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], ["header"]);
+    switch (tokenVerifyLocation) {
       case "header":
-        Util.checkEnvVariables(["TOKEN_HEADER"]);
+        Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
         break;
       case "query":
-        Util.checkEnvVariables(["TOKEN_QUERY"]);
+        Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
         break;
       default:
-        throw new Error(`TOKEN_VERIFY_LOCATION=${process.env.TOKEN_VERIFY_LOCATION} not supported use (header or query)`);
+        throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header or query)`);
     }
     this.logger = Util.getLogger("VerifyTokenEndpointService");
   }
 
   public async verify({token}: { token: string }): Promise<Session | null> {
     try {
-      this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${process.env.TOKEN_HEADER}]`);
+
       let response = null;
-      switch (process.env.TOKEN_VERIFY_LOCATION) {
+      const [tokenVerifyLocation] = Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], ["header"]);
+      switch (tokenVerifyLocation) {
         case "header":
+          const [tokenHeaderLocation] = Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
+          this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
           response = await Util.request({
             url: `${process.env.TOKEN_VERIFY_ENDPOINT}`,
             headers: {
-              [process.env.TOKEN_HEADER as string]: token
+              [tokenHeaderLocation]: token
             },
             method: `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any
           });
           break;
         case "query":
+          const [tokenQueryLocation] = Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
+          this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
           response = await Util.request({
-            url: `${process.env.TOKEN_VERIFY_ENDPOINT}?${process.env.TOKEN_QUERY}=${token}`,
+            url: `${process.env.TOKEN_VERIFY_ENDPOINT}?${tokenQueryLocation}=${token}`,
             method: `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any
           });
           break;
         default:
-          throw new Error(`TOKEN_VERIFY_LOCATION=${process.env.TOKEN_VERIFY_LOCATION} not supported use (header or query)`);
+          throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header or query)`);
       }
       if (response) {
         /* eslint-disable  @typescript-eslint/no-var-requires */
