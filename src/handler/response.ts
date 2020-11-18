@@ -7,10 +7,10 @@ import {
   ServiceResponse,
   UnAuthorizedResponse
 } from "./responses";
-import {inspect} from "util";
-import {Logger, Util} from "@miqro/core";
-import {ErrorCallback, NextCallback} from "./common";
-import {Request} from "express";
+import { inspect } from "util";
+import { Logger, Util } from "@miqro/core";
+import { ErrorCallback, NextCallback } from "./common";
+import { Request } from "express";
 
 export const createErrorResponse = (e: Error): APIResponse | null => {
   if (!e.name || e.name === "Error") {
@@ -35,15 +35,15 @@ export const createErrorResponse = (e: Error): APIResponse | null => {
 };
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-export const createServiceResponse = (req: Request): ServiceResponse | null => {
-  const {results} = req;
+export const createServiceResponse = (req: Request): ServiceResponse | undefined => {
+  const { results } = req;
   if (!results || results.length === 0) {
-    return null;
+    return undefined;
   }
   const response = results && results.length > 1 ? results : (
-    results && results.length === 1 ? results[0] : null
+    results && results.length === 1 ? results[0] : undefined
   );
-  return new ServiceResponse(response);
+  return response !== undefined ? new ServiceResponse(response) : undefined;
 };
 
 /**
@@ -59,7 +59,8 @@ export const ResponseHandler = (logger?: Logger): NextCallback => {
     try {
       const response = createServiceResponse(req);
       (logger as Logger).debug(`request[${req.uuid}] results[${inspect(response)}]`);
-      if (!response) {
+      if (response === undefined) {
+        (logger as Logger).warn(`request[${req.uuid}] results[${inspect(response)}] so not responding and calling next`);
         next();
       } else {
         response.send(res);
@@ -88,6 +89,7 @@ export const ErrorHandler = (logger?: Logger): ErrorCallback => {
       if (response) {
         response.send(res);
       } else {
+        (logger as Logger).warn(`request[${req.uuid}] cannot create response of error message[${err.message}] stack[${err.stack}] so not responding and calling next`);
         next(err);
       }
     } catch (e) {
