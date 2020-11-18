@@ -17,16 +17,19 @@ export const MorganHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("MorganHandler");
   }
+  morganToken("remote-address", (req) => {
+    return (req as any).connection ? (req as any).connection.remoteAddress : "";
+  });
   if (FeatureToggle.isFeatureEnabled("REQUEST_UUID"), true) {
     morganToken("uuid", (req) => {
       return (req as any).uuid;
     });
     if (!process.env.MORGAN_FORMAT) {
-      process.env.MORGAN_FORMAT = "request[:uuid] [:method] [:url] [:status] content-length[:res[content-length]] [:response-time]ms";
+      process.env.MORGAN_FORMAT = "request[:uuid](:remote-address) [:method] [:url] [:status] content-length[:res[content-length]] [:response-time]ms";
     }
   } else {
     if (!process.env.MORGAN_FORMAT) {
-      process.env.MORGAN_FORMAT = "request [:method] [:url] [:status] content-length[:res[content-length]] [:response-time]ms";
+      process.env.MORGAN_FORMAT = "request(:remote-address) [:method] [:url] [:status] content-length[:res[content-length]] [:response-time]ms";
     }
   }
   return morgan(process.env.MORGAN_FORMAT, {
