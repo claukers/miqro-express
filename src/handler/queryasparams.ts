@@ -14,7 +14,7 @@ export const someQueryAsParams = (req: Request, queryArgs: ParseOption[]): Simpl
   return query;
 }
 
-export const QueryAsParams = (options: ParseOption[], logger = getLogger("QueryAsParams")): NextCallback =>
+export const QueryAsParamsHandler = (options: ParseOption[], logger = getLogger("QueryAsParamsHandler")): NextCallback =>
   CatchHandler(async (req, res, next) => {
     someQueryAsParams(req, options);
     next();
