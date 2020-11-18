@@ -1,4 +1,4 @@
-import { getLogger, ParseOption, parseOptions, SimpleMap, SimpleTypes } from "@miqro/core";
+import { getLogger, Logger, ParseOption, parseOptions, SimpleMap, SimpleTypes } from "@miqro/core";
 import { Request } from "express";
 import { CatchHandler, NextCallback } from "./common";
 
@@ -14,8 +14,12 @@ export const someQueryAsParams = (req: Request, queryArgs: ParseOption[]): Simpl
   return query;
 }
 
-export const QueryAsParamsHandler = (options: ParseOption[], logger = getLogger("QueryAsParamsHandler")): NextCallback =>
-  CatchHandler(async (req, res, next) => {
+export const QueryAsParamsHandler = (options: ParseOption[], logger?: Logger): NextCallback => {
+  if (!logger) {
+    logger = getLogger("QueryAsParamsHandler");
+  }
+  return CatchHandler(async (req, res, next) => {
     someQueryAsParams(req, options);
     next();
   }, logger);
+}
