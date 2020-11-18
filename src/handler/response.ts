@@ -9,8 +9,9 @@ import {
 } from "./responses";
 import { inspect } from "util";
 import { Logger, Util } from "@miqro/core";
-import { ErrorCallback, NextCallback } from "./common";
+import { CatchHandler, ErrorCallback, getResults, NextCallback } from "./common";
 import { Request } from "express";
+import { OutgoingHttpHeaders } from "http";
 
 export const createErrorResponse = (e: Error): APIResponse | null => {
   if (!e.name || e.name === "Error") {
@@ -98,3 +99,39 @@ export const ErrorHandler = (logger?: Logger): ErrorCallback => {
     }
   };
 };
+
+export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (req: Request) => Promise<string>; }
+
+export const HTMLResponseHandler = (logger?: Logger): NextCallback => CatchHandler(async (req, res, next) => {
+  logger = logger ? logger : Util.getLogger("HTMLResponseHandle");
+  const results = getResults(req);
+  const lastResult = results[results.length - 1];
+  logger.debug(`last result is [${lastResult}]`);
+  if (lastResult && typeof lastResult === "string" ||
+    (
+      (typeof lastResult.headers === "object" || lastResult.headers === undefined) &&
+      (typeof lastResult.status === "number" || lastResult.status === undefined) &&
+      (typeof lastResult.body === "string" || typeof lastResult.template === "function")
+    )
+  ) {
+    const status = typeof lastResult.status === "number" ? lastResult.status : 200;
+    const headers = typeof lastResult.headers === "object" ? lastResult.headers : {
+      "content-type": "text/html"
+    };
+    const toSend = lastResult.template ? await lastResult.template(req) : (typeof lastResult.body === "string" ? lastResult.body : lastResult);
+    if (typeof toSend === "string") {
+      res.status(status);
+      const headerNames = Object.keys(headers);
+      for (const h of headerNames)
+        res.setHeader(h, headers[h]);
+      logger.debug(`sending [${toSend}]`);
+      res.send(toSend);
+    } else {
+      logger.error("html result from HTMLResponseResult not string so last result not valid");
+      next();
+    }
+  } else {
+    logger.warn("last result not valid HTMLResponseResult");
+    next();
+  }
+}, logger)
