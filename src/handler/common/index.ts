@@ -92,6 +92,8 @@ export const CatchHandler = (fn: AsyncNextCallback, logger?: Logger): NextCallba
   };
 };
 
+export const NextHandler = CatchHandler;
+
 
 export interface HandleAllOptionsOutput {
   req: Request;
