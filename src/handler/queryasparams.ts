@@ -3,6 +3,14 @@ import { Request } from "express";
 import { CatchHandler, NextCallback } from "./common";
 
 export const someQueryAsParams = (req: Request, queryArgs: ParseOption[]): SimpleMap<SimpleTypes> => {
+
+  const arrayNames = queryArgs.filter(q => q.type === "array").map(q => q.name);
+  for (const arrayName of arrayNames) {
+    if (req.query[arrayName] !== undefined && typeof req.query[arrayName] === "string") {
+      req.query[arrayName] = [req.query[arrayName]] as any;
+    }
+  }
+
   const query = parseOptions("query", req.query as any, queryArgs, "add_extra");
   const queryNames = queryArgs.map(q => q.name);
   for (const queryName of queryNames) {
