@@ -1,17 +1,9 @@
-import { getLogger, Logger, ParseOption, parseOptions, SimpleMap, SimpleTypes } from "@miqro/core";
+import { ParseOptionsMode, getLogger, Logger, ParseOption, parseOptions, SimpleMap, SimpleTypes } from "@miqro/core";
 import { Request } from "express";
 import { CatchHandler, NextCallback } from "./common";
 
 export const someQueryAsParams = (req: Request, queryArgs: ParseOption[]): SimpleMap<SimpleTypes> => {
-
-  const arrayNames = queryArgs.filter(q => q.type === "array").map(q => q.name);
-  for (const arrayName of arrayNames) {
-    if (req.query[arrayName] !== undefined && typeof req.query[arrayName] === "string") {
-      req.query[arrayName] = [req.query[arrayName]] as any;
-    }
-  }
-
-  const query = parseOptions("query", req.query as any, queryArgs, "add_extra");
+  const query = parseQueryOptions("query", req.query, queryArgs, "add_extra");
   const queryNames = queryArgs.map(q => q.name);
   for (const queryName of queryNames) {
     if (query[queryName] !== undefined) {
@@ -30,4 +22,14 @@ export const QueryAsParamsHandler = (options: ParseOption[], logger?: Logger): N
     someQueryAsParams(req, options);
     next();
   }, logger);
+}
+
+export const parseQueryOptions = (name: string, query: any, options: ParseOption[], mode: ParseOptionsMode): SimpleMap<SimpleTypes> => {
+  const arrayNames = options.filter(q => q.type === "array").map(q => q.name);
+  for (const arrayName of arrayNames) {
+    if (query[arrayName] !== undefined && typeof query[arrayName] === "string") {
+      query[arrayName] = [query[arrayName]] as any;
+    }
+  }
+  return parseOptions(name, query, options, mode);
 }
