@@ -103,6 +103,55 @@ describe("session functional tests", () => {
       })().then(done).catch(done);
     });
 
+    it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through update token`, (done) => {
+      (async () => {
+        process.env.TOKEN_LOCATION = TOKENVARS.location;
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const {SessionHandler} = require("../src/");
+
+        const fakeToken = "FakeToken";
+        const fakeSession = {
+          token: "newFakeToken"
+        };
+
+        const app = express();
+        app.use(cookieParser());
+        const authService = {
+          verify: fake(async ({token}: { token: any }) => {
+            strictEqual(token, fakeToken);
+            return fakeSession;
+          })
+        };
+        const finalHandler = fake((req: any, res: any) => {
+          strictEqual(req.session.token, fakeSession.token);
+          res.json(true);
+        });
+
+        app.get("/user", [SessionHandler(authService), finalHandler]);
+        await new Promise((resolve, reject) => {
+          FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
+            try {
+              strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+              strictEqual(res.headers["content-length"], "4");
+              strictEqual(res.status, 200);
+              strictEqual(finalHandler.callCount, 1);
+              strictEqual(authService.verify.callCount, 1);
+              if (TOKENVARS.location === "cookie") {
+                strictEqual((res as any).headers["set-cookie"].length, 1);
+                strictEqual((res as any).headers["set-cookie"][0], `${TOKENVARS.locationRef}=${fakeSession.token}; Path=/; HttpOnly`);
+              } else {
+                strictEqual((res as any).headers["set-cookie"], undefined);
+              }
+              resolve(res);
+            } catch (e) {
+              reject(e);
+            }
+          });
+        });
+
+      })().then(done).catch(done);
+    });
+
     it(`createSessionHandler [${TOKENVARS.location}] happy path doesnt allow pass through is 401`, (done) => {
       (async () => {
         process.env.TOKEN_LOCATION = TOKENVARS.location;
