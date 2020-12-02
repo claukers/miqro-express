@@ -1,23 +1,22 @@
 import {AsyncNextCallback} from "./common";
-import {
-  ForbiddenError,
-  GroupPolicy,
-  GroupPolicyValidator,
-  Logger,
-  ParseOptionsError,
-  UnAuthorizedError,
-  Util,
-  VerifyTokenService
-} from "@miqro/core";
+import {Logger, ParseOptionsError, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
+
+const DEFAULT_TOKEN_LOCATION = "header";
+const DEFAULT_TOKEN_HEADER = "Authorization";
+const DEFAULT_TOKEN_QUERY = "token";
+const DEFAULT_TOKEN_COOKIE = "Authorization";
 
 export const SessionHandler = (authService: VerifyTokenService, logger?: Logger): AsyncNextCallback => {
-  const [tokenLocation] = Util.checkEnvVariables(["TOKEN_LOCATION"], ["header"]);
+  const [tokenLocation] = Util.checkEnvVariables(["TOKEN_LOCATION"], [DEFAULT_TOKEN_LOCATION]);
   switch (tokenLocation) {
     case "header":
-      Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
+      Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER]);
       break;
     case "query":
-      Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
+      Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY]);
+      break;
+    case "cookie":
+      Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
       break;
     default:
       throw new Error(`TOKEN_LOCATION=${tokenLocation} not supported use (header or query)`);
@@ -31,16 +30,20 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
   }
   return async (req, res, next) => {
     try {
-      const [tokenLocation] = Util.checkEnvVariables(["TOKEN_LOCATION"], ["header"]);
+      const [tokenLocation] = Util.checkEnvVariables(["TOKEN_LOCATION"], [DEFAULT_TOKEN_LOCATION]);
       let token = null;
       switch (tokenLocation) {
         case "header":
-          const [tokenHeaderLocation] = Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
+          const [tokenHeaderLocation] = Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER]);
           token = req.headers[(tokenHeaderLocation).toLowerCase()] as string
           break;
         case "query":
-          const [tokenQueryLocation] = Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
+          const [tokenQueryLocation] = Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY]);
           token = req.query[tokenQueryLocation] as string;
+          break;
+        case "cookie":
+          const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+          token = req.cookies[tokenCookieLocation] as string;
           break;
       }
       if (!token) {
@@ -54,6 +57,12 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
           (logger as Logger).warn(message);
           next(new UnAuthorizedError(`Fail to authenticate token!`));
         } else {
+          if (tokenLocation === "cookie") {
+            const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+            res.cookie(tokenCookieLocation, session.token ? session.token : token, {
+              httpOnly: true
+            });
+          }
           req.session = session;
           (logger as Logger).info(`request[${req.uuid}] Token [${token}] authenticated!`);
           next();
@@ -70,35 +79,4 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
   };
 };
 
-export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): AsyncNextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("GroupPolicyHandler");
-  }
-  return async (req, res, next) => {
-    try {
-      if (!req.session) {
-        next(new ParseOptionsError(`No Session!`));
-      } else {
-        const result = await GroupPolicyValidator.validate(req.session, options, logger as Logger);
-        if (result) {
-          (logger as Logger).info(`request[${req.uuid}] ` +
-            `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
 
-          next();
-        } else {
-          (logger as Logger).warn(`request[${req.uuid}] ` +
-            `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
-
-          next(new UnAuthorizedError(`Invalid session. You are not permitted to do this!`));
-        }
-      }
-    } catch (e) {
-      (logger as Logger).warn(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
-      if (e.name && e.name !== "Error") {
-        next(e);
-      } else {
-        next(new ForbiddenError(`Invalid session. You are not permitted to do this!`));
-      }
-    }
-  };
-};
