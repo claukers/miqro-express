@@ -45,6 +45,8 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
           const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
           token = req.cookies[tokenCookieLocation] as string;
           break;
+        default:
+          throw new Error(`TOKEN_LOCATION=${tokenLocation} not supported use (header or query)`);
       }
       if (!token) {
         const message = `No token provided!`;
