@@ -2,6 +2,7 @@ import {after, before, describe, it} from 'mocha';
 import {strictEqual} from 'assert';
 import express, {Express} from "express";
 import {Server} from "http";
+import cookieParser = require("cookie-parser");
 
 process.env.TOKEN_HEADER = "Authorization";
 
@@ -14,6 +15,10 @@ describe(`verifytokenendpointservice func tests`, () => {
     {
       location: "query",
       locationRef: "token"
+    },
+    {
+      location: "cookie",
+      locationRef: "bla"
     }
   ]) {
     describe(`verifytokenendpointservice [${TOKENVARS.location}]func tests`, () => {
@@ -25,6 +30,7 @@ describe(`verifytokenendpointservice func tests`, () => {
         groups: ["aldf", "sd2"]
       };
       const fakeSecret = "secret";
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const jwt = require("jsonwebtoken");
       const goodToken1 = jwt.sign(fakeSession1, fakeSecret);
 
@@ -33,16 +39,23 @@ describe(`verifytokenendpointservice func tests`, () => {
       before((done) => {
         (async () => {
           fakeAuthServer = express();
+          fakeAuthServer.use(cookieParser());
           fakeAuthServer.get("/validate", (req: any, res: any) => {
             fakeValidate(req, res);
           });
           server = fakeAuthServer.listen(9999);
           process.env.TOKEN_VERIFY_LOCATION = TOKENVARS.location;
           process.env.TOKEN_LOCATION = TOKENVARS.location;
-          if (TOKENVARS.location === "header") {
-            process.env.TOKEN_HEADER = TOKENVARS.locationRef;
-          } else {
-            process.env.TOKEN_QUERY = TOKENVARS.locationRef;
+          switch (TOKENVARS.location) {
+            case "header":
+              process.env.TOKEN_HEADER = TOKENVARS.locationRef;
+              break;
+            case "query":
+              process.env.TOKEN_QUERY = TOKENVARS.locationRef;
+              break;
+            case "cookie":
+              process.env.TOKEN_COOKIE = TOKENVARS.locationRef;
+              break;
           }
           process.env.TOKEN_VERIFY_ENDPOINT = "http://localhost:9999/validate";
           process.env.TOKEN_VERIFY_ENDPOINT_METHOD = "GET";
@@ -58,11 +71,21 @@ describe(`verifytokenendpointservice func tests`, () => {
 
       it("happy path mix tape 1 valid auth", (done) => {
         (async () => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           const {VerifyJWTEndpointService} = require("../src");
           fakeValidate = (req: any, res: any) => {
-            const token = TOKENVARS.location === "header" ?
-              req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()] :
-              req.query[process.env.TOKEN_QUERY as string];
+            let token;
+            switch (TOKENVARS.location) {
+              case "header":
+                token = req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()];
+                break;
+              case "query":
+                token = req.query[process.env.TOKEN_QUERY as string];
+                break;
+              case "cookie":
+                token = req.cookies[process.env.TOKEN_COOKIE as string] as string;
+                break;
+            }
             strictEqual(token, goodToken1);
             const verified = jwt.verify(token, fakeSecret);
             strictEqual(verified.username, fakeSession1.username);

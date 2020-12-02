@@ -2,6 +2,11 @@ import {inspect} from "util";
 import {decode as jwtDecode} from "jsonwebtoken";
 import {Logger, Session, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
 
+const DEFAULT_TOKEN_LOCATION = "header";
+const DEFAULT_TOKEN_HEADER = "Authorization";
+const DEFAULT_TOKEN_QUERY = "token";
+const DEFAULT_TOKEN_COOKIE = "Authorization";
+
 export class VerifyJWTEndpointService implements VerifyTokenService {
 
   protected static instance: VerifyJWTEndpointService;
@@ -16,13 +21,16 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
 
   constructor() {
     Util.checkEnvVariables(["TOKEN_VERIFY_ENDPOINT", "TOKEN_VERIFY_ENDPOINT_METHOD"]);
-    const [tokenVerifyLocation] = Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], ["header"]);
+    const [tokenVerifyLocation] = Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION]);
     switch (tokenVerifyLocation) {
       case "header":
-        Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
+        Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER]);
         break;
       case "query":
-        Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
+        Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY]);
+        break;
+      case "cookie":
+        Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
         break;
       default:
         throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header or query)`);
@@ -34,10 +42,10 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
     try {
 
       let response = null;
-      const [tokenVerifyLocation] = Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], ["header"]);
+      const [tokenVerifyLocation] = Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION]);
       switch (tokenVerifyLocation) {
         case "header":
-          const [tokenHeaderLocation] = Util.checkEnvVariables(["TOKEN_HEADER"], ["Authorization"]);
+          const [tokenHeaderLocation] = Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER]);
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
           response = await Util.request({
             url: `${process.env.TOKEN_VERIFY_ENDPOINT}`,
@@ -48,11 +56,22 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
           });
           break;
         case "query":
-          const [tokenQueryLocation] = Util.checkEnvVariables(["TOKEN_QUERY"], ["token"]);
+          const [tokenQueryLocation] = Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY]);
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
           response = await Util.request({
             url: `${process.env.TOKEN_VERIFY_ENDPOINT}?${tokenQueryLocation}=${token}`,
             method: `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any
+          });
+          break;
+        case "cookie":
+          const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+          this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
+          response = await Util.request({
+            url: `${process.env.TOKEN_VERIFY_ENDPOINT}`,
+            method: `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any,
+            headers: {
+              Cookie: `${tokenCookieLocation}=${token}; Path=/; HttpOnly;`
+            }
           });
           break;
         default:
