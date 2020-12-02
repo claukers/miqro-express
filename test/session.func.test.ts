@@ -15,7 +15,7 @@ describe("session functional tests", () => {
       locationRef: "TOKEN"
     }, {
       location: "cookie",
-      locationRef: "TOKEN"
+      locationRef: "bla"
     }]) {
 
     const getRequestConfig = (fakeToken?: string): RequestOptions => {
@@ -89,7 +89,7 @@ describe("session functional tests", () => {
               strictEqual(authService.verify.callCount, 1);
               if (TOKENVARS.location === "cookie") {
                 strictEqual((res as any).headers["set-cookie"].length, 1);
-                strictEqual((res as any).headers["set-cookie"][0], `TOKEN=${fakeToken}; Path=/; HttpOnly`);
+                strictEqual((res as any).headers["set-cookie"][0], `${TOKENVARS.locationRef}=${fakeToken}; Path=/; HttpOnly`);
               } else {
                 strictEqual((res as any).headers["set-cookie"], undefined);
               }
