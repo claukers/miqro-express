@@ -5,13 +5,18 @@ import {Express} from "express";
 import morgan, {token as morganToken} from "morgan";
 import cors from "cors";
 import {NextCallback} from "../handler/common";
+import cookieParser from "cookie-parser";
 
 export const UUIDHandler = (): NextCallback => {
   return (req, res, next) => {
     req.uuid = v4();
     next();
   };
-}
+};
+
+export const CookieParserHandler = (): NextCallback => {
+  return cookieParser(process.env.COOKIE_PARSER_SECRET);
+};
 
 export const MorganHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
@@ -78,22 +83,25 @@ export const CorsHandler = (): NextCallback => {
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const setupMiddleware = (app: Express, logger?: Logger): void => {
-  if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED"), true) {
+  if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED", true)) {
     app.disable("x-powered-by");
   }
-  if (FeatureToggle.isFeatureEnabled("REQUEST_UUID"), true) {
+  if (FeatureToggle.isFeatureEnabled("REQUEST_UUID", true)) {
     app.use(UUIDHandler());
   }
-  if (FeatureToggle.isFeatureEnabled("MORGAN"), true) {
+  if (FeatureToggle.isFeatureEnabled("MORGAN", true)) {
     app.use(MorganHandler(logger));
   }
-  if (FeatureToggle.isFeatureEnabled("BODY_PARSER"), true) {
+  if (FeatureToggle.isFeatureEnabled("COOKIE_PARSER", true)) {
+    app.use(CookieParserHandler());
+  }
+  if (FeatureToggle.isFeatureEnabled("BODY_PARSER", true)) {
     app.use(JSONBodyParserHandler());
   }
-  if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED"), true) {
+  if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED", true)) {
     app.use(URLEncodedBodyParserHandler());
   }
-  if (FeatureToggle.isFeatureEnabled("CORS"), true) {
+  if (FeatureToggle.isFeatureEnabled("CORS", true)) {
     app.use(CorsHandler());
   }
 };

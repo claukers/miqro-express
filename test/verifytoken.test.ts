@@ -3,6 +3,7 @@ import {strictEqual} from 'assert';
 import express, {Express} from "express";
 import {Server} from "http";
 import cookieParser = require("cookie-parser");
+import {CookieParserHandler} from "../src/middleware";
 
 process.env.TOKEN_HEADER = "Authorization";
 
@@ -39,7 +40,7 @@ describe(`verifytokenendpointservice func tests`, () => {
       before((done) => {
         (async () => {
           fakeAuthServer = express();
-          fakeAuthServer.use(cookieParser());
+          fakeAuthServer.use(CookieParserHandler());
           fakeAuthServer.get("/validate", (req: any, res: any) => {
             fakeValidate(req, res);
           });
