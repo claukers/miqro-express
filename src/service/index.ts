@@ -1,4 +1,5 @@
 import {inspect} from "util";
+import {parse as cookieParse} from "cookie";
 import {decode as jwtDecode} from "jsonwebtoken";
 import {Logger, Session, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
 
@@ -87,6 +88,14 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
             {name: "groups", required: true, type: "array", arrayType: "string"}
           ], "add_extra");
           this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
+
+          if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
+            const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+            const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
+            if (cookies.length === 1) {
+              session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
+            }
+          }
           return {
             token,
             ...session

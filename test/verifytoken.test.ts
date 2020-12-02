@@ -2,7 +2,6 @@ import {after, before, describe, it} from 'mocha';
 import {strictEqual} from 'assert';
 import express, {Express} from "express";
 import {Server} from "http";
-import cookieParser = require("cookie-parser");
 import {CookieParserHandler} from "../src/middleware";
 
 process.env.TOKEN_HEADER = "Authorization";
@@ -30,10 +29,16 @@ describe(`verifytokenendpointservice func tests`, () => {
         account: "ble",
         groups: ["aldf", "sd2"]
       };
+      const fakeSession2 = {
+        username: "usera",
+        account: "ble",
+        groups: ["aldf"]
+      };
       const fakeSecret = "secret";
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const jwt = require("jsonwebtoken");
       const goodToken1 = jwt.sign(fakeSession1, fakeSecret);
+      const goodToken2 = jwt.sign(fakeSession2, fakeSecret);
 
       let fakeValidate: any = null;
 
@@ -70,7 +75,7 @@ describe(`verifytokenendpointservice func tests`, () => {
         })().then(done).catch(done);
       });
 
-      it("happy path mix tape 1 valid auth", (done) => {
+      it(`happy path [${TOKENVARS.location}] mix tape 1 valid auth`, (done) => {
         (async () => {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const {VerifyJWTEndpointService} = require("../src");
@@ -108,6 +113,50 @@ describe(`verifytokenendpointservice func tests`, () => {
           strictEqual(session.groups[0], fakeSession1.groups[0]);
           strictEqual(session.groups[1], fakeSession1.groups[1]);
           strictEqual(session.token, args.token);
+        })().then(done).catch(done);
+      });
+
+      it(`happy path [${TOKENVARS.location}] mix tape 1 valid auth with token update`, (done) => {
+        (async () => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const {VerifyJWTEndpointService} = require("../src");
+          fakeValidate = (req: any, res: any) => {
+            let token;
+            switch (TOKENVARS.location) {
+              case "header":
+                token = req.headers[(process.env.TOKEN_HEADER as string).toLowerCase()];
+                break;
+              case "query":
+                token = req.query[process.env.TOKEN_QUERY as string];
+                break;
+              case "cookie":
+                token = req.cookies[process.env.TOKEN_COOKIE as string] as string;
+                res.cookie(process.env.TOKEN_COOKIE as string, goodToken2, {
+                  httpOnly: true
+                });
+                break;
+            }
+            strictEqual(token, goodToken1);
+            const verified = jwt.verify(token, fakeSecret);
+            strictEqual(verified.username, fakeSession1.username);
+            strictEqual(verified.account, fakeSession1.account);
+            strictEqual(verified.groups.length, fakeSession1.groups.length);
+            strictEqual(verified.groups[0], fakeSession1.groups[0]);
+            strictEqual(verified.groups[1], fakeSession1.groups[1]);
+            strictEqual(verified.token, undefined);
+            res.sendStatus(200);
+          };
+          const instance = VerifyJWTEndpointService.getInstance();
+          const args = {
+            token: goodToken1
+          };
+          const session = await instance.verify(args);
+          strictEqual(session.username, fakeSession1.username);
+          strictEqual(session.account, fakeSession1.account);
+          strictEqual(session.groups.length, fakeSession1.groups.length);
+          strictEqual(session.groups[0], fakeSession1.groups[0]);
+          strictEqual(session.groups[1], fakeSession1.groups[1]);
+          strictEqual(session.token, TOKENVARS.location === "cookie" ? goodToken2 : args.token);
         })().then(done).catch(done);
       });
     });
