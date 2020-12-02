@@ -194,7 +194,7 @@ describe("session functional tests", () => {
       })().then(done).catch(done);
     });
 
-    it(`createSessionHandler [${TOKENVARS.location}] no token is 400`, (done) => {
+    it(`createSessionHandler [${TOKENVARS.location}] no token is 401`, (done) => {
       (async () => {
         process.env.TOKEN_LOCATION = TOKENVARS.location;
         // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -218,7 +218,7 @@ describe("session functional tests", () => {
             try {
               strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
               strictEqual(res.headers["content-length"], "48");
-              strictEqual(res.status, 400);
+              strictEqual(res.status, 401);
               strictEqual(finalHandler.callCount, 0);
               strictEqual(authService.verify.callCount, 0);
               strictEqual((res as any).headers["set-cookie"], undefined);
