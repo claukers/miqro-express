@@ -1,5 +1,5 @@
 import {AsyncNextCallback} from "./common";
-import {Logger, ParseOptionsError, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
+import {Logger, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";
