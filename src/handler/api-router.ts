@@ -17,18 +17,26 @@ export interface APIRoute {
   query?: {
     options: ParseOption[],
     mode: ParseOptionsMode
-  };
+  } | false;
   params?: {
     options: ParseOption[],
     mode: ParseOptionsMode
-  };
+  } | false;
   queryAsParams?: ParseOption[],
-  body?: ValidateBodyHandlerOptions;
+  body?: ValidateBodyHandlerOptions | false;
   description?: string;
   verify?: VerifyTokenService;
   authLogger?: Logger;
   policy?: GroupPolicy;
 }
+
+const NO_OPTIONS: {
+  options: ParseOption[],
+  mode: ParseOptionsMode
+} = {
+  options: [],
+  mode: "no_extra"
+};
 
 const createBasicRoute = (route: APIRoute): APIRoute => {
   return {
@@ -46,15 +54,21 @@ const createBasicRoute = (route: APIRoute): APIRoute => {
       }
       if (route.params) {
         ret.push(ValidateParamsHandler(route.params, logger));
+      } else if (route.params === false) {
+        ret.push(ValidateParamsHandler(NO_OPTIONS, logger));
       }
       if (route.queryAsParams) {
         ret.push(QueryAsParamsHandler(route.queryAsParams, logger));
       }
       if (route.query) {
         ret.push(ValidateQueryHandler(route.query, logger));
+      } else if (route.query === false) {
+        ret.push(ValidateQueryHandler(NO_OPTIONS, logger));
       }
       if (route.body) {
         ret.push(ValidateBodyHandler(route.body, logger));
+      } else if (route.body === false) {
+        ret.push(ValidateBodyHandler(NO_OPTIONS, logger));
       }
       return ret.concat(route.handler(logger));
     }
