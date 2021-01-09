@@ -9,10 +9,7 @@ import {SessionHandler} from "./session";
 import {GroupPolicyHandler} from "./group";
 import {ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
 
-export interface APIRoute {
-  name?: string;
-  methods?: string[];
-  path?: string | string[];
+export interface APIHandlerOptions {
   handler: FeatureHandler;
   query?: {
     options: ParseOption[],
@@ -29,6 +26,12 @@ export interface APIRoute {
   policy?: GroupPolicy;
 }
 
+export interface APIRoute extends APIHandlerOptions {
+  name?: string;
+  methods?: string[];
+  path?: string | string[];
+}
+
 const NO_OPTIONS: {
   options: ParseOption[],
   mode: ParseOptionsMode
@@ -37,38 +40,36 @@ const NO_OPTIONS: {
   mode: "no_extra"
 };
 
-const createBasicRoute = (route: APIRoute): APIRoute => {
-  return {
-    ...route,
-    handler: (logger: Logger): NextCallback[] => {
-      const ret: NextCallback[] = [];
-      if (route.verify || route.policy) {
-        const authLogger = !route.authLogger ? logger : route.authLogger;
-        if (route.verify) {
-          ret.push(SessionHandler(route.verify, authLogger));
-        }
-        if (route.policy) {
-          ret.push(GroupPolicyHandler(route.policy, authLogger));
-        }
-      }
-      if (route.params) {
-        ret.push(ValidateParamsHandler(route.params, logger));
-      } else if (route.params === false) {
-        ret.push(ValidateParamsHandler(NO_OPTIONS, logger));
-      }
-      if (route.query) {
-        ret.push(ValidateQueryHandler(route.query, logger));
-      } else if (route.query === false) {
-        ret.push(ValidateQueryHandler(NO_OPTIONS, logger));
-      }
-      if (route.body) {
-        ret.push(ValidateBodyHandler(route.body, logger));
-      } else if (route.body === false) {
-        ret.push(ValidateBodyHandler(NO_OPTIONS, logger));
-      }
-      return ret.concat(route.handler(logger));
+export const APIHandler = (options: APIHandlerOptions, logger?: Logger): NextCallback[] => {
+  if (!logger) {
+    logger = Util.getLogger("APIRouteHandler");
+  }
+  const ret: NextCallback[] = [];
+  if (options.verify || options.policy) {
+    const authLogger = !options.authLogger ? logger : options.authLogger;
+    if (options.verify) {
+      ret.push(SessionHandler(options.verify, authLogger));
     }
-  };
+    if (options.policy) {
+      ret.push(GroupPolicyHandler(options.policy, authLogger));
+    }
+  }
+  if (options.params) {
+    ret.push(ValidateParamsHandler(options.params, logger));
+  } else if (options.params === false) {
+    ret.push(ValidateParamsHandler(NO_OPTIONS, logger));
+  }
+  if (options.query) {
+    ret.push(ValidateQueryHandler(options.query, logger));
+  } else if (options.query === false) {
+    ret.push(ValidateQueryHandler(NO_OPTIONS, logger));
+  }
+  if (options.body) {
+    ret.push(ValidateBodyHandler(options.body, logger));
+  } else if (options.body === false) {
+    ret.push(ValidateBodyHandler(NO_OPTIONS, logger));
+  }
+  return ret.concat(options.handler(logger));
 };
 
 export interface APIRouterOptions {
@@ -124,7 +125,13 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           throw new Error(`${resolve(dirname, name)} doesnt export name as a string`);
         }
       }
-      route = createBasicRoute(route);
+      const handler = route.handler;
+      route.handler = (logger: Logger) => {
+        return APIHandler({
+          ...route,
+          handler
+        }, logger);
+      };
       if (route.path instanceof Array) {
         for (let i = 0; i < route.path.length; i++) {
           const p = route.path[i];
