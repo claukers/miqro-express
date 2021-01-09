@@ -20,6 +20,7 @@ process.env.BODY_PARSER_STRICT = "true";
 process.env.BODY_PARSER_TYPE = "application/json";
 process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
 process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
+process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_SINK = "true";
 process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
 process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
 process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_GET="true";
@@ -281,7 +282,7 @@ describe("api-router functional tests", function () {
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
       path: "/api/apiNameBlo"
-    }))
+    }));
 
     FuncTestHelper(app, {
       url: `/api/apiNameBlo/echo/other/myname`,
@@ -295,6 +296,63 @@ describe("api-router functional tests", function () {
       strictEqual(data.result, "hello myname");
       done();
     });
+  });
 
+  it("sink happy path without param", (done) => {
+    const app = express();
+    setupMiddleware(app);
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb`,
+      query: {
+        bla: "bla"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "39");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result.bla, "bla");
+      done();
+    });
+  });
+
+  it("sink happy path with param", (done) => {
+    const app = express();
+    setupMiddleware(app);
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb/1`,
+      query: {
+        bla: "bla"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put"
+    }, (res) => {
+      const {status, data, headers} = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "29");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "1");
+      done();
+    });
   });
 });

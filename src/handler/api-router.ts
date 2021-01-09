@@ -1,15 +1,65 @@
 import {basename, join, parse, resolve} from "path";
 import {lstatSync, readdirSync} from "fs";
 import {Router, RouterOptions} from "express";
-import {Logger, Util, VerifyTokenService} from "@miqro/core";
+import {GroupPolicy, Logger, ParseOption, ParseOptionsMode, Util, VerifyTokenService} from "@miqro/core";
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
+import {ValidateBodyHandler, ValidateBodyHandlerOptions} from "./validatebody";
+import {NextCallback} from "./common";
+import {SessionHandler} from "./session";
+import {GroupPolicyHandler} from "./group";
+import {QueryAsParamsHandler, ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
 
 export interface APIRoute {
   name?: string;
   methods?: string[];
   path?: string | string[];
   handler: FeatureHandler;
+  query?: {
+    options: ParseOption[],
+    mode: ParseOptionsMode
+  };
+  params?: {
+    options: ParseOption[],
+    mode: ParseOptionsMode
+  };
+  queryAsParams?: ParseOption[],
+  body?: ValidateBodyHandlerOptions;
+  description?: string;
+  verify?: VerifyTokenService;
+  authLogger?: Logger;
+  policy?: GroupPolicy;
 }
+
+const createBasicRoute = (route: APIRoute): APIRoute => {
+  return {
+    ...route,
+    handler: (logger: Logger): NextCallback[] => {
+      const ret: NextCallback[] = [];
+      if (route.verify || route.policy) {
+        const authLogger = !route.authLogger ? logger : route.authLogger;
+        if (route.verify) {
+          ret.push(SessionHandler(route.verify, authLogger));
+        }
+        if (route.policy) {
+          ret.push(GroupPolicyHandler(route.policy, authLogger));
+        }
+      }
+      if (route.query) {
+        ret.push(ValidateQueryHandler(route.query, logger));
+      }
+      if (route.params) {
+        ret.push(ValidateParamsHandler(route.params, logger));
+      }
+      if (route.body) {
+        ret.push(ValidateBodyHandler(route.body, logger));
+      }
+      if (route.queryAsParams) {
+        ret.push(QueryAsParamsHandler(route.queryAsParams, logger));
+      }
+      return ret.concat(route.handler(logger));
+    }
+  };
+};
 
 export interface APIRouterOptions {
   dirname: string;
@@ -23,14 +73,14 @@ export interface APIRouterOptions {
   only?: string[];
 }
 
-const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterOptions = {features: {}}): FeatureRouterOptions => {
+export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterOptions = {features: {}}): FeatureRouterOptions => {
   logger.debug(`loading routes from [${dirname}]`);
   const files = readdirSync(dirname);
   const dirs = files.filter(f => lstatSync(join(dirname, f)).isDirectory());
   const methods = files.filter(f => !lstatSync(join(dirname, f)).isDirectory());
   for (const f of dirs) {
     const {name} = parse(f);
-    features = traverseRouteDir(logger, `${featureName}_${name}`.toUpperCase(), join(dirname, f), `${basePath}/${name}`, features);
+    features = traverseAPIRouteDir(logger, `${featureName}_${name}`.toUpperCase(), join(dirname, f), `${basePath}/${name}`, features);
   }
   for (const f of methods) {
     const {name, ext} = parse(f);
@@ -64,6 +114,7 @@ const traverseRouteDir = (logger: Logger, featureName: string, dirname: string, 
           throw new Error(`${resolve(dirname, name)} doesnt export name as a string`);
         }
       }
+      route = createBasicRoute(route);
       if (route.path instanceof Array) {
         for (let i = 0; i < route.path.length; i++) {
           const p = route.path[i];
@@ -101,7 +152,7 @@ export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router =>
     logger = Util.getLogger(`${apiName}`.toUpperCase());
   }
   return FeatureRouter({
-    ...traverseRouteDir(logger, apiName.toUpperCase(), dirname, apiPath),
+    ...traverseAPIRouteDir(logger, apiName.toUpperCase(), dirname, apiPath),
     options: options.options,
     only: options.only,
     auth: options.auth
