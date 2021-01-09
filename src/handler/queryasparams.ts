@@ -24,6 +24,26 @@ export const QueryAsParamsHandler = (options: ParseOption[], logger?: Logger): N
   }, logger);
 };
 
+export const ValidateQueryHandler = ({options, mode}: { options: ParseOption[], mode: ParseOptionsMode }, logger?: Logger): NextCallback => {
+  if (!logger) {
+    logger = getLogger("ValidateQueryHandler");
+  }
+  return CatchHandler(async (req, res, next) => {
+    parseQueryOptions("query", req.query, options, mode);
+    next();
+  }, logger);
+};
+
+export const ValidateParamsHandler = ({options, mode}: { options: ParseOption[], mode: ParseOptionsMode }, logger?: Logger): NextCallback => {
+  if (!logger) {
+    logger = getLogger("ValidateParamsHandler");
+  }
+  return CatchHandler(async (req, res, next) => {
+    parseOptions("params", req.params, options, mode, true);
+    next();
+  }, logger);
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const parseQueryOptions = (name: string, query: any, options: ParseOption[], mode: ParseOptionsMode): SimpleMap<SimpleTypes> => {
   const arrayNames = options.filter(q => q.type === "array").map(q => q.name);
