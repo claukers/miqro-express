@@ -20,7 +20,7 @@ export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): Async
       } else {
         const result = await GroupPolicyValidator.validate(req.session, options, logger as Logger);
         if (result) {
-          (logger as Logger).info(`request[${req.uuid}] ` +
+          (logger as Logger).debug(`request[${req.uuid}] ` +
             `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
 
           next();

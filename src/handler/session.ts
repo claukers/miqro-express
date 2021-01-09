@@ -66,7 +66,7 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
             });
           }
           req.session = session;
-          (logger as Logger).info(`request[${req.uuid}] Token [${token}] authenticated!`);
+          (logger as Logger).debug(`request[${req.uuid}] Token [${token}] authenticated!`);
           next();
         }
       }
