@@ -7,7 +7,7 @@ import {ValidateBodyHandler, ValidateBodyHandlerOptions} from "./validatebody";
 import {NextCallback} from "./common";
 import {SessionHandler} from "./session";
 import {GroupPolicyHandler} from "./group";
-import {QueryAsParamsHandler, ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
+import {ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
 
 export interface APIRoute {
   name?: string;
@@ -22,7 +22,6 @@ export interface APIRoute {
     options: ParseOption[],
     mode: ParseOptionsMode
   } | false;
-  queryAsParams?: ParseOption[],
   body?: ValidateBodyHandlerOptions | false;
   description?: string;
   verify?: VerifyTokenService;
@@ -56,9 +55,6 @@ const createBasicRoute = (route: APIRoute): APIRoute => {
         ret.push(ValidateParamsHandler(route.params, logger));
       } else if (route.params === false) {
         ret.push(ValidateParamsHandler(NO_OPTIONS, logger));
-      }
-      if (route.queryAsParams) {
-        ret.push(QueryAsParamsHandler(route.queryAsParams, logger));
       }
       if (route.query) {
         ret.push(ValidateQueryHandler(route.query, logger));
