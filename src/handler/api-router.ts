@@ -44,17 +44,17 @@ const createBasicRoute = (route: APIRoute): APIRoute => {
           ret.push(GroupPolicyHandler(route.policy, authLogger));
         }
       }
-      if (route.query) {
-        ret.push(ValidateQueryHandler(route.query, logger));
-      }
       if (route.params) {
         ret.push(ValidateParamsHandler(route.params, logger));
       }
-      if (route.body) {
-        ret.push(ValidateBodyHandler(route.body, logger));
-      }
       if (route.queryAsParams) {
         ret.push(QueryAsParamsHandler(route.queryAsParams, logger));
+      }
+      if (route.query) {
+        ret.push(ValidateQueryHandler(route.query, logger));
+      }
+      if (route.body) {
+        ret.push(ValidateBodyHandler(route.body, logger));
       }
       return ret.concat(route.handler(logger));
     }
