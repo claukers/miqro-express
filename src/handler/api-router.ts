@@ -1,16 +1,19 @@
 import {basename, join, parse, resolve} from "path";
 import {lstatSync, readdirSync} from "fs";
 import {Router, RouterOptions} from "express";
-import {GroupPolicy, Logger, ParseOption, ParseOptionsMode, Util, VerifyTokenService} from "@miqro/core";
-import {FeatureHandler, FeatureRouter, FeatureRouterOptions} from "./feature-router";
+import {GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
+import {FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions} from "./feature-router";
 import {ValidateBodyHandler, ValidateBodyHandlerOptions} from "./validatebody";
 import {NextCallback} from "./common";
 import {SessionHandler} from "./session";
 import {GroupPolicyHandler} from "./group";
 import {ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
 
-export interface APIHandlerOptions {
+export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
+}
+
+export interface APIHandlerOptions {
   query?: {
     options: ParseOption[],
     mode: ParseOptionsMode
@@ -26,7 +29,7 @@ export interface APIHandlerOptions {
   policy?: GroupPolicy;
 }
 
-export interface APIRoute extends APIHandlerOptions {
+export interface APIRoute extends APIHandlerArgs {
   name?: string;
   methods?: string[];
   path?: string | string[];
@@ -40,7 +43,7 @@ const NO_OPTIONS: {
   mode: "no_extra"
 };
 
-export const APIHandler = (options: APIHandlerOptions, logger?: Logger): NextCallback[] => {
+export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallback[] => {
   if (!logger) {
     logger = Util.getLogger("APIRouteHandler");
   }
@@ -84,7 +87,15 @@ export interface APIRouterOptions {
   only?: string[];
 }
 
-export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterOptions = {features: {}}): FeatureRouterOptions => {
+export interface FeatureAPIRouterPathOptions extends FeatureRouterPathOptions {
+  apiHandlerOptions: APIHandlerOptions;
+}
+
+export interface FeatureRouterWithAPIRouterOptions extends FeatureRouterOptions {
+  features: SimpleMap<FeatureAPIRouterPathOptions>;
+}
+
+export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterWithAPIRouterOptions = {features: {}}): FeatureRouterWithAPIRouterOptions => {
   logger.debug(`loading routes from [${dirname}]`);
   const files = readdirSync(dirname);
   const dirs = files.filter(f => lstatSync(join(dirname, f)).isDirectory());
@@ -141,6 +152,9 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           const subName = p.replace(/[^a-z0-9+]+/gi, '_');
           const newFeatureSubPath = `${featureName}_${route.name ? route.name : name}_${subName}`.toUpperCase();
           features.features[newFeatureSubPath] = {
+            apiHandlerOptions: {
+              ...route
+            },
             path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
             methods,
             implementation: route.handler,
@@ -150,6 +164,9 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
       } else {
         const newFeature = `${featureName}_${route.name ? route.name : name}`.toUpperCase();
         features.features[newFeature] = {
+          apiHandlerOptions: {
+            ...route
+          },
           path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
           methods,
           implementation: route.handler,
