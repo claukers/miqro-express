@@ -1,7 +1,12 @@
-import { getLogger, Logger, ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode } from "@miqro/core";
-import { CatchHandler, NextCallback } from "./common";
+import {getLogger, Logger, ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode} from "@miqro/core";
+import {CatchHandler, NextCallback} from "./common";
 
-export interface ValidateBodyHandlerOptions { disableBodyAsArray?: boolean; mode?: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean; }
+export interface ValidateBodyHandlerOptions {
+  disableBodyAsArray?: boolean;
+  mode?: ParseOptionsMode;
+  options: ParseOption[];
+  ignoreUndefined?: boolean;
+}
 
 export const ValidateBodyHandler = (options: ValidateBodyHandlerOptions, logger?: Logger): NextCallback => {
   if (!logger) {
@@ -17,5 +22,5 @@ export const ValidateBodyHandler = (options: ValidateBodyHandlerOptions, logger?
     }
     next();
   }, logger);
-}
+};
 
