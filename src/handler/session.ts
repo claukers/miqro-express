@@ -59,7 +59,7 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
           (logger as Logger).warn(message);
           next(new UnAuthorizedError(`Fail to authenticate token!`));
         } else {
-          if (tokenLocation === "cookie") {
+          if (tokenLocation === "cookie" && session.token !== token) {
             const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
             res.cookie(tokenCookieLocation, session.token ? session.token : token, {
               httpOnly: true

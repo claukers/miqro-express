@@ -1,23 +1,14 @@
 import {inspect} from "util";
 import {parse as cookieParse} from "cookie";
 import {decode as jwtDecode} from "jsonwebtoken";
-import {Logger, Session, UnAuthorizedError, Util, VerifyTokenService} from "@miqro/core";
+import {Logger, Session, NoTokenSession, UnAuthorizedError, Util, VerifyTokenService, RequestResponse} from "@miqro/core";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";
 const DEFAULT_TOKEN_QUERY = "token";
 const DEFAULT_TOKEN_COOKIE = "Authorization";
 
-export class VerifyJWTEndpointService implements VerifyTokenService {
-
-  protected static instance: VerifyJWTEndpointService;
-
-  public static getInstance(): VerifyJWTEndpointService {
-    VerifyJWTEndpointService.instance =
-      VerifyJWTEndpointService.instance ? VerifyJWTEndpointService.instance : new VerifyJWTEndpointService();
-    return VerifyJWTEndpointService.instance;
-  }
-
+export class VerifyEndpointService implements VerifyTokenService {
   protected logger: Logger;
 
   constructor() {
@@ -36,7 +27,7 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
       default:
         throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header or query)`);
     }
-    this.logger = Util.getLogger("VerifyTokenEndpointService");
+    this.logger = Util.getLogger("VerifyEndpointService");
   }
 
   public async verify({token}: { token: string }): Promise<Session | null> {
@@ -80,30 +71,21 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
       }
       if (response) {
         /* eslint-disable  @typescript-eslint/no-var-requires */
-        const session = jwtDecode(token);
-        if (session && typeof session !== "string") {
-          Util.parseOptions("session", session, [
-            {name: "username", required: true, type: "string"},
-            {name: "account", required: true, type: "string"},
-            {name: "groups", required: true, type: "array", arrayType: "string"}
-          ], "add_extra");
-          this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
+        const session = await this.decodeSession(response, token);
+        this.checkSession(session);
+        this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
 
-          if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
-            const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
-            const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
-            if (cookies.length === 1) {
-              session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
-            }
+        if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
+          const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+          const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
+          if (cookies.length === 1) {
+            session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
           }
-          return {
-            token,
-            ...session
-          } as Session;
-        } else {
-          this.logger.warn(`unauthorized token not valid [${token}]`);
-          return null;
         }
+        return {
+          token,
+          ...session
+        } as Session;
       } else {
         this.logger.warn(`unauthorized token not valid [${token}]`);
         return null;
@@ -112,5 +94,37 @@ export class VerifyJWTEndpointService implements VerifyTokenService {
       this.logger.error(`error verifying [${token}] [${e.response ? e.response.status : ""}][${e.config ? e.config.url : ""}][${e.message}]`);
       throw new UnAuthorizedError(`Fail to authenticate token!`);
     }
+  }
+  protected checkSession(session: NoTokenSession){
+    Util.parseOptions("session", session, [
+      {name: "username", required: true, type: "string"},
+      {name: "account", required: true, type: "string"},
+      {name: "groups", required: true, type: "array", arrayType: "string"}
+    ], "add_extra");
+  }
+  protected async decodeSession(response: RequestResponse, token: string): Promise<NoTokenSession> {
+    const session = response.data;
+    return session as NoTokenSession;
+  }
+}
+
+export class VerifyJWTEndpointService extends VerifyEndpointService {
+
+  protected static instance: VerifyJWTEndpointService;
+
+  public static getInstance(): VerifyJWTEndpointService {
+    VerifyJWTEndpointService.instance =
+      VerifyJWTEndpointService.instance ? VerifyJWTEndpointService.instance : new VerifyJWTEndpointService();
+    return VerifyJWTEndpointService.instance;
+  }
+
+  constructor() {
+    super();
+    this.logger = Util.getLogger("VerifyTokenEndpointService");
+  }
+
+  protected async decodeSession(response: RequestResponse, token: string): Promise<Session> {
+    const session = jwtDecode(token);
+    return session as Session;
   }
 }
