@@ -72,20 +72,24 @@ export class VerifyEndpointService implements VerifyTokenService {
       if (response) {
         /* eslint-disable  @typescript-eslint/no-var-requires */
         const session = await this.decodeSession(response, token);
-        this.checkSession(session);
-        this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
+        if(!this.checkSession(session)) {
+          this.logger.warn(`unauthorized token not valid [${token}]`);
+          return null;
+        } else {
+          this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
 
-        if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
-          const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
-          const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
-          if (cookies.length === 1) {
-            session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
+          if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
+            const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+            const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
+            if (cookies.length === 1) {
+              session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
+            }
           }
+          return {
+            token,
+            ...session
+          } as Session;
         }
-        return {
-          token,
-          ...session
-        } as Session;
       } else {
         this.logger.warn(`unauthorized token not valid [${token}]`);
         return null;
@@ -95,12 +99,13 @@ export class VerifyEndpointService implements VerifyTokenService {
       throw new UnAuthorizedError(`Fail to authenticate token!`);
     }
   }
-  protected checkSession(session: NoTokenSession){
+  protected checkSession(session: NoTokenSession): boolean {
     Util.parseOptions("session", session, [
       {name: "username", required: true, type: "string"},
       {name: "account", required: true, type: "string"},
       {name: "groups", required: true, type: "array", arrayType: "string"}
     ], "add_extra");
+    return true;
   }
   protected async decodeSession(response: RequestResponse, token: string): Promise<NoTokenSession> {
     const session = response.data;
