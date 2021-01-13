@@ -17,8 +17,12 @@ export const ValidateBodyHandler = (options: ValidateBodyHandlerOptions, logger?
       throw new ParseOptionsError(`body cannot be an array`);
     }
     const bodies = req.body instanceof Array ? req.body : [req.body];
-    for (const body of bodies) {
-      parseOptions("body", body, options.options, options.mode, options.ignoreUndefined);
+    if(req.body instanceof Array) {
+      for(let i=0; i < req.body.length; i++) {
+        req.body[i] = parseOptions("body", req.body[i], options.options, options.mode, options.ignoreUndefined);
+      }
+    } else {
+      req.body = parseOptions("body", req.body, options.options, options.mode, options.ignoreUndefined);
     }
     next();
   }, logger);

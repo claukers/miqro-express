@@ -29,7 +29,7 @@ export const ValidateQueryHandler = ({options, mode}: { options: ParseOption[], 
     logger = getLogger("ValidateQueryHandler");
   }
   return CatchHandler(async (req, res, next) => {
-    parseQueryOptions("query", req.query, options, mode);
+    req.query = parseQueryOptions("query", req.query, options, mode) as any;
     next();
   }, logger);
 };
