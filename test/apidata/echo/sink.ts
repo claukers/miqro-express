@@ -5,7 +5,10 @@ const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => 
   return [
     Handler(async (req) => {
       logger.info(req.body);
-      return req.params.param1 ? req.params.param1 : req.body;
+      logger.info(req.params);
+      const ret = req.params.param1 ? req.params.param1 : req.body;
+      logger.info(ret);
+      return ret;
     }, logger),
     ResponseHandler(logger)
   ];

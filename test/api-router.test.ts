@@ -347,11 +347,12 @@ describe("api-router functional tests", function () {
       method: "put"
     }, (res) => {
       const {status, data, headers} = res;
+      //console.log({status, data, headers});
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "29");
+      strictEqual(headers['content-length'], "27");
       strictEqual(status, 200);
       strictEqual(data.success, true);
-      strictEqual(data.result, "1");
+      strictEqual(data.result, 1);
       done();
     });
   });
