@@ -39,7 +39,7 @@ export const ValidateParamsHandler = ({options, mode}: { options: ParseOption[],
     logger = getLogger("ValidateParamsHandler");
   }
   return CatchHandler(async (req, res, next) => {
-    parseOptions("params", req.params, options, mode, true);
+    req.params = parseOptions("params", req.params, options, mode, true) as any;
     next();
   }, logger);
 };
