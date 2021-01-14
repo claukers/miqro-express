@@ -142,7 +142,7 @@ export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: P
       const mappedResults = [];
       for(let i=0; i<results.length; i++) {
         const result = results[i];
-        if(logger)logger.info(result);
+        if(logger)logger.debug(result);
         mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
       }
       setResults(req, mappedResults);
