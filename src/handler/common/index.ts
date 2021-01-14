@@ -138,7 +138,7 @@ export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: P
   logger ? logger : Util.getLogger("ParseResultsHandler");
   return NextHandler(async (req, res, next) => {
     const results = getResults(req);
-    if (results) {
+    if (results && !req.query.attributes) {
       const mappedResults = [];
       for(let i=0; i<results.length; i++) {
         const result = results[i];
