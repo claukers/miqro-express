@@ -1,7 +1,7 @@
 export * from "./proxyutils";
 import {inspect} from "util";
 /* eslint-disable  @typescript-eslint/no-unused-vars */
-import {Logger, Session, Util} from "@miqro/core";
+import {Logger, Session, Util, ParseOption, ParseOptionsMode} from "@miqro/core";
 import {NextFunction, Request, Response} from "express";
 
 
@@ -132,4 +132,38 @@ export const HandleAll = (generator: HandleAllOptions, logger?: Logger): NextCal
       })
     }));
   }, logger);
+};
+
+export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): AsyncNextCallback => {
+  logger ? logger : Util.getLogger("ParseResultsHandler");
+  return async (req, res, next) => {
+    const results = getResults(req);
+    if (results) {
+      const mappedResults = results.map((result) => {
+        if (!result) {
+          return null;
+        } else {
+          if (result instanceof Array) {
+            return result.map((value, index, array) => {
+              return Util.parseOptions(`results[${index}]`, value, options.options, options.mode, options.ignoreUndefined);
+            });
+          } else if (result.rows instanceof Array) {
+            return {
+              ...result,
+              rows: result.rows.map((value: any, index: number, array: any[]) => {
+                return Util.parseOptions(`results.rows[${index}]`, value, options.options, options.mode, options.ignoreUndefined);
+              })
+            };
+          } else {
+            const [ret] = [result].map((value, index, array) => {
+              return Util.parseOptions(`results`, value, options.options, options.mode, options.ignoreUndefined);
+            });
+            return ret;
+          }
+        }
+      });
+      setResults(req, mappedResults);
+      next();
+    }
+  };
 };

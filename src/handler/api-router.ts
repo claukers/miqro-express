@@ -5,8 +5,10 @@ import {GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util, Ver
 import {FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions} from "./feature-router";
 import {ValidateBodyHandler, ValidateBodyHandlerOptions} from "./validatebody";
 import {NextCallback} from "./common";
+import {ResponseHandler} from "./response";
 import {SessionHandler} from "./session";
 import {GroupPolicyHandler} from "./group";
+import {ParseResultsHandler} from "./"
 import {ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
@@ -23,6 +25,11 @@ export interface APIHandlerOptions {
     mode: ParseOptionsMode
   } | false;
   body?: ValidateBodyHandlerOptions | false;
+  results?: {
+    options: ParseOption[];
+    mode: ParseOptionsMode; 
+    ignoreUndefined?: boolean
+  };
   description?: string;
   verify?: VerifyTokenService;
   authLogger?: Logger;
@@ -47,7 +54,7 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   if (!logger) {
     logger = Util.getLogger("APIRouteHandler");
   }
-  const ret: NextCallback[] = [];
+  let ret: NextCallback[] = [];
   if (options.verify || options.policy) {
     const authLogger = !options.authLogger ? logger : options.authLogger;
     if (options.verify) {
@@ -72,7 +79,13 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   } else if (options.body === false) {
     ret.push(ValidateBodyHandler(NO_OPTIONS, logger));
   }
-  return ret.concat(options.handler(logger));
+  ret = ret.concat(options.handler(logger));
+  const responseHandlers: NextCallback[] = [];
+  if (options.results) {
+    ret.push(ParseResultsHandler(options.results, logger));
+    ret.push(ResponseHandler(logger));
+  }
+  return ret.concat(responseHandlers);
 };
 
 export interface APIRouterOptions {
