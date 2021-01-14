@@ -143,7 +143,15 @@ export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: P
       for(let i=0; i<results.length; i++) {
         const result = results[i];
         if(logger)logger.debug(result);
-        mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
+        if(result instanceof Array) {
+          for(let j=0; j<result.length; j++) {
+            const r = result[j];
+            mappedResults.push(Util.parseOptions(`results[${i}][${j}]`, r, options.options, options.mode, options.ignoreUndefined));
+          }
+        } else {
+          mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
+        }
+        
       }
       setResults(req, mappedResults);
       next();
