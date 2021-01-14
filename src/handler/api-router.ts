@@ -30,6 +30,7 @@ export interface APIHandlerOptions {
     mode: ParseOptionsMode; 
     ignoreUndefined?: boolean
   };
+  responseHandler?: NextCallback;
   description?: string;
   verify?: VerifyTokenService;
   authLogger?: Logger;
@@ -79,11 +80,19 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   } else if (options.body === false) {
     ret.push(ValidateBodyHandler(NO_OPTIONS, logger));
   }
+
   ret = ret.concat(options.handler(logger));
+
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
-    ret.push(ParseResultsHandler(options.results, logger));
-    ret.push(ResponseHandler(logger));
+    responseHandlers.push(ParseResultsHandler(options.results, logger));
+    if(options.responseHandler) {
+      responseHandlers.push(options.responseHandler);
+    } else {
+      responseHandlers.push(ResponseHandler(logger));
+    }
+  } else if(options.responseHandler) {
+    responseHandlers.push(options.responseHandler);
   }
   return ret.concat(responseHandlers);
 };

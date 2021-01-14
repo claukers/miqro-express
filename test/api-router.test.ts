@@ -4,7 +4,7 @@ import path, {resolve} from "path";
 import {strictEqual} from "assert";
 import {Util} from "@miqro/core";
 import {setupMiddleware} from "../src/middleware";
-import {APIRouter, APITestHelper, TestHelper as FuncTestHelper} from "../src";
+import {APIRouter, APITestHelper, TestHelper as FuncTestHelper, ErrorHandler} from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
@@ -336,6 +336,8 @@ describe("api-router functional tests", function () {
       path: "/api/apiNameBlo/sink"
     }));
 
+    app.use(ErrorHandler());
+
     FuncTestHelper(app, {
       url: `/api/apiNameBlo/sink/echo/bbb/1`,
       query: {
@@ -349,10 +351,10 @@ describe("api-router functional tests", function () {
       const {status, data, headers} = res;
       //console.log({status, data, headers});
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "27");
+      strictEqual(headers['content-length'], "37");
       strictEqual(status, 200);
       strictEqual(data.success, true);
-      strictEqual(data.result, 1);
+      strictEqual(data.result.bla, "1");
       done();
     });
   });

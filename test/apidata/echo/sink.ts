@@ -6,11 +6,10 @@ const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => 
     Handler(async (req) => {
       logger.info(req.body);
       logger.info(req.params);
-      const ret = req.params.param1 ? req.params.param1 : req.body;
+      const ret = req.params.param1 ? {bla: req.params.param1.toString()} : req.body;
       logger.info(ret);
       return ret;
-    }, logger),
-    ResponseHandler(logger)
+    }, logger)
   ];
 }
 
@@ -30,6 +29,12 @@ module.exports = {
     mode: "no_extra"
   },
   query: {
+    options: [
+      {name: "bla", required: true, type: "string"}
+    ],
+    mode: "no_extra"
+  },
+  results: {
     options: [
       {name: "bla", required: true, type: "string"}
     ],

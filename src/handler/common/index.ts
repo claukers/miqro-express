@@ -134,36 +134,21 @@ export const HandleAll = (generator: HandleAllOptions, logger?: Logger): NextCal
   }, logger);
 };
 
-export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): AsyncNextCallback => {
+export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): NextCallback => {
   logger ? logger : Util.getLogger("ParseResultsHandler");
-  return async (req, res, next) => {
+  return NextHandler(async (req, res, next) => {
     const results = getResults(req);
     if (results) {
-      const mappedResults = results.map((result) => {
-        if (!result) {
-          return null;
-        } else {
-          if (result instanceof Array) {
-            return result.map((value, index, array) => {
-              return Util.parseOptions(`results[${index}]`, value, options.options, options.mode, options.ignoreUndefined);
-            });
-          } else if (result.rows instanceof Array) {
-            return {
-              ...result,
-              rows: result.rows.map((value: any, index: number, array: any[]) => {
-                return Util.parseOptions(`results.rows[${index}]`, value, options.options, options.mode, options.ignoreUndefined);
-              })
-            };
-          } else {
-            const [ret] = [result].map((value, index, array) => {
-              return Util.parseOptions(`results`, value, options.options, options.mode, options.ignoreUndefined);
-            });
-            return ret;
-          }
-        }
-      });
+      const mappedResults = [];
+      for(let i=0; i<results.length; i++) {
+        const result = results[i];
+        if(logger)logger.info(result);
+        mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
+      }
       setResults(req, mappedResults);
       next();
+    } else {
+      next();
     }
-  };
+  }, logger);
 };
