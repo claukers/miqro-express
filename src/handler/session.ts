@@ -61,9 +61,18 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
         } else {
           if (tokenLocation === "cookie" && session.token !== token) {
             const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
-            res.cookie(tokenCookieLocation, session.token ? session.token : token, {
-              httpOnly: true
-            });
+            if (session.expirationDate instanceof Date) {
+              res.cookie(tokenCookieLocation, session.token ? session.token : token, {
+                httpOnly: true,
+                secure: true,
+                expires: session.expirationDate
+              });
+            } else {
+              res.cookie(tokenCookieLocation, session.token ? session.token : token, {
+                httpOnly: true,
+                secure: true
+              });
+            }
           }
           req.session = session;
           (logger as Logger).debug(`request[${req.uuid}] Token [${token}] authenticated!`);
