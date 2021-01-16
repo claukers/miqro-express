@@ -61,11 +61,11 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
         } else {
           if (tokenLocation === "cookie" && session.token !== token) {
             const [tokenCookieLocation] = Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
-            if (session.expirationDate instanceof Date) {
+            if (session.expires instanceof Date) {
               res.cookie(tokenCookieLocation, session.token ? session.token : token, {
                 httpOnly: true,
                 secure: true,
-                expires: session.expirationDate
+                expires: session.expires
               });
             } else {
               res.cookie(tokenCookieLocation, session.token ? session.token : token, {

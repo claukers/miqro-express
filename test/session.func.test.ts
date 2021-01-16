@@ -66,7 +66,7 @@ describe("session functional tests", () => {
         const expDate = new Date(Date.now() + 100000);
         const fakeSession = {
           token: "newFakeToken",
-          expirationDate: expDate
+          expires: expDate
         };
 
         const app = express();
