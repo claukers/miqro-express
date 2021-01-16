@@ -93,7 +93,7 @@ describe("session functional tests", () => {
               strictEqual(authService.verify.callCount, 1);
               if (TOKENVARS.location === "cookie") {
                 strictEqual((res as any).headers["set-cookie"].length, 1);
-                strictEqual((res as any).headers["set-cookie"][0], `${TOKENVARS.locationRef}=${fakeSession.token}; Path=/; Expires=${expDate.toUTCString()}; HttpOnly; Secure`);
+                strictEqual((res as any).headers["set-cookie"][0], `${TOKENVARS.locationRef}=${fakeSession.token}; Path=/; Expires=${expDate.toUTCString()}; HttpOnly; Secure; SameSite=Strict`);
               } else {
                 strictEqual((res as any).headers["set-cookie"], undefined);
               }
@@ -187,7 +187,7 @@ describe("session functional tests", () => {
               strictEqual(authService.verify.callCount, 1);
               if (TOKENVARS.location === "cookie") {
                 strictEqual((res as any).headers["set-cookie"].length, 1);
-                strictEqual((res as any).headers["set-cookie"][0], `${TOKENVARS.locationRef}=${fakeSession.token}; Path=/; HttpOnly; Secure`);
+                strictEqual((res as any).headers["set-cookie"][0], `${TOKENVARS.locationRef}=${fakeSession.token}; Path=/; HttpOnly; Secure; SameSite=Strict`);
               } else {
                 strictEqual((res as any).headers["set-cookie"], undefined);
               }

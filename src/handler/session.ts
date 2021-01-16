@@ -65,12 +65,14 @@ export const SessionHandler = (authService: VerifyTokenService, logger?: Logger)
               res.cookie(tokenCookieLocation, session.token ? session.token : token, {
                 httpOnly: true,
                 secure: true,
+                sameSite: "strict",
                 expires: session.expires
               });
             } else {
               res.cookie(tokenCookieLocation, session.token ? session.token : token, {
                 httpOnly: true,
-                secure: true
+                secure: true,
+                sameSite: "strict"
               });
             }
           }
