@@ -26,6 +26,7 @@ export interface APIHandlerOptions {
   } | false;
   body?: ValidateBodyHandlerOptions | false;
   results?: {
+    overrideError?: (e:Error) => Error;
     options: ParseOption[];
     mode: ParseOptionsMode; 
     ignoreUndefined?: boolean

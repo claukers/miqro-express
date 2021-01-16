@@ -1,7 +1,7 @@
 export * from "./proxyutils";
 import {inspect} from "util";
 /* eslint-disable  @typescript-eslint/no-unused-vars */
-import {Logger, Session, Util, ParseOption, ParseOptionsMode} from "@miqro/core";
+import {Logger, Session, Util, ParseOption, ParseOptionsMode, ParseOptionsError} from "@miqro/core";
 import {NextFunction, Request, Response} from "express";
 
 
@@ -134,29 +134,38 @@ export const HandleAll = (generator: HandleAllOptions, logger?: Logger): NextCal
   }, logger);
 };
 
-export const ParseResultsHandler = (options: {mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): NextCallback => {
+export const ParseResultsHandler = (options: {overrideError?: (e:Error)=>Error, mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): NextCallback => {
   logger ? logger : Util.getLogger("ParseResultsHandler");
   return NextHandler(async (req, res, next) => {
-    const results = getResults(req);
-    if (results && !req.query.attributes) {
-      const mappedResults = [];
-      for(let i=0; i<results.length; i++) {
-        const result = results[i];
-        if(logger)logger.debug(result);
-        if(result instanceof Array) {
-          for(let j=0; j<result.length; j++) {
-            const r = result[j];
-            mappedResults.push(Util.parseOptions(`results[${i}][${j}]`, r, options.options, options.mode, options.ignoreUndefined));
+    try {
+      const results = getResults(req);
+      if (results && !req.query.attributes) {
+        const mappedResults = [];
+        for(let i=0; i<results.length; i++) {
+          const result = results[i];
+          if(logger)logger.debug(result);
+          if(result instanceof Array) {
+            for(let j=0; j<result.length; j++) {
+              const r = result[j];
+              mappedResults.push(Util.parseOptions(`results[${i}][${j}]`, r, options.options, options.mode, options.ignoreUndefined));
+            }
+          } else {
+            mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
           }
-        } else {
-          mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
         }
-        
+        setResults(req, mappedResults);
+        next();
+      } else  {
+        next();
       }
-      setResults(req, mappedResults);
-      next();
-    } else {
-      next();
+    } catch(e) {
+      if(logger)logger.error(`error parsing req.results [${e.message}]`);
+      if (e.message === "ParseOptionsError" && options.overrideError) {
+        throw options.overrideError(e);
+      } else {
+        if(logger)logger.error(e);
+        throw e;
+      }
     }
   }, logger);
 };
