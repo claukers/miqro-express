@@ -1,9 +1,9 @@
-import {Logger, RequestOptions, RequestResponse, ResponseError, Util} from "@miqro/core";
-import {existsSync, unlinkSync} from "fs";
-import express, {Express} from "express";
-import {setupMiddleware} from "../middleware";
-import {APIRouter, APIRouterOptions} from "./api-router";
-import {ErrorHandler} from "./response";
+import { Logger, RequestOptions, RequestResponse, ResponseError, Util } from "@miqro/core";
+import { existsSync, unlinkSync } from "fs";
+import express, { Express } from "express";
+import { setupMiddleware } from "../middleware";
+import { APIRouter, APIRouterOptions } from "./api-router";
+import { ErrorHandler } from "./response";
 
 export const TestHelper = async (app: Express, options: RequestOptions, cb?: (response: RequestResponse) => void, unixSocket = "/tmp/socket.12345"): Promise<RequestResponse | void> => {
   if (existsSync(unixSocket)) {
@@ -44,6 +44,6 @@ export const APITestHelper = async (api: APIRouterOptions, options: RequestOptio
   const app = express();
   await setupMiddleware(app, logger);
   app.use(APIRouter(api, logger));
-  app.use(ErrorHandler(logger));
+  app.use(ErrorHandler(undefined, logger));
   return TestHelper(app, options, cb, unixSocket);
 }

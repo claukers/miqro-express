@@ -76,20 +76,24 @@ export const ResponseHandler = (options?: ResponseHandlerOptions, logger?: Logge
   };
 };
 
+export interface ErrorHandlerOptions {
+  createResponse: (err: Error) => APIResponse | null;
+}
+
 // noinspection SpellCheckingInspection
 /**
  * Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ErrorHandler = (logger?: Logger): ErrorCallback => {
+export const ErrorHandler = (options?: ErrorHandlerOptions, logger?: Logger): ErrorCallback => {
   if (!logger) {
     logger = Util.getLogger("ErrorHandler");
   }
   return (err: Error, req, res, next): void => {
     try {
       (logger as Logger).error(`request[${req.uuid}] message[${err.message}] stack[${err.stack}]`);
-      const response = createErrorResponse(err);
+      const response = options ? options.createResponse(err) : createErrorResponse(err);
       if (response) {
         response.send(res);
       } else {
