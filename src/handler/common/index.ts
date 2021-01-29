@@ -94,46 +94,6 @@ export const CatchHandler = (fn: AsyncNextCallback, logger?: Logger): NextCallba
 
 export const NextHandler = CatchHandler;
 
-
-export interface HandleAllOptionsOutput {
-  req: Request;
-  handlers: NextCallback[] | AsyncNextCallback[];
-}
-
-export type HandleAllOptions = (req: Request) => Promise<HandleAllOptionsOutput[]>;
-
-export const HandleAll = (generator: HandleAllOptions, logger?: Logger): NextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("HandleAll");
-  }
-  return Handler(async (req) => {
-    return Promise.all((await generator(req)).map((call) => {
-      return new Promise((resolve, reject) => {
-        const toCall = call.handlers.reverse();
-        const nextCaller = async () => {
-          try {
-            const handler = toCall.pop();
-            if (!handler) {
-              resolve(getResults(call.req))
-            } else {
-              await handler(call.req, null as unknown as Response, (e?: any) => {
-                if (e) {
-                  reject(e);
-                } else {
-                  setTimeout(nextCaller, 0);
-                }
-              });
-            }
-          } catch (e) {
-            reject(e);
-          }
-        };
-        setTimeout(nextCaller, 0);
-      })
-    }));
-  }, logger);
-};
-
 export const ParseResultsHandler = (options: {overrideError?: (e:Error)=>Error, mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): NextCallback => {
   logger ? logger : Util.getLogger("ParseResultsHandler");
   return NextHandler(async (req, res, next) => {
