@@ -1,15 +1,15 @@
-import {basename, join, parse, resolve} from "path";
-import {lstatSync, readdirSync} from "fs";
-import {Router, RouterOptions} from "express";
-import {GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
-import {FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions} from "./feature-router";
-import {ValidateBodyHandler, ValidateBodyHandlerOptions} from "./validatebody";
-import {NextCallback} from "./common";
-import {ResponseHandler} from "./response";
-import {SessionHandler} from "./session";
-import {GroupPolicyHandler} from "./group";
-import {ParseResultsHandler} from "./"
-import {ValidateParamsHandler, ValidateQueryHandler} from "./queryasparams";
+import { basename, join, parse, resolve } from "path";
+import { lstatSync, readdirSync } from "fs";
+import { Router, RouterOptions } from "express";
+import { GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util } from "@miqro/core";
+import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
+import { ValidateBodyHandler, ValidateBodyHandlerOptions } from "./validatebody";
+import { NextCallback } from "./common";
+import { ResponseHandler } from "./response";
+import { SessionHandler, SessionHandlerOptions } from "./session";
+import { GroupPolicyHandler } from "./group";
+import { ParseResultsHandler } from "./"
+import { ValidateParamsHandler, ValidateQueryHandler } from "./queryasparams";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
@@ -26,14 +26,14 @@ export interface APIHandlerOptions {
   } | false;
   body?: ValidateBodyHandlerOptions | false;
   results?: {
-    overrideError?: (e:Error) => Error;
+    overrideError?: (e: Error) => Error;
     options: ParseOption[];
-    mode: ParseOptionsMode; 
+    mode: ParseOptionsMode;
     ignoreUndefined?: boolean
   };
   responseHandler?: NextCallback;
   description?: string;
-  verify?: VerifyTokenService;
+  session?: SessionHandlerOptions;
   authLogger?: Logger;
   policy?: GroupPolicy;
 }
@@ -57,10 +57,10 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     logger = Util.getLogger("APIRouteHandler");
   }
   let ret: NextCallback[] = [];
-  if (options.verify || options.policy) {
+  if (options.session || options.policy) {
     const authLogger = !options.authLogger ? logger : options.authLogger;
-    if (options.verify) {
-      ret.push(SessionHandler(options.verify, authLogger));
+    if (options.session) {
+      ret.push(SessionHandler(options.session, authLogger));
     }
     if (options.policy) {
       ret.push(GroupPolicyHandler(options.policy, authLogger));
@@ -87,12 +87,12 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
     responseHandlers.push(ParseResultsHandler(options.results, logger));
-    if(options.responseHandler) {
+    if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
     } else {
       responseHandlers.push(ResponseHandler(logger));
     }
-  } else if(options.responseHandler) {
+  } else if (options.responseHandler) {
     responseHandlers.push(options.responseHandler);
   }
   return ret.concat(responseHandlers);
@@ -104,7 +104,7 @@ export interface APIRouterOptions {
   options?: RouterOptions;
   path?: string;
   auth?: {
-    service: VerifyTokenService;
+    config: SessionHandlerOptions;
     identifier: string;
   };
   only?: string[];
@@ -118,17 +118,17 @@ export interface FeatureRouterWithAPIRouterOptions extends FeatureRouterOptions 
   features: SimpleMap<FeatureAPIRouterPathOptions>;
 }
 
-export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterWithAPIRouterOptions = {features: {}}): FeatureRouterWithAPIRouterOptions => {
+export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterWithAPIRouterOptions = { features: {} }): FeatureRouterWithAPIRouterOptions => {
   logger.debug(`loading routes from [${dirname}]`);
   const files = readdirSync(dirname);
   const dirs = files.filter(f => lstatSync(join(dirname, f)).isDirectory());
   const methods = files.filter(f => !lstatSync(join(dirname, f)).isDirectory());
   for (const f of dirs) {
-    const {name} = parse(f);
+    const { name } = parse(f);
     features = traverseAPIRouteDir(logger, `${featureName}_${name}`.toUpperCase(), join(dirname, f), `${basePath}/${name}`, features);
   }
   for (const f of methods) {
-    const {name, ext} = parse(f);
+    const { name, ext } = parse(f);
     if (name !== "index" && ((ext === ".ts" || ext === ".js") && name.slice(-2) !== ".d")) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       let route: APIRoute = require(join(dirname, name));
@@ -202,7 +202,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
 };
 
 export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router => {
-  const {dirname} = options;
+  const { dirname } = options;
   const apiName = options.apiName ? options.apiName : basename(dirname);
   const apiPath = options.path ? options.path : `/${apiName}`;
   if (!logger) {

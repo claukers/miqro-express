@@ -1,7 +1,7 @@
-import {FeatureToggle, Logger, SimpleMap, Util, VerifyTokenService} from "@miqro/core";
-import {Router, RouterOptions} from "express";
-import {SessionHandler} from "./session";
-import {NextCallback} from "./common";
+import { FeatureToggle, Logger, SimpleMap, Util } from "@miqro/core";
+import { Router, RouterOptions } from "express";
+import { SessionHandler, SessionHandlerOptions } from "./session";
+import { NextCallback } from "./common";
 
 export type FeatureHandler = (logger: Logger) => NextCallback[] | NextCallback;
 
@@ -16,7 +16,7 @@ export interface FeatureRouterOptions {
   options?: RouterOptions,
   features: SimpleMap<FeatureRouterPathOptions>;
   auth?: {
-    service: VerifyTokenService;
+    config: SessionHandlerOptions;
     identifier: string;
   }; // if undefined all features in this router will be set without it;
   only?: string[]; // if undefined all features are set-up (adding some feature here doesnt by-pass the FeatureToggle.isFeatureEnabled(..) call)
@@ -31,8 +31,8 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
   const toSetup = options.only ? options.only : Object.keys(options.features);
   const router = Router(options.options);
   if (options.auth) {
-    const {service, identifier} = options.auth;
-    if (!service) {
+    const { config, identifier } = options.auth;
+    if (!config.authService) {
       throw new Error(`no auth service`);
     } else if (!identifier) {
       throw new Error(`no auth identifier`);
@@ -40,7 +40,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
       logger.info(`setting up session handler on features [${toSetup.join(",")}]`);
       router.use(
         SessionHandler(
-          service,
+          config,
           Util.getLogger(identifier)
         ) as any
       );
@@ -55,7 +55,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
     if (!handlerOptions) {
       throw new Error(`no handler options for feature [${featureName}]`);
     } else {
-      const {path, implementation, identifier, methods} = handlerOptions;
+      const { path, implementation, identifier, methods } = handlerOptions;
       if (!methods) {
         throw new Error(`no methods for feature [${featureName}]`);
       } else if (!identifier) {

@@ -35,6 +35,13 @@ export class VerifyEndpointService implements VerifyTokenService {
         default:
           throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header or query)`);
       }
+    } else {
+      Util.parseOptions("options", options as any, [
+        { name: "url", required: true, type: "string", stringMinLength: 1 },
+        { name: "method", required: true, type: "string", stringMinLength: 1 },
+        { name: "tokenLocation", required: true, type: "enum", enumValues: ["header", "query", "cookie"] },
+        { name: "tokenLocationName", required: true, type: "string", stringMinLength: 1 }
+      ], "no_extra");
     }
     this.logger = Util.getLogger("VerifyEndpointService");
   }
@@ -42,12 +49,12 @@ export class VerifyEndpointService implements VerifyTokenService {
   public async verify({ token }: { token: string }): Promise<Session | null> {
     try {
       let response = null;
-      const [tokenVerifyLocation] = this.options ? this.options.tokenLocation : Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION]);
+      const tokenVerifyLocation = this.options ? this.options.tokenLocation : Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION])[0];
       const url = this.options ? this.options.url : `${process.env.TOKEN_VERIFY_ENDPOINT}`;
       const method = this.options ? this.options.method : `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any;
       switch (tokenVerifyLocation) {
         case "header":
-          const [tokenHeaderLocation] = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER]);
+          const tokenHeaderLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER])[0];
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
           response = await Util.request({
             url,
@@ -58,7 +65,7 @@ export class VerifyEndpointService implements VerifyTokenService {
           });
           break;
         case "query":
-          const [tokenQueryLocation] = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY]);
+          const tokenQueryLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY])[0];
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
           response = await Util.request({
             url,
@@ -69,7 +76,7 @@ export class VerifyEndpointService implements VerifyTokenService {
           });
           break;
         case "cookie":
-          const [tokenCookieLocation] = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+          const tokenCookieLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
           response = await Util.request({
             url,
@@ -92,7 +99,7 @@ export class VerifyEndpointService implements VerifyTokenService {
           this.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
 
           if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
-            const [tokenCookieLocation] = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+            const tokenCookieLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
             const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
             if (cookies.length === 1) {
               session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
