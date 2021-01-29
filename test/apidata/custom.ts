@@ -9,7 +9,7 @@ const hello: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback =>
         message: "custom"
       };
     }, logger),
-    ResponseHandler(logger)
+    ResponseHandler(undefined, logger)
   ];
 }
 

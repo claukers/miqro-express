@@ -7,7 +7,7 @@ const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => 
       logger.info(req.body);
       return req.body;
     }, logger),
-    ResponseHandler(logger)
+    ResponseHandler(undefined, logger)
   ];
 }
 

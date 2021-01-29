@@ -5,7 +5,7 @@ import { GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util } f
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
 import { ValidateBodyHandler, ValidateBodyHandlerOptions } from "./validatebody";
 import { NextCallback } from "./common";
-import { ResponseHandler } from "./response";
+import { ResponseHandler, ResponseHandlerOptions } from "./response";
 import { SessionHandler, SessionHandlerOptions } from "./session";
 import { GroupPolicyHandler } from "./group";
 import { ParseResultsHandler } from "./"
@@ -32,6 +32,7 @@ export interface APIHandlerOptions {
     ignoreUndefined?: boolean
   };
   responseHandler?: NextCallback;
+  responseHandlerOptions?: ResponseHandlerOptions;
   description?: string;
   session?: SessionHandlerOptions;
   authLogger?: Logger;
@@ -90,7 +91,7 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
     } else {
-      responseHandlers.push(ResponseHandler(logger));
+      responseHandlers.push(ResponseHandler(options.responseHandlerOptions, logger));
     }
   } else if (options.responseHandler) {
     responseHandlers.push(options.responseHandler);

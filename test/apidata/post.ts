@@ -8,7 +8,7 @@ const hello: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback =>
         message: "hello"
       };
     }, logger),
-    ResponseHandler(logger)
+    ResponseHandler(undefined, logger)
   ];
 }
 

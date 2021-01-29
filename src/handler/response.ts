@@ -36,8 +36,7 @@ export const createErrorResponse = (e: Error): APIResponse | null => {
 };
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-export const createServiceResponse = (req: Request): ServiceResponse | undefined => {
-  const { results } = req;
+export const createServiceResponse = (results: any[]): ServiceResponse | undefined => {
   if (!results || results.length === 0) {
     return undefined;
   }
@@ -47,18 +46,22 @@ export const createServiceResponse = (req: Request): ServiceResponse | undefined
   return response !== undefined ? new ServiceResponse(response) : undefined;
 };
 
+export interface ResponseHandlerOptions {
+  createResponse: (results: any[]) => APIResponse | undefined;
+}
+
 /**
  * Express middleware that uses req.results to create a response.
  *
  * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
  */
-export const ResponseHandler = (logger?: Logger): NextCallback => {
+export const ResponseHandler = (options?: ResponseHandlerOptions, logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("ResponseHandler");
   }
   return (req, res, next) => {
     try {
-      const response = createServiceResponse(req);
+      const response = options ? options.createResponse(req.results) : createServiceResponse(req.results);
       (logger as Logger).debug(`request[${req.uuid}] results[${inspect(response)}]`);
       if (response === undefined) {
         (logger as Logger).warn(`request[${req.uuid}] results[${inspect(response)}] so not responding and calling next`);

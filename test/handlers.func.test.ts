@@ -401,57 +401,6 @@ describe("handlers functional tests", function () {
       });
   });
 
-  it("HandlerAll happy path aggregates results async", (done) => {
-    const {HandleAll, Handler, ResponseHandler} = require("../src/");
-    let bla = 0;
-    const myFunc = async () => {
-      return ++bla;
-    };
-    const app = express();
-    app.get("/myFunc", [
-      HandleAll((req: Request) => {
-        return [
-          {
-            req: {
-              ...req,
-              results: []
-            },
-            handlers: [Handler(myFunc), Handler(myFunc)]
-          }
-        ]
-      }),
-      ResponseHandler()
-    ]);
-
-
-    FuncTestHelper(app, {
-
-        url: "/myFunc",
-        method: "get",
-      },
-      ({status, headers, data}) => {
-        strictEqual(status, 200);
-        strictEqual(headers['content-type'], "application/json; charset=utf-8");
-        strictEqual(headers['content-length'], "33");
-        strictEqual(data.success, true);
-        strictEqual(data.result[0][0], 1);
-        strictEqual(data.result[0][1], 2);
-        FuncTestHelper(app, {
-            url: "/myFunc",
-            method: "get",
-          },
-          ({status, headers, data}) => {
-            strictEqual(status, 200);
-            strictEqual(headers['content-type'], "application/json; charset=utf-8");
-            strictEqual(headers['content-length'], "33");
-            strictEqual(data.success, true);
-            strictEqual(data.result[0][0], 3);
-            strictEqual(data.result[0][1], 4);
-            done();
-          });
-      });
-  });
-
   /*it("ExecHandler works ?", (done) => {
     const {ExecHandler, ResponseHandler} = require("../src/");
     const myFunc = () => {

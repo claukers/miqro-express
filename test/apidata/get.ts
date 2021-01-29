@@ -9,7 +9,7 @@ export default {
         logger.info(req.params.name);
         return `bye ${req.params.name}`
       }, logger),
-      ResponseHandler(logger)
+      ResponseHandler(undefined, logger)
     ];
   }
 }
