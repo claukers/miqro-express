@@ -1,7 +1,7 @@
 export * from "./proxyutils";
 import { inspect } from "util";
 /* eslint-disable  @typescript-eslint/no-unused-vars */
-import { Logger, Session, Util, ParseOption, ParseOptionsMode, ParseOptionsError } from "@miqro/core";
+import { Logger, Session, Util, ParseOption, ParseOptionsMode } from "@miqro/core";
 import { NextFunction, Request, Response } from "express";
 
 
@@ -135,4 +135,18 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?
       }
     }
   }, logger);
+};
+
+export const IdResult: ParseResultsHandlerOptions = {
+  options: [
+    { name: "id", type: "number", required: true, description: "the id of the operation." }
+  ],
+  mode: "no_extra"
+};
+
+export const CountResult: ParseResultsHandlerOptions = {
+  options: [
+    { name: "count", type: "number", required: true, description: "the count of the operation." }
+  ],
+  mode: "no_extra"
 };
