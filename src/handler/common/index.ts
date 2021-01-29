@@ -104,8 +104,8 @@ export interface ParseResultsHandlerOptions {
 export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?: Logger): NextCallback => {
   logger ? logger : Util.getLogger("ParseResultsHandler");
   return NextHandler(async (req, res, next) => {
+    const results = getResults(req);
     try {
-      const results = getResults(req);
       if (results && !req.query.attributes) {
         const mappedResults = [];
         for (let i = 0; i < results.length; i++) {
@@ -126,7 +126,7 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?
         next();
       }
     } catch (e) {
-      if (logger) logger.error(`error parsing req.results [${e.message}]`);
+      if (logger) logger.error(`error parsing req.results[${inspect(results)}]: [${e.message}]`);
       if (e.message === "ParseOptionsError" && options.overrideError) {
         throw options.overrideError(e);
       } else {
