@@ -56,6 +56,7 @@ export const SessionHandler = (config: SessionHandlerOptions, logger?: Logger): 
         case "query":
           const tokenQueryLocation = config.options ? config.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY])[0];
           token = req.query[tokenQueryLocation] as string;
+          delete req.query[tokenQueryLocation];
           break;
         case "cookie":
           const tokenCookieLocation = config.options ? config.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
