@@ -1,6 +1,6 @@
-import {getLogger, Logger, ParseOption, parseOptions, ParseOptionsMode, SimpleMap, SimpleTypes} from "@miqro/core";
-import {Request} from "express";
-import {CatchHandler, NextCallback} from "./common";
+import { getLogger, Logger, ParseOption, parseOptions, ParseOptionsMode, SimpleMap, SimpleTypes } from "@miqro/core";
+import { Request } from "express";
+import { CatchHandler, NextCallback } from "./common";
 
 export const someQueryAsParams = (req: Request, queryArgs: ParseOption[]): SimpleMap<SimpleTypes> => {
   const query = parseQueryOptions("query", req.query, queryArgs, "add_extra");
@@ -24,7 +24,12 @@ export const QueryAsParamsHandler = (options: ParseOption[], logger?: Logger): N
   }, logger);
 };
 
-export const ValidateQueryHandler = ({options, mode}: { options: ParseOption[], mode: ParseOptionsMode }, logger?: Logger): NextCallback => {
+export interface ValidateQueryHandlerOptions {
+  options: ParseOption[];
+  mode: ParseOptionsMode;
+}
+
+export const ValidateQueryHandler = ({ options, mode }: ValidateQueryHandlerOptions, logger?: Logger): NextCallback => {
   if (!logger) {
     logger = getLogger("ValidateQueryHandler");
   }
@@ -34,7 +39,12 @@ export const ValidateQueryHandler = ({options, mode}: { options: ParseOption[], 
   }, logger);
 };
 
-export const ValidateParamsHandler = ({options, mode}: { options: ParseOption[], mode: ParseOptionsMode }, logger?: Logger): NextCallback => {
+export interface ValidateParamsHandlerOptions {
+  options: ParseOption[];
+  mode: ParseOptionsMode;
+}
+
+export const ValidateParamsHandler = ({ options, mode }: ValidateParamsHandlerOptions, logger?: Logger): NextCallback => {
   if (!logger) {
     logger = getLogger("ValidateParamsHandler");
   }

@@ -1,8 +1,8 @@
 export * from "./proxyutils";
-import {inspect} from "util";
+import { inspect } from "util";
 /* eslint-disable  @typescript-eslint/no-unused-vars */
-import {Logger, Session, Util, ParseOption, ParseOptionsMode, ParseOptionsError} from "@miqro/core";
-import {NextFunction, Request, Response} from "express";
+import { Logger, Session, Util, ParseOption, ParseOptionsMode, ParseOptionsError } from "@miqro/core";
+import { NextFunction, Request, Response } from "express";
 
 
 /* eslint-disable  @typescript-eslint/no-namespace */
@@ -94,18 +94,25 @@ export const CatchHandler = (fn: AsyncNextCallback, logger?: Logger): NextCallba
 
 export const NextHandler = CatchHandler;
 
-export const ParseResultsHandler = (options: {overrideError?: (e:Error)=>Error, mode: ParseOptionsMode; options: ParseOption[]; ignoreUndefined?: boolean}, logger?: Logger): NextCallback => {
+export interface ParseResultsHandlerOptions {
+  overrideError?: (e: Error) => Error;
+  mode: ParseOptionsMode;
+  options: ParseOption[];
+  ignoreUndefined?: boolean;
+}
+
+export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?: Logger): NextCallback => {
   logger ? logger : Util.getLogger("ParseResultsHandler");
   return NextHandler(async (req, res, next) => {
     try {
       const results = getResults(req);
       if (results && !req.query.attributes) {
         const mappedResults = [];
-        for(let i=0; i<results.length; i++) {
+        for (let i = 0; i < results.length; i++) {
           const result = results[i];
-          if(logger)logger.debug(result);
-          if(result instanceof Array) {
-            for(let j=0; j<result.length; j++) {
+          if (logger) logger.debug(result);
+          if (result instanceof Array) {
+            for (let j = 0; j < result.length; j++) {
               const r = result[j];
               mappedResults.push(Util.parseOptions(`results[${i}][${j}]`, r, options.options, options.mode, options.ignoreUndefined));
             }
@@ -115,15 +122,15 @@ export const ParseResultsHandler = (options: {overrideError?: (e:Error)=>Error, 
         }
         setResults(req, mappedResults);
         next();
-      } else  {
+      } else {
         next();
       }
-    } catch(e) {
-      if(logger)logger.error(`error parsing req.results [${e.message}]`);
+    } catch (e) {
+      if (logger) logger.error(`error parsing req.results [${e.message}]`);
       if (e.message === "ParseOptionsError" && options.overrideError) {
         throw options.overrideError(e);
       } else {
-        if(logger)logger.error(e);
+        if (logger) logger.error(e);
         throw e;
       }
     }

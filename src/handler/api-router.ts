@@ -4,33 +4,22 @@ import { Router, RouterOptions } from "express";
 import { GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
 import { ValidateBodyHandler, ValidateBodyHandlerOptions } from "./validatebody";
-import { NextCallback } from "./common";
+import { NextCallback, ParseResultsHandlerOptions } from "./common";
 import { ResponseHandler, ResponseHandlerOptions } from "./response";
 import { SessionHandler, SessionHandlerOptions } from "./session";
 import { GroupPolicyHandler } from "./group";
 import { ParseResultsHandler } from "./"
-import { ValidateParamsHandler, ValidateQueryHandler } from "./queryasparams";
+import { ValidateParamsHandler, ValidateParamsHandlerOptions, ValidateQueryHandler, ValidateQueryHandlerOptions } from "./queryasparams";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
 }
 
 export interface APIHandlerOptions {
-  query?: {
-    options: ParseOption[],
-    mode: ParseOptionsMode
-  } | false;
-  params?: {
-    options: ParseOption[],
-    mode: ParseOptionsMode
-  } | false;
+  query?: ValidateQueryHandlerOptions | false;
+  params?: ValidateParamsHandlerOptions | false;
   body?: ValidateBodyHandlerOptions | false;
-  results?: {
-    overrideError?: (e: Error) => Error;
-    options: ParseOption[];
-    mode: ParseOptionsMode;
-    ignoreUndefined?: boolean
-  };
+  results?: ParseResultsHandlerOptions;
   responseHandler?: NextCallback;
   responseHandlerOptions?: ResponseHandlerOptions;
   description?: string;
