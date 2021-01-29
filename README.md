@@ -31,34 +31,6 @@ app.get("/add/:a/:b/:c", [
 ....
 ```
 
-##### HandleAll(...)
-
-```javascript
-...
-const a = Handler(....);
-const b = Handler(....);
-const c = Handler(....);
-const d = Handler(....);
-
-app.use([
-    HandleAll((req)=>{
-        .....
-        const reqAB = ....
-        const reqCD = ....
-        .....
-        return [{
-            reqAB,
-            handlers: [a, b,....]
-         }, {
-            reqCD,
-            handlers: [c, d,....]
-         }, ...];  
-    }),
-    ResponseHandler() // req.results will be passed the same way as Promise.all(...)
-]);
-....
-```
-
 ##### SessionHandler(...)
 
 ```javascript
