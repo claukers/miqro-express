@@ -47,7 +47,7 @@ export const MorganHandler = (logger?: Logger): NextCallback[] => {
       }
     }
   }), morgan(process.env.MORGAN_FORMAT, {
-    skip: function (req, res) { return res.statusCode < 400 && res.statusCode >= 500 },
+    skip: function (req, res) { return res.statusCode < 400 || res.statusCode >= 500 },
     stream: {
       write: (line: string) => {
         if (logger) {
