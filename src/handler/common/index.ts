@@ -57,19 +57,15 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
     results.push(result);
     setResults(req, results);
     next();
-  }, logger);
+  });
 };
 
 /**
  * Wraps an async express handler with next argument and if the function throws it's passed as next(...)
  *
  * @param fn  express request handler ´async function´.
- * @param logger  [OPTIONAL] logger for logging errors ´Logger´.
  */
-export const CatchHandler = (fn: AsyncNextCallback, logger?: Logger): NextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("NextHandler");
-  }
+export const CatchHandler = (fn: AsyncNextCallback): NextCallback => {
   return async (req, res, next) => {
     let handleError: ((err: Error) => void) | any = (err: Error) => {
       handleError = null;
@@ -131,7 +127,7 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?
         throw e;
       }
     }
-  }, logger);
+  });
 };
 
 export const IdResult: ParseResultsHandlerOptions = {

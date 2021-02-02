@@ -141,4 +141,4 @@ export const HTMLResponseHandler = (logger?: Logger): NextCallback => CatchHandl
     logger.warn("last result not valid HTMLResponseResult");
     next();
   }
-}, logger)
+})

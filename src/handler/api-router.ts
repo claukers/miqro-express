@@ -57,19 +57,19 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     }
   }
   if (options.params) {
-    ret.push(ValidateParamsHandler(options.params, logger));
+    ret.push(ValidateParamsHandler(options.params));
   } else if (options.params === false) {
-    ret.push(ValidateParamsHandler(NO_OPTIONS, logger));
+    ret.push(ValidateParamsHandler(NO_OPTIONS));
   }
   if (options.query) {
-    ret.push(ValidateQueryHandler(options.query, logger));
+    ret.push(ValidateQueryHandler(options.query));
   } else if (options.query === false) {
-    ret.push(ValidateQueryHandler(NO_OPTIONS, logger));
+    ret.push(ValidateQueryHandler(NO_OPTIONS));
   }
   if (options.body) {
-    ret.push(ValidateBodyHandler(options.body, logger));
+    ret.push(ValidateBodyHandler(options.body));
   } else if (options.body === false) {
-    ret.push(ValidateBodyHandler(NO_OPTIONS, logger));
+    ret.push(ValidateBodyHandler(NO_OPTIONS));
   }
 
   ret = ret.concat(options.handler(logger));

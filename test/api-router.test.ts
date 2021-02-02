@@ -358,4 +358,36 @@ describe("api-router functional tests", function () {
       done();
     });
   });
+
+  it("sink happy path bad query", (done) => {
+    const app = express();
+    setupMiddleware(app);
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    app.use(ErrorHandler());
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb/1`,
+      query: {
+        bla2: "bla"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put"
+    }, (res) => {
+      const {status, data, headers} = res;
+      console.log({status, data, headers});
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "51");
+      strictEqual(status, 400);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "query.bla not defined");
+      done();
+    });
+  });
 });
