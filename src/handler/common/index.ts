@@ -72,9 +72,6 @@ export const CatchHandler = (fn: AsyncNextCallback, logger?: Logger): NextCallba
   }
   return async (req, res, next) => {
     let handleError: ((err: Error) => void) | any = (err: Error) => {
-      if (logger) {
-        logger.error(`request[${req.uuid}] message[${err.message}] stack[${err.stack}]`);
-      }
       handleError = null;
       next(err);
     }

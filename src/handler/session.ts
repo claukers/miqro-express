@@ -98,7 +98,7 @@ export const SessionHandler = (config: SessionHandlerOptions, logger?: Logger): 
         }
       }
     } catch (e) {
-      (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
+      // (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       if (e.name) {
         next(e);
       } else {
