@@ -1,10 +1,10 @@
-import {FeatureToggle, Logger, Util} from "@miqro/core";
-import {v4} from "uuid";
-import {json as bodyParserJSON, urlencoded as bodyParserURLEncoded} from "body-parser";
-import {Express} from "express";
-import morgan, {token as morganToken} from "morgan";
+import { FeatureToggle, Logger, Util } from "@miqro/core";
+import { v4 } from "uuid";
+import { json as bodyParserJSON, urlencoded as bodyParserURLEncoded } from "body-parser";
+import { Express } from "express";
+import morgan, { token as morganToken } from "morgan";
 import cors from "cors";
-import {NextCallback} from "../handler/common";
+import { NextCallback } from "../handler/common";
 import cookieParser from "cookie-parser";
 
 export const UUIDHandler = (): NextCallback => {
@@ -18,7 +18,7 @@ export const CookieParserHandler = (): NextCallback => {
   return cookieParser(process.env.COOKIE_PARSER_SECRET);
 };
 
-export const MorganHandler = (logger?: Logger): NextCallback => {
+export const MorganHandler = (logger?: Logger): NextCallback[] => {
   if (!logger) {
     logger = Util.getLogger("MorganHandler");
   }
@@ -37,7 +37,8 @@ export const MorganHandler = (logger?: Logger): NextCallback => {
       process.env.MORGAN_FORMAT = "request(:remote-address) [:method] [:url] [:status] content-length[:res[content-length]] [:response-time]ms";
     }
   }
-  return morgan(process.env.MORGAN_FORMAT, {
+  return [morgan(process.env.MORGAN_FORMAT, {
+    skip: function (req, res) { return res.statusCode >= 400 },
     stream: {
       write: (line: string) => {
         if (logger) {
@@ -45,7 +46,25 @@ export const MorganHandler = (logger?: Logger): NextCallback => {
         }
       }
     }
-  });
+  }), morgan(process.env.MORGAN_FORMAT, {
+    skip: function (req, res) { return res.statusCode < 400 && res.statusCode >= 500 },
+    stream: {
+      write: (line: string) => {
+        if (logger) {
+          logger.warn(line.substring(0, line.length - 1));
+        }
+      }
+    }
+  }), morgan(process.env.MORGAN_FORMAT, {
+    skip: function (req, res) { return res.statusCode < 500 },
+    stream: {
+      write: (line: string) => {
+        if (logger) {
+          logger.error(line.substring(0, line.length - 1));
+        }
+      }
+    }
+  })]
 }
 
 export const JSONBodyParserHandler = (): NextCallback => {
