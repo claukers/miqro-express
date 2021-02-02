@@ -17,6 +17,7 @@ process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
 process.env.BODY_PARSER_INFLATE = "true";
 process.env.BODY_PARSER_LIMIT = "100kb";
 process.env.BODY_PARSER_STRICT = "true";
+process.env.LOG_LEVEL = "debug";
 process.env.BODY_PARSER_TYPE = "application/json";
 process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
 process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";

@@ -76,7 +76,7 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
 
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
-    responseHandlers.push(ParseResultsHandler(options.results, logger));
+    responseHandlers.push(ParseResultsHandler(options.results));
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
     } else {

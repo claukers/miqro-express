@@ -61,16 +61,17 @@ export const ResponseHandler = (options?: ResponseHandlerOptions, logger?: Logge
   }
   return (req, res, next) => {
     try {
+      (logger as Logger).debug(`request[${req.uuid}] results[${inspect(req.results)}]`);
       const response = options ? options.createResponse(req.results) : createServiceResponse(req.results);
-      (logger as Logger).debug(`request[${req.uuid}] results[${inspect(response)}]`);
       if (response === undefined) {
-        (logger as Logger).warn(`request[${req.uuid}] results[${inspect(response)}] so not responding and calling next`);
+        (logger as Logger).warn(`request[${req.uuid}] response[${inspect(response)}] so not responding and calling next`);
         next();
       } else {
+        (logger as Logger).debug(`request[${req.uuid}] response[${inspect(response)}]`);
         response.send(res);
       }
     } catch (e) {
-      (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
+      (logger as Logger).error(`request[${req.uuid}] message[${e.message}]`);
       next(e);
     }
   };
