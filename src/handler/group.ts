@@ -32,7 +32,7 @@ export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): Async
         }
       }
     } catch (e) {
-      (logger as Logger).warn(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
+      //(logger as Logger).warn(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       if (e.name && e.name !== "Error") {
         next(e);
       } else {

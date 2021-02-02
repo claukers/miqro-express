@@ -66,7 +66,7 @@ export const SessionHandler = (config: SessionHandlerOptions, logger?: Logger): 
       }
       if (!token) {
         const message = `No token provided!`;
-        (logger as Logger).error(message);
+        // (logger as Logger).error(message);
         next(new UnAuthorizedError(message));
       } else {
         const session = await config.authService.verify({ token });

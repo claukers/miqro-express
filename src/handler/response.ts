@@ -92,16 +92,16 @@ export const ErrorHandler = (options?: ErrorHandlerOptions, logger?: Logger): Er
   }
   return (err: Error, req, res, next): void => {
     try {
-      (logger as Logger).error(`request[${req.uuid}] message[${err.message}] stack[${err.stack}]`);
+      (logger as Logger).error(`request[${req.uuid}] message[${err.message}]`);
       const response = options ? options.createResponse(err) : createErrorResponse(err);
       if (response) {
         response.send(res);
       } else {
-        (logger as Logger).warn(`request[${req.uuid}] cannot create response of error message[${err.message}] stack[${err.stack}] so not responding and calling next`);
+        (logger as Logger).warn(`request[${req.uuid}] cannot create response of error message[${err.message}] so not responding and calling next`);
         next(err);
       }
     } catch (e) {
-      (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
+      (logger as Logger).error(`request[${req.uuid}] message[${e.message}]`);
       next(e);
     }
   };
