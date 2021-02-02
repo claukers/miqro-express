@@ -141,12 +141,12 @@ export const IdResult: ParseResultsHandlerOptions = {
   options: [
     { name: "id", type: "number", required: true, description: "the id of the operation." }
   ],
-  mode: "no_extra"
+  mode: "remove_extra"
 };
 
 export const CountResult: ParseResultsHandlerOptions = {
   options: [
     { name: "count", type: "number", required: true, description: "the count of the operation." }
   ],
-  mode: "no_extra"
+  mode: "remove_extra"
 };
