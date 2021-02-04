@@ -9,3 +9,5 @@ export * from "./group";
 export * from "./query";
 export * from "./parse";
 export * from "./test_helper";
+export * from "./jsonfy";
+export * from "./tag";

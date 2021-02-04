@@ -1,14 +1,15 @@
 import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
 import { Router, RouterOptions } from "express";
-import { GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util } from "@miqro/core";
+import { GroupPolicy, Logger, SimpleMap, Util } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
-import { ParseHandler, BasicParseOptions, ParseHandlerOptions } from "./parse";
-import { NextCallback, ParseResultsHandlerOptions } from "./common";
+import { ParseHandler, BasicParseOptions } from "./parse";
+import { NextCallback, ParseResultsHandler, ParseResultsHandlerOptions } from "./common";
 import { ResponseHandler, ResponseHandlerOptions } from "./response";
 import { SessionHandler, SessionHandlerOptions } from "./session";
 import { GroupPolicyHandler } from "./group";
-import { ParseResultsHandler } from "./"
+import { JSONfyResultsHandler } from "./jsonfy";
+import { TagResponseUUIDHandler } from "./tag";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
@@ -25,6 +26,8 @@ export interface APIHandlerOptions {
   session?: SessionHandlerOptions;
   authLogger?: Logger;
   policy?: GroupPolicy;
+  jsonfy?: true;
+  tag?: true;
 }
 
 export interface APIRoute extends APIHandlerArgs {
@@ -98,6 +101,12 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
 
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
+    if (options.jsonfy) {
+      responseHandlers.push(JSONfyResultsHandler());
+    }
+    if (options.tag) {
+      responseHandlers.push(TagResponseUUIDHandler());
+    }
     responseHandlers.push(ParseResultsHandler(options.results));
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
@@ -105,6 +114,12 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
       responseHandlers.push(ResponseHandler(options.responseHandlerOptions, logger));
     }
   } else if (options.responseHandler) {
+    if (options.jsonfy) {
+      responseHandlers.push(JSONfyResultsHandler());
+    }
+    if (options.tag) {
+      responseHandlers.push(TagResponseUUIDHandler());
+    }
     responseHandlers.push(options.responseHandler);
   }
   return ret.concat(responseHandlers);
