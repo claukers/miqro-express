@@ -20,8 +20,8 @@ declare global {
 
 export type ErrorCallback<T = void> = (err: Error, req: Request, res: Response, next: NextFunction) => T;
 
-export type Callback<T = any> = (req: Request, res: Response) => T;
-export type AsyncCallback<T = any> = (req: Request, res: Response) => Promise<T>;
+export type Callback<T = any> = (req: Request) => T;
+export type AsyncCallback<T = any> = (req: Request) => Promise<T>;
 
 export type NextCallback = (req: Request, res: Response, next: NextFunction) => void;
 export type AsyncNextCallback = (req: Request, res: Response, next: NextFunction) => Promise<void>;
@@ -50,7 +50,7 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
     logger = Util.getLogger("Handler");
   }
   return CatchHandler(async (req, res, next) => {
-    const result = await fn(req, res);
+    const result = await fn(req);
     if (logger) {
       logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
     }
