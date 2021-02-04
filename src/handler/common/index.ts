@@ -3,6 +3,7 @@ import { inspect } from "util";
 /* eslint-disable  @typescript-eslint/no-unused-vars */
 import { Logger, Session, Util, ParseOption, ParseOptionsMode } from "@miqro/core";
 import { NextFunction, Request, Response } from "express";
+import { BasicParseOptions } from "../parse";
 
 
 /* eslint-disable  @typescript-eslint/no-namespace */
@@ -87,11 +88,8 @@ export const CatchHandler = (fn: AsyncNextCallback): NextCallback => {
 
 export const NextHandler = CatchHandler;
 
-export interface ParseResultsHandlerOptions {
+export interface ParseResultsHandlerOptions extends BasicParseOptions {
   overrideError?: (e: Error) => Error;
-  mode: ParseOptionsMode;
-  options: ParseOption[];
-  ignoreUndefined?: boolean;
 }
 
 export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCallback => {

@@ -6,6 +6,6 @@ export * from "./response";
 export * from "./responses";
 export * from "./session";
 export * from "./group";
-export * from "./queryasparams";
-export * from "./validatebody";
+export * from "./query";
+export * from "./parse";
 export * from "./test_helper";

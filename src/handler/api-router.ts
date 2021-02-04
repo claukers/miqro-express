@@ -3,22 +3,21 @@ import { lstatSync, readdirSync } from "fs";
 import { Router, RouterOptions } from "express";
 import { GroupPolicy, Logger, ParseOption, ParseOptionsMode, SimpleMap, Util } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
-import { ValidateBodyHandler, ValidateBodyHandlerOptions } from "./validatebody";
+import { ParseHandler, BasicParseOptions, ParseHandlerOptions } from "./parse";
 import { NextCallback, ParseResultsHandlerOptions } from "./common";
 import { ResponseHandler, ResponseHandlerOptions } from "./response";
 import { SessionHandler, SessionHandlerOptions } from "./session";
 import { GroupPolicyHandler } from "./group";
 import { ParseResultsHandler } from "./"
-import { ValidateParamsHandler, ValidateParamsHandlerOptions, ValidateQueryHandler, ValidateQueryHandlerOptions } from "./queryasparams";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
 }
 
 export interface APIHandlerOptions {
-  query?: ValidateQueryHandlerOptions | false;
-  params?: ValidateParamsHandlerOptions | false;
-  body?: ValidateBodyHandlerOptions | false;
+  query?: BasicParseOptions | false;
+  params?: BasicParseOptions | false;
+  body?: BasicParseOptions | false;
   results?: ParseResultsHandlerOptions;
   responseHandler?: NextCallback;
   responseHandlerOptions?: ResponseHandlerOptions;
@@ -34,10 +33,7 @@ export interface APIRoute extends APIHandlerArgs {
   path?: string | string[];
 }
 
-const NO_OPTIONS: {
-  options: ParseOption[],
-  mode: ParseOptionsMode
-} = {
+const NO_OPTIONS: BasicParseOptions = {
   options: [],
   mode: "no_extra"
 };
@@ -57,19 +53,45 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     }
   }
   if (options.params) {
-    ret.push(ValidateParamsHandler(options.params));
+    ret.push(ParseHandler({
+      ...options.params,
+      requestPart: "params",
+      disableAsArray: true,
+      ignoreUndefined: true
+    }));
   } else if (options.params === false) {
-    ret.push(ValidateParamsHandler(NO_OPTIONS));
+    ret.push(ParseHandler({
+      ...NO_OPTIONS,
+      requestPart: "params",
+      disableAsArray: true,
+      ignoreUndefined: true
+    }));
   }
   if (options.query) {
-    ret.push(ValidateQueryHandler(options.query));
+    ret.push(ParseHandler({
+      ...options.query,
+      requestPart: "query",
+      disableAsArray: true,
+      ignoreUndefined: false
+    }));
   } else if (options.query === false) {
-    ret.push(ValidateQueryHandler(NO_OPTIONS));
+    ret.push(ParseHandler({
+      ...NO_OPTIONS,
+      requestPart: "query",
+      disableAsArray: true,
+      ignoreUndefined: false
+    }));
   }
   if (options.body) {
-    ret.push(ValidateBodyHandler(options.body));
+    ret.push(ParseHandler({
+      ...options.body,
+      requestPart: "body"
+    }));
   } else if (options.body === false) {
-    ret.push(ValidateBodyHandler(NO_OPTIONS));
+    ret.push(ParseHandler({
+      ...NO_OPTIONS,
+      requestPart: "body"
+    }));
   }
 
   ret = ret.concat(options.handler(logger));
