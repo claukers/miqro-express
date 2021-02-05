@@ -1,9 +1,9 @@
-import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, SimpleMap, NoNameParseOption } from "@miqro/core";
+import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, SimpleMap, NoNameParseOption, ParseOptionMap } from "@miqro/core";
 import { CatchHandler, NextCallback } from "./common";
 
 export interface BasicParseOptions {
   disableAsArray?: boolean;
-  options: ParseOption[] | SimpleMap<NoNameParseOption>;
+  options: ParseOption[] | ParseOptionMap;
   mode?: ParseOptionsMode;
   ignoreUndefined?: boolean;
 }
