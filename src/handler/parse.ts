@@ -1,4 +1,5 @@
-import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, SimpleMap, NoNameParseOption, ParseOptionMap } from "@miqro/core";
+import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap } from "@miqro/core";
+import { Request } from "express";
 import { CatchHandler, NextCallback } from "./common";
 
 export interface BasicParseOptions {
@@ -8,23 +9,49 @@ export interface BasicParseOptions {
   ignoreUndefined?: boolean;
 }
 
-export interface ParseHandlerOptions extends BasicParseOptions {
-  requestPart: "body" | "query" | "params" | "results" | "uuid" | "session";
+export interface ParseHandlerOptions {
+  query?: BasicParseOptions | false;
+  params?: BasicParseOptions | false;
+  body?: BasicParseOptions | false;
 }
 
-export const ParseHandler = (options: ParseHandlerOptions): NextCallback => {
-  return CatchHandler(async (req, res, next) => {
-    const value = req[options.requestPart];
-    if (options.disableAsArray && value instanceof Array) {
-      throw new ParseOptionsError(`${options.requestPart} cannot be an array`);
+const getParseOption = (option?: BasicParseOptions | false): BasicParseOptions =>
+  option ? option : (option === false ? {
+    options: [],
+    mode: "no_extra"
+  } : {
+      options: [],
+      mode: "add_extra"
+    });
+
+const parseRequestPart = (part: "query" | "params" | "body", req: Request, option: BasicParseOptions) => {
+  const value = req[part];
+  if (option.disableAsArray && value instanceof Array) {
+    throw new ParseOptionsError(`${part} cannot be an array`);
+  }
+  if (part === "params" && option.ignoreUndefined === undefined) {
+    option.ignoreUndefined = true
+  }
+  if (value instanceof Array) {
+    for (let i = 0; i < value.length; i++) {
+      req[part][i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined);
     }
-    if (value instanceof Array) {
-      for (let i = 0; i < value.length; i++) {
-        req[options.requestPart][i] = parseOptions(`${options.requestPart}[${i}]`, value[i], options.options, options.mode, options.ignoreUndefined);
-      }
-    } else {
-      req[options.requestPart] = parseOptions(options.requestPart, value, options.options, options.mode, options.ignoreUndefined);
-    }
+  } else {
+    req[part] = parseOptions(part, value, option.options, option.mode, option.ignoreUndefined);
+  }
+}
+
+
+export const ParseRequestHandler = (options: ParseHandlerOptions): NextCallback => {
+
+  const query = getParseOption(options.query);
+  const params = getParseOption(options.params);
+  const body = getParseOption(options.body);
+
+  return CatchHandler(async (req, _res, next) => {
+    parseRequestPart("query", req, query);
+    parseRequestPart("params", req, params);
+    parseRequestPart("body", req, body);
     next();
   });
 };

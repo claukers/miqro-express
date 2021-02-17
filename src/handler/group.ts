@@ -13,7 +13,7 @@ export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): Async
   if (!logger) {
     logger = Util.getLogger("GroupPolicyHandler");
   }
-  return async (req, res, next) => {
+  return async (req, _res, next) => {
     try {
       if (!req.session) {
         next(new ParseOptionsError(`No Session!`));

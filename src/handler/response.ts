@@ -63,10 +63,7 @@ export const ResponseHandler = (options?: ResponseHandlerOptions, logger?: Logge
     try {
       (logger as Logger).debug(`request[${req.uuid}] results[${inspect(req.results)}]`);
       const response = options ? options.createResponse(req.results) : createServiceResponse(req.results);
-      if (response === undefined) {
-        (logger as Logger).warn(`request[${req.uuid}] response[${inspect(response)}] so not responding and calling next`);
-        next();
-      } else {
+      if (response !== undefined) {
         (logger as Logger).debug(`request[${req.uuid}] response[${inspect(response)}]`);
         response.send(res);
       }
@@ -110,7 +107,7 @@ export const ErrorHandler = (options?: ErrorHandlerOptions, logger?: Logger): Er
 
 export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (req: Request) => Promise<string>; }
 
-export const HTMLResponseHandler = (logger?: Logger): NextCallback => CatchHandler(async (req, res, next) => {
+export const HTMLResponseHandler = (logger?: Logger): NextCallback => CatchHandler(async (req, res) => {
   logger = logger ? logger : Util.getLogger("HTMLResponseHandle");
   const results = getResults(req);
   const lastResult = results[results.length - 1];
@@ -135,11 +132,9 @@ export const HTMLResponseHandler = (logger?: Logger): NextCallback => CatchHandl
       logger.debug(`sending [${toSend}]`);
       res.send(toSend);
     } else {
-      logger.error("html result from HTMLResponseResult not string so last result not valid");
-      next();
+      throw new Error("html result from HTMLResponseResult not string so last result not valid");
     }
   } else {
-    logger.warn("last result not valid HTMLResponseResult");
-    next();
+    throw new Error("html result from HTMLResponseResult not string so last result not valid");
   }
 })

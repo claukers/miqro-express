@@ -6,7 +6,6 @@ export * from "./response";
 export * from "./responses";
 export * from "./session";
 export * from "./group";
-export * from "./query";
 export * from "./parse";
 export * from "./test_helper";
 export * from "./jsonfy";

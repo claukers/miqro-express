@@ -1,7 +1,7 @@
-import { getResults, NextHandler, setResults } from "./common";
+import { getResults, NextCallback, NextHandler, setResults } from "./common";
 
-export const JSONfyResultsHandler = () =>
-  NextHandler(async (req, res, next) => {
+export const JSONfyResultsHandler = (): NextCallback =>
+  NextHandler(async (req, _res, next) => {
     const results = getResults(req);
     setResults(req, JSON.parse(JSON.stringify(results)) as any[]);
     next();

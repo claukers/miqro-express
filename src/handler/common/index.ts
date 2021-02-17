@@ -123,17 +123,3 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCa
     }
   });
 };
-
-export const IdResult: ParseResultsHandlerOptions = {
-  options: [
-    { name: "id", type: "number", required: true, description: "the id of the operation." }
-  ],
-  mode: "remove_extra"
-};
-
-export const CountResult: ParseResultsHandlerOptions = {
-  options: [
-    { name: "count", type: "number", required: true, description: "the count of the operation." }
-  ],
-  mode: "remove_extra"
-};

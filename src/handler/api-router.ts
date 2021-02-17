@@ -3,7 +3,7 @@ import { lstatSync, readdirSync } from "fs";
 import { Router, RouterOptions } from "express";
 import { GroupPolicy, Logger, SimpleMap, Util } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
-import { ParseHandler, BasicParseOptions } from "./parse";
+import { ParseRequestHandler, ParseHandlerOptions } from "./parse";
 import { NextCallback, ParseResultsHandler, ParseResultsHandlerOptions } from "./common";
 import { ResponseHandler, ResponseHandlerOptions } from "./response";
 import { SessionHandler, SessionHandlerOptions } from "./session";
@@ -15,10 +15,7 @@ export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
 }
 
-export interface APIHandlerOptions {
-  query?: BasicParseOptions | false;
-  params?: BasicParseOptions | false;
-  body?: BasicParseOptions | false;
+export interface APIHandlerOptions extends ParseHandlerOptions {
   results?: ParseResultsHandlerOptions;
   responseHandler?: NextCallback;
   responseHandlerOptions?: ResponseHandlerOptions;
@@ -36,11 +33,6 @@ export interface APIRoute extends APIHandlerArgs {
   path?: string | string[];
 }
 
-const NO_OPTIONS: BasicParseOptions = {
-  options: [],
-  mode: "no_extra"
-};
-
 export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallback[] => {
   if (!logger) {
     logger = Util.getLogger("APIRouteHandler");
@@ -55,47 +47,9 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
       ret.push(GroupPolicyHandler(options.policy, authLogger));
     }
   }
-  if (options.params) {
-    ret.push(ParseHandler({
-      ...options.params,
-      requestPart: "params",
-      disableAsArray: true,
-      ignoreUndefined: true
-    }));
-  } else if (options.params === false) {
-    ret.push(ParseHandler({
-      ...NO_OPTIONS,
-      requestPart: "params",
-      disableAsArray: true,
-      ignoreUndefined: true
-    }));
-  }
-  if (options.query) {
-    ret.push(ParseHandler({
-      ...options.query,
-      requestPart: "query",
-      disableAsArray: true,
-      ignoreUndefined: false
-    }));
-  } else if (options.query === false) {
-    ret.push(ParseHandler({
-      ...NO_OPTIONS,
-      requestPart: "query",
-      disableAsArray: true,
-      ignoreUndefined: false
-    }));
-  }
-  if (options.body) {
-    ret.push(ParseHandler({
-      ...options.body,
-      requestPart: "body"
-    }));
-  } else if (options.body === false) {
-    ret.push(ParseHandler({
-      ...NO_OPTIONS,
-      requestPart: "body"
-    }));
-  }
+  ret.push(ParseRequestHandler({
+    ...options
+  }));
 
   ret = ret.concat(options.handler(logger));
 

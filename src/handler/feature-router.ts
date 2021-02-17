@@ -93,7 +93,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
   }
   if (disabled.length > 0) {
     logger.warn(`disabled features [${disabled.join(",")}]`);
-    logger.warn(`to enable them just add the env var FEATURE_TOGGLE_<feature>=true`);
+    logger.warn(`to enable them just add the env var <feature>=true`);
   } else {
     logger.debug(`no features disabled`);
   }

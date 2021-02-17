@@ -127,6 +127,7 @@ export class VerifyEndpointService implements VerifyTokenService {
     ], "add_extra");
     return true;
   }
+  /* eslint-disable  @typescript-eslint/no-unused-vars */
   protected async decodeSession(response: RequestResponse, token: string): Promise<NoTokenSession> {
     const session = response.data;
     return session as NoTokenSession;

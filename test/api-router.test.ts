@@ -10,25 +10,25 @@ process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
 Util.loadConfig();
 
-process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
-process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
-process.env.FEATURE_TOGGLE_MORGAN = "true";
-process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+process.env.DISABLE_POWERED = "true";
+process.env.REQUEST_UUID = "true";
+process.env.MORGAN = "true";
+process.env.BODY_PARSER = "true";
 process.env.BODY_PARSER_INFLATE = "true";
 process.env.BODY_PARSER_LIMIT = "100kb";
 process.env.BODY_PARSER_STRICT = "true";
 process.env.LOG_LEVEL = "debug";
 process.env.BODY_PARSER_TYPE = "application/json";
-process.env.FEATURE_TOGGLE_APINAMEBLA = "true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_POST = "true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_SINK = "true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_POST = "true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_POST = "true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_ECHO_OTHER_GET="true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_MYCUSTOM="true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_GET="true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH__NAME="true";
-process.env.FEATURE_TOGGLE_APINAMEBLA_PATCH__BLA_NAME="true";
+process.env.APINAMEBLA = "true";
+process.env.APINAMEBLA_ECHO_POST = "true";
+process.env.APINAMEBLA_ECHO_SINK = "true";
+process.env.APINAMEBLA_ECHO_OTHER_POST = "true";
+process.env.APINAMEBLA_POST = "true";
+process.env.APINAMEBLA_ECHO_OTHER_GET="true";
+process.env.APINAMEBLA_MYCUSTOM="true";
+process.env.APINAMEBLA_GET="true";
+process.env.APINAMEBLA_PATCH__NAME="true";
+process.env.APINAMEBLA_PATCH__BLA_NAME="true";
 
 describe("api-router functional tests", function () {
   this.timeout(10000);
