@@ -10,6 +10,96 @@ this module provides some express middleware for.
 
 ## handlers
 
+##### APIRouter(...)
+
+```src/main.js```
+```javascript
+...
+app.use(APIRouter({
+  dirname: apiPath,
+  ...
+}, logger));
+...
+```
+
+or 
+
+```
+npx miqro start:api [cluster_count] [cluster] <api_dirname>
+```
+
+to generate api documentation.
+
+```
+npx miqro doc:md <api_dirname> /api api.md
+```
+
+declare routes creating files in the ```api_dirname```
+
+```src/api/health.js```
+```javascript
+...
+// [GET] /api/health
+module.exports = {
+  description: "...",
+  methods: ["GET"],
+  path: "/health",
+  query: false,
+  params: false,
+  body: false,
+  results: {
+    options: [
+      { name: "status", type: "enum", enumValues: ["OK"], required: true }
+    ],
+    mode: "remove_extra",
+    ...
+  },
+  ...
+  handler: (logger: Logger, db = Database.getInstance())=>
+    Handler(async () => {
+      try {
+        await db.query({ query: "SELECT 1+1", values: [] });
+        return {
+          status: "OK"
+        };
+      } catch (e) {
+        logger.error(e);
+        throw new ParseOptionsError(`NOK`);
+      }
+    }, logger)
+}
+```
+
+```src/api/campaign/contact/post.js```
+```javascript
+...
+// [POST] /api/campaign/contact
+module.exports = {
+  description: "...",
+  query: false,
+  params: false,
+  body: {
+    options: ...,
+    ...
+  },
+  results: ...,
+  ...
+  handler: (logger: Logger, db = Database.getInstance())=> {
+    return [
+        Handler(async ({body}) => {
+          return ...
+      }, logger)
+    ];
+  }
+}
+```
+
+APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with the name of the feature to **false**.
+
+```
+API_HEALTH=false
+```
+
 ##### Handler(...) 
 
 ```javascript
