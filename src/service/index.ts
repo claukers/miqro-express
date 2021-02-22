@@ -1,12 +1,19 @@
 import { inspect } from "util";
 import { parse as cookieParse } from "cookie";
 import { decode as jwtDecode } from "jsonwebtoken";
-import { Logger, Session, NoTokenSession, UnAuthorizedError, Util, VerifyTokenService, RequestResponse } from "@miqro/core";
+import { RequestOptions, Logger, Session, NoTokenSession, UnAuthorizedError, Util, VerifyTokenService, RequestResponse } from "@miqro/core";
+import { Request } from "express";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";
 const DEFAULT_TOKEN_QUERY = "token";
 const DEFAULT_TOKEN_COOKIE = "Authorization";
+
+export interface ExtendedVerifyTokenServiceArgs { token: string, req?: Request };
+
+export interface ExtendedVerifyTokenService extends VerifyTokenService {
+  verify(args: ExtendedVerifyTokenServiceArgs): Promise<Session | null>;
+}
 
 export interface VerifyEndpointServiceOptions {
   url: string;
@@ -15,7 +22,7 @@ export interface VerifyEndpointServiceOptions {
   tokenLocationName: string;
 }
 
-export class VerifyEndpointService implements VerifyTokenService {
+export class VerifyEndpointService implements ExtendedVerifyTokenService {
   protected logger: Logger;
 
   constructor(protected options?: VerifyEndpointServiceOptions) {
@@ -46,7 +53,7 @@ export class VerifyEndpointService implements VerifyTokenService {
     this.logger = Util.getLogger("VerifyEndpointService");
   }
 
-  public async verify({ token }: { token: string }): Promise<Session | null> {
+  public async verify({ token, req }: ExtendedVerifyTokenServiceArgs): Promise<Session | null> {
     try {
       let response = null;
       const tokenVerifyLocation = this.options ? this.options.tokenLocation : Util.checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION])[0];
@@ -56,43 +63,43 @@ export class VerifyEndpointService implements VerifyTokenService {
         case "header":
           const tokenHeaderLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER])[0];
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
-          response = await Util.request({
+          response = await this.getResponse({
             url,
             headers: {
               [tokenHeaderLocation]: token
             },
             method
-          });
+          }, req);
           break;
         case "query":
           const tokenQueryLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY])[0];
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
-          response = await Util.request({
+          response = await this.getResponse({
             url,
             query: {
               [tokenQueryLocation]: token
             },
             method
-          });
+          }, req);
           break;
         case "cookie":
           const tokenCookieLocation = this.options ? this.options.tokenLocationName : Util.checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
           this.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
-          response = await Util.request({
+          response = await this.getResponse({
             url,
             method,
             headers: {
               Cookie: `${tokenCookieLocation}=${token}; Path=/; HttpOnly;`
             }
-          });
+          }, req);
           break;
         default:
           throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header, query or cookie)`);
       }
       if (response) {
         /* eslint-disable  @typescript-eslint/no-var-requires */
-        const session = await this.decodeSession(response, token);
-        if (!this.checkSession(session)) {
+        const session = await this.decodeSession(response, token, req);
+        if (!this.checkSession(session, req)) {
           this.logger.warn(`unauthorized token not valid [${token}]`);
           return null;
         } else {
@@ -119,7 +126,10 @@ export class VerifyEndpointService implements VerifyTokenService {
       throw new UnAuthorizedError(`Fail to authenticate token!`);
     }
   }
-  protected checkSession(session: NoTokenSession): boolean {
+  protected async getResponse(config: RequestOptions, request?: Request): Promise<RequestResponse> {
+    return Util.request(config);
+  }
+  protected checkSession(session: NoTokenSession, request?: Request): boolean {
     Util.parseOptions("session", session, [
       { name: "username", required: true, type: "string" },
       { name: "account", required: true, type: "string" },
@@ -128,7 +138,7 @@ export class VerifyEndpointService implements VerifyTokenService {
     return true;
   }
   /* eslint-disable  @typescript-eslint/no-unused-vars */
-  protected async decodeSession(response: RequestResponse, token: string): Promise<NoTokenSession> {
+  protected async decodeSession(response: RequestResponse, token: string, request?: Request): Promise<NoTokenSession> {
     const session = response.data;
     return session as NoTokenSession;
   }
@@ -149,7 +159,7 @@ export class VerifyJWTEndpointService extends VerifyEndpointService {
     this.logger = Util.getLogger("VerifyTokenEndpointService");
   }
 
-  protected async decodeSession(response: RequestResponse, token: string): Promise<Session> {
+  protected async decodeSession(response: RequestResponse, token: string, request?: Request): Promise<Session> {
     const session = jwtDecode(token);
     return session as Session;
   }

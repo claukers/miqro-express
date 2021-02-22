@@ -1,5 +1,6 @@
 import { AsyncNextCallback } from "./common";
-import { Logger, UnAuthorizedError, Util, VerifyTokenService } from "@miqro/core";
+import { Logger, UnAuthorizedError, Util } from "@miqro/core";
+import { ExtendedVerifyTokenService } from "../service";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";
@@ -7,7 +8,7 @@ const DEFAULT_TOKEN_QUERY = "token";
 const DEFAULT_TOKEN_COOKIE = "Authorization";
 
 export interface SessionHandlerOptions {
-  authService: VerifyTokenService;
+  authService: ExtendedVerifyTokenService;
   options?: {
     tokenLocation: "header" | "query" | "cookie";
     tokenLocationName: string;
@@ -69,7 +70,7 @@ export const SessionHandler = (config: SessionHandlerOptions, logger?: Logger): 
         // (logger as Logger).error(message);
         next(new UnAuthorizedError(message));
       } else {
-        const session = await config.authService.verify({ token });
+        const session = await config.authService.verify({ token, req });
         if (!session) {
           const message = `Fail to authenticate token [${token}]!`;
           (logger as Logger).warn(message);
