@@ -9,7 +9,7 @@ const DEFAULT_TOKEN_HEADER = "Authorization";
 const DEFAULT_TOKEN_QUERY = "token";
 const DEFAULT_TOKEN_COOKIE = "Authorization";
 
-export interface ExtendedVerifyTokenServiceArgs { token: string, req?: Request };
+export interface ExtendedVerifyTokenServiceArgs { token: string, req?: Request }
 
 export interface ExtendedVerifyTokenService extends VerifyTokenService {
   verify(args: ExtendedVerifyTokenServiceArgs): Promise<Session | null>;
