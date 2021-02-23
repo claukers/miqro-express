@@ -13,7 +13,7 @@ import { TagResponseUUIDHandler } from "./tag";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
-  identifier: string;
+  identifier?: string;
 }
 
 export interface APIHandlerOptions extends ParseHandlerOptions {
@@ -34,16 +34,17 @@ export interface APIRoute extends APIHandlerArgs {
 }
 
 export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallback[] => {
+  const identifier = options.identifier ? options.identifier : "APIHandler";
   if (!logger) {
-    logger = Util.getLogger(options.identifier);
+    logger = Util.getLogger(identifier);
   }
   const ret: NextCallback[] = [];
   if (options.session || options.policy) {
     if (options.session) {
-      ret.push(SessionHandler(options.session, getLogger(`${options.identifier}_SESSION`)));
+      ret.push(SessionHandler(options.session, getLogger(`${identifier}_SESSION`)));
     }
     if (options.policy) {
-      ret.push(GroupPolicyHandler(options.policy, getLogger(`${options.identifier}_POLICY`)));
+      ret.push(GroupPolicyHandler(options.policy, getLogger(`${identifier}_POLICY`)));
     }
   }
   ret.push(ParseRequestHandler({
@@ -63,23 +64,23 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
     if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler(getLogger(`${options.identifier}_JSONFY`)));
+      responseHandlers.push(JSONfyResultsHandler(getLogger(`${identifier}_JSONFY`)));
     }
     if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler(getLogger(`${options.identifier}_TAG`)));
+      responseHandlers.push(TagResponseUUIDHandler(getLogger(`${identifier}_TAG`)));
     }
-    responseHandlers.push(ParseResultsHandler(options.results, getLogger(`${options.identifier}_RESULTS`)));
+    responseHandlers.push(ParseResultsHandler(options.results, getLogger(`${identifier}_RESULTS`)));
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
     } else {
-      responseHandlers.push(ResponseHandler(options.responseHandlerOptions, getLogger(`${options.identifier}_RESPONSE`)));
+      responseHandlers.push(ResponseHandler(options.responseHandlerOptions, getLogger(`${identifier}_RESPONSE`)));
     }
   } else if (options.responseHandler) {
     if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler(getLogger(`${options.identifier}_JSONFY`)));
+      responseHandlers.push(JSONfyResultsHandler(getLogger(`${identifier}_JSONFY`)));
     }
     if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler(getLogger(`${options.identifier}_TAG`)));
+      responseHandlers.push(TagResponseUUIDHandler(getLogger(`${identifier}_TAG`)));
     }
     responseHandlers.push(options.responseHandler);
   }
@@ -163,8 +164,8 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           const identifier = newFeatureSubPath;
           const apiHandler: FeatureHandler = (logger: Logger) => {
             return APIHandler({
-              ...route,
               identifier,
+              ...route,
               handler: realHandler
             }, logger);
           };
@@ -183,8 +184,8 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
         const identifier = newFeature;
         const apiHandler: FeatureHandler = (logger: Logger) => {
           return APIHandler({
-            ...route,
             identifier,
+            ...route,
             handler: realHandler
           }, logger);
         };
