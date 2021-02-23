@@ -1,4 +1,5 @@
 import { APIResponse } from "./api";
+export { MethodNotImplementedError as NotFoundError } from "@miqro/core";
 
 export class NotFoundResponse extends APIResponse {
   constructor() {

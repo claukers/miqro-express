@@ -15,27 +15,29 @@ export const TestHelper = async (app: Express, options: RequestOptions, cb?: (re
       ...options,
       socketPath: unixSocket
     }).then((response) => {
-      server.close();
-      if (cb) {
-        try {
-          cb(response);
-        } catch (ee) {
-          reject(ee);
+      server.close(()=>{
+        if (cb) {
+          try {
+            cb(response);
+          } catch (ee) {
+            reject(ee);
+          }
         }
-      }
-      resolve(response);
+        resolve(response);
+      });
     }).catch((e: ResponseError) => {
-      server.close();
-      if (cb) {
-        try {
-          cb(e as any);
-        } catch (ee) {
-          reject(ee);
+      server.close(()=>{
+        if (cb) {
+          try {
+            cb(e as any);
+          } catch (ee) {
+            reject(ee);
+          }
+          resolve();
+        } else {
+          reject(e);
         }
-        resolve();
-      } else {
-        reject(e);
-      }
+      });
     });
   });
 }

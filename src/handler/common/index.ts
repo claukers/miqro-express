@@ -24,7 +24,9 @@ export type Callback<T = any> = (req: Request) => T;
 export type AsyncCallback<T = any> = (req: Request) => Promise<T>;
 
 export type NextCallback = (req: Request, res: Response, next: NextFunction) => void;
-export type AsyncNextCallback = (req: Request, res: Response, next: NextFunction) => Promise<void>;
+export type AsyncNextCallback = (req: Request, res: Response, next: NextFunction) => void;
+
+export type NextHandlerCallback = (req: Request, res: Response) => Promise<boolean>;
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const setResults = (req: Request, results: any[]): void => {
@@ -39,17 +41,11 @@ export const getResults = (req: Request): any[] => {
   return (req as Request).results;
 };
 
-/**
- * Wraps an async express request handler but catches the return value and appends it to req.results before calling next(). if the function throws the error is passed as next(..)
- *
- * @param fn  express request handler ´async function´.
- * @param logger  [OPTIONAL] logger for logging errors ´Logger´.
- */
 export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCallback => {
   if (!logger) {
     logger = Util.getLogger("Handler");
   }
-  return CatchHandler(async (req, res, next) => {
+  return NextHandler(async (req, res) => {
     const result = await fn(req);
     if (logger) {
       logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
@@ -57,43 +53,43 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
     const results = getResults(req)
     results.push(result);
     setResults(req, results);
-    next();
+    return true;
   });
 };
 
-/**
- * Wraps an async express handler with next argument and if the function throws it's passed as next(...)
- *
- * @param fn  express request handler ´async function´.
- */
-export const CatchHandler = (fn: AsyncNextCallback): NextCallback => {
+export const NextHandler = (fn: NextHandlerCallback, logger?: Logger): NextCallback => {
+  if (!logger) {
+    logger = Util.getLogger("CatchHandler");
+  }
   return async (req, res, next) => {
-    let handleError: ((err: Error) => void) | any = (err: Error) => {
-      handleError = null;
-      next(err);
-    }
     try {
-      await fn(req, res, (err?: any) => {
-        if (err) {
-          handleError(err);
-        } else {
-          next();
+      const callNext = await fn(req, res);
+      if (callNext === true) {
+        if (logger) {
+          logger.debug(`request[${req.uuid}] calling next`);
         }
-      });
+        next();
+      } else if (callNext === false) {
+        if (logger) {
+          logger.debug(`request[${req.uuid}] ignoring calling next because callback return [${callNext}]`);
+        }
+      } else {
+        if (logger) {
+          logger.warn(`request[${req.uuid}] ignoring calling next because callback return [${callNext}]`);
+        }
+      }
     } catch (e) {
-      handleError(e);
+      next(e);
     }
   };
 };
-
-export const NextHandler = CatchHandler;
 
 export interface ParseResultsHandlerOptions extends BasicParseOptions {
   overrideError?: (e: Error) => Error;
 }
 
 export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCallback => {
-  return NextHandler(async (req, res, next) => {
+  return NextHandler(async (req, res) => {
     const results = getResults(req);
     try {
       if (results && !req.query.attributes) {
@@ -110,10 +106,8 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCa
           }
         }
         setResults(req, mappedResults);
-        next();
-      } else {
-        next();
       }
+      return true;
     } catch (e) {
       if (e.message === "ParseOptionsError" && options.overrideError) {
         throw options.overrideError(e);

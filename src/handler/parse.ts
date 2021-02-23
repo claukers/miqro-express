@@ -1,6 +1,6 @@
 import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap } from "@miqro/core";
 import { Request } from "express";
-import { CatchHandler, NextCallback } from "./common";
+import { NextCallback, NextHandler } from "./common";
 
 export interface BasicParseOptions {
   disableAsArray?: boolean;
@@ -48,10 +48,10 @@ export const ParseRequestHandler = (options: ParseHandlerOptions): NextCallback 
   const params = getParseOption(options.params);
   const body = getParseOption(options.body);
 
-  return CatchHandler(async (req, _res, next) => {
+  return NextHandler(async (req, _res) => {
     parseRequestPart("query", req, query);
     parseRequestPart("params", req, params);
     parseRequestPart("body", req, body);
-    next();
+    return true;
   });
 };
