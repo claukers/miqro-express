@@ -56,7 +56,7 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
     results.push(result);
     setResults(req, results);
     return true;
-  });
+  }, logger);
 };
 
 export const NextHandler = (fn: NextHandlerCallback, logger?: Logger): NextCallback => {
@@ -109,12 +109,12 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?
           }
         }
         if (logger) {
-          logger.debug(`results mapped to ${inspect(mappedResults)}`);
+          logger.debug(`request[${req.uuid}] req.results mapped to ${inspect(mappedResults)}`);
         }
         setResults(req, mappedResults);
       } else {
         if (logger && req.query.attributes) {
-          logger.debug(`ignoring mapping result because req.query.attributes was send`);
+          logger.debug(`request[${req.uuid}] ignoring mapping result because req.query.attributes was send`);
         }
       }
       return true;
