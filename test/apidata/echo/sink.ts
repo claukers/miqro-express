@@ -40,5 +40,7 @@ module.exports = {
     ],
     mode: "no_extra"
   },
+  tag: true,
+  jsonfy: true,
   handler: echo
 };
