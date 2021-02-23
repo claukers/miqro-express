@@ -38,9 +38,9 @@ const parseRequestPart = (part: "query" | "params" | "body", req: Request, optio
       req[part][i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined);
     }
   } else {
-    req[part] = parseOptions(part, value, option.options, option.mode, option.ignoreUndefined);
+    req[part] = parseOptions(`${part}`, value, option.options, option.mode, option.ignoreUndefined);
   }
-  logger.debug(`req.${part} parsed to [${inspect(req[part])}]`);
+  logger.debug(`request[${req.uuid}] req.${part} parsed to [${inspect(req[part])}]`);
 }
 
 
@@ -51,9 +51,16 @@ export const ParseRequestHandler = (options: ParseHandlerOptions, logger?: Logge
   const body = getParseOption(options.body);
 
   return NextHandler(async (req, _res) => {
-    parseRequestPart("query", req, query, l);
-    parseRequestPart("params", req, params, l);
-    parseRequestPart("body", req, body, l);
+    try {
+      parseRequestPart("query", req, query, l);
+      parseRequestPart("params", req, params, l);
+      parseRequestPart("body", req, body, l);
+    } catch (e) {
+      if (logger) {
+        logger.warn(`request[${req.uuid}] error parsing request: ${e.message}`);
+      }
+      throw e;
+    }
     return true;
   }, l);
 };
