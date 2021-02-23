@@ -1,7 +1,5 @@
 export * from "./proxyutils";
-import { inspect } from "util";
-import { Logger, Session, SimpleMap, parseOptions, getLogger } from "@miqro/core";
-import { BasicParseOptions } from "../parse";
+import { Logger, Session, SimpleMap, getLogger } from "@miqro/core";
 import { IncomingHttpHeaders, IncomingMessage, ServerResponse } from "http";
 import { ParsedUrlQuery } from "querystring";
 import { URL } from "url";
@@ -20,7 +18,7 @@ export class Context extends EventEmitter {
   public params: SimpleMap<string>;
   public query: ParsedUrlQuery;
   public buffer: Buffer;
-  public body: object;
+  public body: Record<string, unknown>;
   public uuid: string;
   public session?: Session;
   public results: any[];

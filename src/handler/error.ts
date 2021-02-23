@@ -1,4 +1,3 @@
-import { Logger } from "@miqro/core";
 import { Context, Handler } from "./common";
 import { APIResponse, BadRequestResponse, ErrorResponse, ForbiddenResponse, NotFoundResponse, UnAuthorizedResponse } from "./responses";
 

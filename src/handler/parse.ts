@@ -1,4 +1,4 @@
-import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap, Logger, getLogger } from "@miqro/core";
+import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap } from "@miqro/core";
 import { inspect } from "util";
 import { Handler, Context } from "./common";
 

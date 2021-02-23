@@ -65,7 +65,7 @@ export class App {
       });
     };
   }
-  public add(handlers: Array<AppHandler | Handler> | AppHandler | Handler) {
+  public add(handlers: Array<AppHandler | Handler> | AppHandler | Handler): App {
     if (handlers instanceof Array) {
       for (const h of handlers) {
         if (typeof h === "function") {
@@ -85,7 +85,7 @@ export class App {
       } else {
         this.handlers.push(handlers);
       }
-
     }
+    return this;
   }
 }
