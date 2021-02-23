@@ -4,10 +4,15 @@ import express, { Express } from "express";
 import { setupMiddleware } from "../middleware";
 import { APIRouter, APIRouterOptions } from "./api-router";
 import { ErrorHandler } from "./response";
+import { v4 } from "uuid";
 
-export const TestHelper = async (app: Express, options: RequestOptions, cb?: (response: RequestResponse) => void, unixSocket = "/tmp/socket.12345"): Promise<RequestResponse | void> => {
+export const TestHelper = async (app: Express, options: RequestOptions, cb?: (response: RequestResponse) => void): Promise<RequestResponse | void> => {
+  const unixSocket = `/tmp/socket.${v4()}`;
   if (existsSync(unixSocket)) {
+    console.log("unlink " + unixSocket);
     unlinkSync(unixSocket);
+  } else {
+    console.log("usocket free" + unixSocket);
   }
   const server = app.listen(unixSocket);
   return new Promise<RequestResponse | void>((resolve, reject) => {
@@ -15,7 +20,7 @@ export const TestHelper = async (app: Express, options: RequestOptions, cb?: (re
       ...options,
       socketPath: unixSocket
     }).then((response) => {
-      server.close(()=>{
+      server.close(() => {
         if (cb) {
           try {
             cb(response);
@@ -26,7 +31,7 @@ export const TestHelper = async (app: Express, options: RequestOptions, cb?: (re
         resolve(response);
       });
     }).catch((e: ResponseError) => {
-      server.close(()=>{
+      server.close(() => {
         if (cb) {
           try {
             cb(e as any);
@@ -42,10 +47,10 @@ export const TestHelper = async (app: Express, options: RequestOptions, cb?: (re
   });
 }
 
-export const APITestHelper = async (api: APIRouterOptions, options: RequestOptions, cb?: (response: RequestResponse) => void, logger?: Logger, unixSocket = "/tmp/socket.12345"): Promise<RequestResponse | void> => {
+export const APITestHelper = async (api: APIRouterOptions, options: RequestOptions, cb?: (response: RequestResponse) => void, logger?: Logger): Promise<RequestResponse | void> => {
   const app = express();
   await setupMiddleware(app, logger);
   app.use(APIRouter(api, logger));
   app.use(ErrorHandler(undefined, logger));
-  return TestHelper(app, options, cb, unixSocket);
+  return TestHelper(app, options, cb);
 }

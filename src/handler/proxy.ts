@@ -1,6 +1,6 @@
-import {Logger, Util} from "@miqro/core";
-import {inspect} from "util";
-import {createProxyResponse, Handler, NextCallback, ProxyOptionsInterface} from "./common";
+import { Logger, Util } from "@miqro/core";
+import { inspect } from "util";
+import { createProxyResponse, Handler, NextCallback, ProxyOptionsInterface } from "./common";
 
 /**
  * Wraps a request and add the response to req.results
@@ -19,11 +19,15 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): N
     if (requestConfig) {
       try {
         if (logger) {
-          logger.debug(`request[${req.uuid}] proxy resolveRequest to [${inspect(requestConfig)}]`);
+          logger.debug(`request[${req.uuid}] proxy resolveRequest to [${inspect(requestConfig, {
+            depth: 1
+          })}]`);
         }
         const response = await Util.request(requestConfig);
         if (logger) {
-          logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+          logger.debug(`request[${req.uuid}] response[${inspect(response, {
+            depth: 0
+          })}]`);
         }
         return response;
       } catch (e) {
@@ -46,12 +50,14 @@ export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): N
  */
 export const ProxyResponseHandler = (logger?: Logger): NextCallback => {
   if (!logger) {
-    logger = Util.getLogger("ResponseHandler");
+    logger = Util.getLogger("ProxyResponseHandler");
   }
   return (req, res, next) => {
     const response = createProxyResponse(req);
     if (logger) {
-      logger.debug(`request[${req.uuid}] response[${inspect(response)}]`);
+      logger.debug(`request[${req.uuid}] response[${inspect(response, {
+        depth: 1
+      })}]`);
     }
     if (!response) {
       next();

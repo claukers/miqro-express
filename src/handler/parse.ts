@@ -1,5 +1,6 @@
-import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap } from "@miqro/core";
+import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap, Logger, getLogger } from "@miqro/core";
 import { Request } from "express";
+import { inspect } from "util";
 import { NextCallback, NextHandler } from "./common";
 
 export interface BasicParseOptions {
@@ -24,7 +25,7 @@ const getParseOption = (option?: BasicParseOptions | false): BasicParseOptions =
       mode: "add_extra"
     });
 
-const parseRequestPart = (part: "query" | "params" | "body", req: Request, option: BasicParseOptions) => {
+const parseRequestPart = (part: "query" | "params" | "body", req: Request, option: BasicParseOptions, logger: Logger) => {
   const value = req[part];
   if (option.disableAsArray && value instanceof Array) {
     throw new ParseOptionsError(`${part} cannot be an array`);
@@ -33,25 +34,28 @@ const parseRequestPart = (part: "query" | "params" | "body", req: Request, optio
     option.ignoreUndefined = true
   }
   if (value instanceof Array) {
+    logger.debug(`req.${part} is array so parsing each element`);
     for (let i = 0; i < value.length; i++) {
       req[part][i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined);
     }
   } else {
+    logger.debug(`req.${part} is not an array so parsing the entire element`);
     req[part] = parseOptions(part, value, option.options, option.mode, option.ignoreUndefined);
   }
+  logger.debug(`req.${part} parsed to [${inspect(req[part])}]`);
 }
 
 
-export const ParseRequestHandler = (options: ParseHandlerOptions): NextCallback => {
-
+export const ParseRequestHandler = (options: ParseHandlerOptions, logger?: Logger): NextCallback => {
+  const l = logger ? logger : getLogger("ParseRequestHandler");
   const query = getParseOption(options.query);
   const params = getParseOption(options.params);
   const body = getParseOption(options.body);
 
   return NextHandler(async (req, _res) => {
-    parseRequestPart("query", req, query);
-    parseRequestPart("params", req, params);
-    parseRequestPart("body", req, body);
+    parseRequestPart("query", req, query, l);
+    parseRequestPart("params", req, params, l);
+    parseRequestPart("body", req, body, l);
     return true;
-  });
+  }, l);
 };

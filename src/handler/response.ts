@@ -107,12 +107,14 @@ export const ErrorHandler = (options?: ErrorHandlerOptions, logger?: Logger): Er
 
 export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (req: Request) => Promise<string>; }
 
-export const HTMLResponseHandler = (logger?: Logger): NextCallback =>
-  NextHandler(async (req, res) => {
-    logger = logger ? logger : Util.getLogger("HTMLResponseHandle");
+export const HTMLResponseHandler = (logger?: Logger): NextCallback => {
+  logger = logger ? logger : Util.getLogger("HTMLResponseHandle");
+  return NextHandler(async (req, res) => {
     const results = getResults(req);
     const lastResult = results[results.length - 1];
-    logger.debug(`last result is [${lastResult}]`);
+    if (logger) {
+      logger.debug(`last result is [${lastResult}]`);
+    }
     if (lastResult && typeof lastResult === "string" ||
       (
         (typeof lastResult.headers === "object" || lastResult.headers === undefined) &&
@@ -130,7 +132,9 @@ export const HTMLResponseHandler = (logger?: Logger): NextCallback =>
         const headerNames = Object.keys(headers);
         for (const h of headerNames)
           res.setHeader(h, headers[h]);
-        logger.debug(`sending [${toSend}]`);
+        if (logger) {
+          logger.debug(`sending [${toSend}]`);
+        }
         res.send(toSend);
         return false;
       } else {
@@ -139,4 +143,6 @@ export const HTMLResponseHandler = (logger?: Logger): NextCallback =>
     } else {
       throw new Error("html result from HTMLResponseResult not string so last result not valid");
     }
-  });
+  }, logger);
+}
+

@@ -1,7 +1,7 @@
 export * from "./proxyutils";
 import { inspect } from "util";
 /* eslint-disable  @typescript-eslint/no-unused-vars */
-import { Logger, Session, Util, ParseOption, ParseOptionsMode } from "@miqro/core";
+import { Logger, Session, Util, ParseOption, ParseOptionsMode, getLogger } from "@miqro/core";
 import { NextFunction, Request, Response } from "express";
 import { BasicParseOptions } from "../parse";
 
@@ -48,7 +48,9 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
   return NextHandler(async (req, res) => {
     const result = await fn(req);
     if (logger) {
-      logger.debug(`request[${req.uuid}] push to results[${inspect(result)}]`);
+      logger.debug(`request[${req.uuid}] push to results[${inspect(result, {
+        depth: 0
+      })}]`);
     }
     const results = getResults(req)
     results.push(result);
@@ -59,7 +61,7 @@ export const Handler = (fn: AsyncCallback | Callback, logger?: Logger): NextCall
 
 export const NextHandler = (fn: NextHandlerCallback, logger?: Logger): NextCallback => {
   if (!logger) {
-    logger = Util.getLogger("CatchHandler");
+    logger = Util.getLogger("NextHandler");
   }
   return async (req, res, next) => {
     try {
@@ -88,7 +90,8 @@ export interface ParseResultsHandlerOptions extends BasicParseOptions {
   overrideError?: (e: Error) => Error;
 }
 
-export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCallback => {
+export const ParseResultsHandler = (options: ParseResultsHandlerOptions, logger?: Logger): NextCallback => {
+  logger = logger ? logger : getLogger("ParseResultsHandler");
   return NextHandler(async (req, res) => {
     const results = getResults(req);
     try {
@@ -105,7 +108,14 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCa
             mappedResults.push(Util.parseOptions(`results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
           }
         }
+        if (logger) {
+          logger.debug(`results mapped to ${inspect(mappedResults)}`);
+        }
         setResults(req, mappedResults);
+      } else {
+        if (logger && req.query.attributes) {
+          logger.debug(`ignoring mapping result because req.query.attributes was send`);
+        }
       }
       return true;
     } catch (e) {
@@ -115,5 +125,5 @@ export const ParseResultsHandler = (options: ParseResultsHandlerOptions): NextCa
         throw e;
       }
     }
-  });
+  }, logger);
 };

@@ -1,15 +1,15 @@
-import {describe, it} from "mocha";
+import { describe, it } from "mocha";
 import express from "express";
-import path, {resolve} from "path";
-import {strictEqual} from "assert";
-import {Util} from "@miqro/core";
-import {setupMiddleware} from "../src/middleware";
-import {APIRouter, APITestHelper, TestHelper as FuncTestHelper, ErrorHandler} from "../src";
+import path, { resolve } from "path";
+import { strictEqual } from "assert";
+import { Util } from "@miqro/core";
+import { setupMiddleware } from "../src/middleware";
+import { APIRouter, APITestHelper, TestHelper as FuncTestHelper, ErrorHandler } from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
 Util.loadConfig();
-
+;
 process.env.DISABLE_POWERED = "true";
 process.env.REQUEST_UUID = "true";
 process.env.MORGAN = "true";
@@ -24,11 +24,11 @@ process.env.APINAMEBLA_ECHO_POST = "true";
 process.env.APINAMEBLA_ECHO_SINK = "true";
 process.env.APINAMEBLA_ECHO_OTHER_POST = "true";
 process.env.APINAMEBLA_POST = "true";
-process.env.APINAMEBLA_ECHO_OTHER_GET="true";
-process.env.APINAMEBLA_MYCUSTOM="true";
-process.env.APINAMEBLA_GET="true";
-process.env.APINAMEBLA_PATCH__NAME="true";
-process.env.APINAMEBLA_PATCH__BLA_NAME="true";
+process.env.APINAMEBLA_ECHO_OTHER_GET = "true";
+process.env.APINAMEBLA_MYCUSTOM = "true";
+process.env.APINAMEBLA_GET = "true";
+process.env.APINAMEBLA_PATCH__NAME = "true";
+process.env.APINAMEBLA_PATCH__BLA_NAME = "true";
 
 describe("api-router functional tests", function () {
   this.timeout(10000);
@@ -44,7 +44,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla`,
       method: "post"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "45");
       strictEqual(status, 200);
@@ -66,7 +66,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla`,
       method: "post"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "45");
       strictEqual(status, 200);
@@ -89,7 +89,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla`,
       method: "put"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "46");
       strictEqual(status, 200);
@@ -112,7 +112,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla`,
       method: "delete"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "46");
       strictEqual(status, 200);
@@ -135,7 +135,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla/blo`,
       method: "patch"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
@@ -158,7 +158,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla/bla/blo`,
       method: "patch"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
@@ -181,7 +181,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBla/blo`,
       method: "get"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
@@ -207,7 +207,7 @@ describe("api-router functional tests", function () {
         bla: 1
       }
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
@@ -236,7 +236,7 @@ describe("api-router functional tests", function () {
         }
       });
       if (res) {
-        const {status, data, headers} = res;
+        const { status, data, headers } = res;
         strictEqual(headers['content-type'], "application/json; charset=utf-8");
         strictEqual(headers['content-length'], "35");
         strictEqual(status, 200);
@@ -265,7 +265,7 @@ describe("api-router functional tests", function () {
         bla: 1
       }
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
@@ -289,7 +289,7 @@ describe("api-router functional tests", function () {
       url: `/api/apiNameBlo/echo/other/myname`,
       method: "get"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "40");
       strictEqual(status, 200);
@@ -318,7 +318,7 @@ describe("api-router functional tests", function () {
       },
       method: "put"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "39");
       strictEqual(status, 200);
@@ -349,14 +349,33 @@ describe("api-router functional tests", function () {
       },
       method: "put"
     }, (res) => {
-      const {status, data, headers} = res;
+      const { status, data, headers } = res;
       //console.log({status, data, headers});
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "37");
       strictEqual(status, 200);
       strictEqual(data.success, true);
       strictEqual(data.result.bla, "1");
-      done();
+
+      FuncTestHelper(app, {
+        url: `/api/apiNameBlo/sink/echo/bbb/1`,
+        query: {
+          bla: "bla"
+        },
+        data: {
+          bla: "bla"
+        },
+        method: "put"
+      }, (res2) => {
+        //console.log({status, data, headers});
+        strictEqual(res2.headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(res2.headers['content-length'], "37");
+        strictEqual(res2.status, 200);
+        strictEqual(res2.data.success, true);
+        strictEqual(res2.data.result.bla, "1");
+
+        done();
+      });
     });
   });
 
@@ -381,8 +400,8 @@ describe("api-router functional tests", function () {
       },
       method: "put"
     }, (res) => {
-      const {status, data, headers} = res;
-      console.log({status, data, headers});
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "51");
       strictEqual(status, 400);
