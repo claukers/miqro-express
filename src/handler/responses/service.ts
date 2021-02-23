@@ -1,4 +1,4 @@
-import {APIResponse} from "./api";
+import { APIResponse } from "./api";
 
 export class ServiceResponse extends APIResponse {
   /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
@@ -6,9 +6,6 @@ export class ServiceResponse extends APIResponse {
     super({
       success: !!result,
       result
-    });
-    if (!result) {
-      this.status = 400;
-    }
+    }, result ? 200 : 400);
   }
 }

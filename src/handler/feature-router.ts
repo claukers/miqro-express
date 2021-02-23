@@ -1,9 +1,8 @@
-import { FeatureToggle, Logger, SimpleMap, Util } from "@miqro/core";
-import { Router, RouterOptions } from "express";
-import { SessionHandler, SessionHandlerOptions } from "./session";
-import { NextCallback } from "./common";
+import { getLogger, isFeatureEnabled, Logger, SimpleMap } from "@miqro/core";
+import { Handler } from "./common";
+import { AppHandler } from "./router";
 
-export type FeatureHandler = (logger: Logger) => NextCallback[] | NextCallback;
+export type FeatureHandler = Array<Handler> | Handler;
 
 export interface FeatureRouterPathOptions {
   identifier: string;
@@ -13,41 +12,17 @@ export interface FeatureRouterPathOptions {
 }
 
 export interface FeatureRouterOptions {
-  options?: RouterOptions,
   features: SimpleMap<FeatureRouterPathOptions>;
-  auth?: {
-    config: SessionHandlerOptions;
-    identifier: string;
-  }; // if undefined all features in this router will be set without it;
-  only?: string[]; // if undefined all features are set-up (adding some feature here doesnt by-pass the FeatureToggle.isFeatureEnabled(..) call)
 }
 
 export const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
 
-export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
+export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Array<AppHandler> => {
   if (!logger) {
-    logger = Util.getLogger("FeatureRouter");
+    logger = getLogger("FeatureRouter");
   }
-  const toSetup = options.only ? options.only : Object.keys(options.features);
-  const router = Router(options.options);
-  if (options.auth) {
-    const { config, identifier } = options.auth;
-    if (!config.authService) {
-      throw new Error(`no auth service`);
-    } else if (!identifier) {
-      throw new Error(`no auth identifier`);
-    } else {
-      logger.info(`setting up session handler on features [${toSetup.join(",")}]`);
-      router.use(
-        SessionHandler(
-          config,
-          Util.getLogger(identifier)
-        ) as any
-      );
-    }
-  } else {
-    logger.debug(`NOT setting up session handler on features [${toSetup.join(",")}]`);
-  }
+  const ret: Array<AppHandler> = [];
+  const toSetup = Object.keys(options.features);
   const enabled: string[] = [];
   const disabled: string[] = [];
   for (const featureName of toSetup) {
@@ -74,12 +49,16 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
         } else {
           throw new Error(`feature [${featureName}] no methods defined`);
         }
-        if (FeatureToggle.isFeatureEnabled(featureName)) {
+        if (isFeatureEnabled(featureName)) {
           logger.debug(`feature [${featureName}] enabled`);
           enabled.push(featureName);
           for (const method of methods) {
             logger.info(`setting up feature [${featureName}] on [${method.toLowerCase()}][${path}]`);
-            (router as any)[method.toLowerCase()](path, implementation(Util.getLogger(identifier)));
+            ret.push({
+              method: method.toLocaleLowerCase(),
+              pathname: path,
+              handler: implementation
+            });
           }
         } else {
           logger.debug(`feature [${featureName}] disabled`);
@@ -97,5 +76,5 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
   } else {
     logger.debug(`no features disabled`);
   }
-  return router;
+  return ret;
 };

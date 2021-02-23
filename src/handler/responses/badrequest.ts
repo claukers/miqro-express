@@ -6,7 +6,6 @@ export class BadRequestResponse extends APIResponse {
     super({
       success: false,
       message
-    });
-    this.status = 400;
+    }, 400);
   }
 }

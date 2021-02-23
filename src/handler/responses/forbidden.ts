@@ -5,7 +5,6 @@ export class ForbiddenResponse extends APIResponse {
     super({
       success: false,
       message
-    });
-    this.status = 403;
+    }, 403);
   }
 }

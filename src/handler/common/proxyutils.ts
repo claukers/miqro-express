@@ -1,16 +1,16 @@
-import {Request} from "express";
-import {RequestOptions} from "@miqro/core";
-import {ProxyResponse} from "../responses/proxy";
+import { RequestOptions } from "@miqro/core";
+import { Context } from ".";
+import { ProxyResponse } from "../responses/proxy";
 
 export interface ProxyServiceInterface {
-  resolveRequest(req: Request): Promise<RequestOptions>;
+  resolveRequest(ctx: Context): Promise<RequestOptions>;
 }
 
 export interface ProxyOptionsInterface {
   proxyService: ProxyServiceInterface;
 }
 
-export const createProxyResponse = ({results}: { results: any[] }): ProxyResponse | null => {
+export const createProxyResponse = ({ results }: { results: any[] }): ProxyResponse | null => {
   if (!results || results.length === 0) {
     return null;
   }

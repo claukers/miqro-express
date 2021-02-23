@@ -5,7 +5,6 @@ export class ErrorResponse extends APIResponse {
     super({
       success: false,
       message: e.message
-    });
-    this.status = 503;
+    }, 503);
   }
 }

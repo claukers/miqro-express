@@ -1,15 +1,15 @@
-import {FeatureHandler, Handler, NextCallback, ResponseHandler} from "../../../../src/handler";
-import {Logger} from "@miqro/core";
+import { FeatureHandler, ResponseHandler } from "../../../../src/handler";
 
-const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => {
-  return [
-    Handler(async (req) => {
-      logger.info(req.params.name);
-      return `hello ${req.params.name}`
-    }, logger),
-    ResponseHandler(undefined, logger)
+const echo: FeatureHandler =
+  [
+    async (ctx) => {
+      ctx.logger.info(ctx.params.name);
+      ctx.results.push(`hello ${ctx.params.name}`);
+      return true;
+    },
+    ResponseHandler(undefined)
   ];
-}
+
 
 module.exports = {
   path: "/:name",

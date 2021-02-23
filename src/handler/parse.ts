@@ -1,7 +1,6 @@
 import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap, Logger, getLogger } from "@miqro/core";
-import { Request } from "express";
 import { inspect } from "util";
-import { NextCallback, NextHandler } from "./common";
+import { Handler, Context } from "./common";
 
 export interface BasicParseOptions {
   disableAsArray?: boolean;
@@ -25,8 +24,8 @@ const getParseOption = (option?: BasicParseOptions | false): BasicParseOptions =
       mode: "add_extra"
     });
 
-const parseRequestPart = (part: "query" | "params" | "body", req: Request, option: BasicParseOptions, logger: Logger) => {
-  const value = req[part];
+const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, option: BasicParseOptions) => {
+  const value = ctx[part];
   if (option.disableAsArray && value instanceof Array) {
     throw new ParseOptionsError(`${part} cannot be an array`);
   }
@@ -35,32 +34,29 @@ const parseRequestPart = (part: "query" | "params" | "body", req: Request, optio
   }
   if (value instanceof Array) {
     for (let i = 0; i < value.length; i++) {
-      req[part][i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined);
+      (ctx[part] as any)[i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined) as any;
     }
   } else {
-    req[part] = parseOptions(`${part}`, value, option.options, option.mode, option.ignoreUndefined);
+    ctx[part] = parseOptions(`${part}`, value as any, option.options, option.mode, option.ignoreUndefined) as any;
   }
-  logger.debug(`request[${req.uuid}] req.${part} parsed to [${inspect(req[part])}]`);
+  ctx.logger.debug(`req.${part} parsed to [${inspect(ctx[part])}]`);
 }
 
 
-export const ParseRequestHandler = (options: ParseHandlerOptions, logger?: Logger): NextCallback => {
-  const l = logger ? logger : getLogger("ParseRequestHandler");
+export const ParseRequestHandler = (options: ParseHandlerOptions): Handler => {
   const query = getParseOption(options.query);
   const params = getParseOption(options.params);
   const body = getParseOption(options.body);
 
-  return NextHandler(async (req, _res) => {
+  return async (ctx: Context) => {
     try {
-      parseRequestPart("query", req, query, l);
-      parseRequestPart("params", req, params, l);
-      parseRequestPart("body", req, body, l);
+      parseRequestPart("query", ctx, query);
+      parseRequestPart("params", ctx, params);
+      parseRequestPart("body", ctx, body);
+      return true;
     } catch (e) {
-      if (logger) {
-        logger.warn(`request[${req.uuid}] error parsing request: ${e.message}`);
-      }
+      ctx.logger.warn(`error parsing request: ${e.message}`);
       throw e;
     }
-    return true;
-  }, l);
+  }
 };

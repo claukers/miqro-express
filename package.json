@@ -13,7 +13,7 @@
     "prebuild": "rm -Rf dist;",
     "build": "tsc",
     "test": "NODE_ENV=test nyc mocha test/*.test.ts",
-    "testfile": "NODE_ENV=test nyc mocha",
+    "testfile": "NODE_ENV=test mocha -r ts-node/register",
     "lint": "eslint ./src --ext ts",
     "fixlint": "eslint ./src --ext ts --fix"
   },
@@ -21,22 +21,14 @@
   "license": "ISC",
   "dependencies": {
     "@miqro/core": "^0.9.22",
-    "body-parser": "^1.19.0",
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "cookie": "^0.4.1",
     "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/cookie": "^0.4.0",
-    "@types/cookie-parser": "^1.4.2",
-    "@types/cors": "^2.8.10",
-    "@types/express": "^4.17.11",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mocha": "^8.2.1",
-    "@types/morgan": "^1.9.2",
     "@types/node": "^14.14.31",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.15.2",

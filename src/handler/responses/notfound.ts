@@ -6,7 +6,6 @@ export class NotFoundResponse extends APIResponse {
     super({
       success: false,
       message: "not found"
-    });
-    this.status = 404;
+    }, 404);
   }
 }

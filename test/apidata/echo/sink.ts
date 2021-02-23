@@ -1,42 +1,40 @@
-import {FeatureHandler, Handler, NextCallback, ResponseHandler} from "../../../src/handler";
-import {Logger} from "@miqro/core";
+import { FeatureHandler } from "../../../src/handler";
 
-const echo: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => {
-  return [
-    Handler(async (req) => {
-      logger.info(req.body);
-      logger.info(req.params);
-      const ret = req.params.param1 ? {bla: req.params.param1.toString()} : req.body;
-      logger.info(ret);
-      return ret;
-    }, logger)
-  ];
-}
+const echo: FeatureHandler = [
+  async (ctx) => {
+    ctx.logger.info(ctx.body);
+    ctx.logger.info(ctx.params);
+    const ret = ctx.params.param1 ? { bla: ctx.params.param1.toString() } : ctx.body;
+    ctx.logger.info(ret);
+    ctx.results.push(ret);
+    return true;
+  }
+];
 
 module.exports = {
   path: "/bbb/:param1?",
   methods: ["put"],
   params: {
     options: [
-      {name: "param1", required: false, type: "number"}
+      { name: "param1", required: false, type: "number" }
     ],
     mode: "no_extra"
   },
   body: {
     options: [
-      {name: "bla", required: true, type: "string"}
+      { name: "bla", required: true, type: "string" }
     ],
     mode: "no_extra"
   },
   query: {
     options: [
-      {name: "bla", required: true, type: "string"}
+      { name: "bla", required: true, type: "string" }
     ],
     mode: "no_extra"
   },
   results: {
     options: [
-      {name: "bla", required: true, type: "string"}
+      { name: "bla", required: true, type: "string" }
     ],
     mode: "no_extra"
   },

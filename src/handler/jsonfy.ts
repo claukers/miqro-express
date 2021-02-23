@@ -1,14 +1,9 @@
-import { getLogger, Logger } from "@miqro/core";
-import { getResults, NextCallback, NextHandler, setResults } from "./common";
+import { Handler, Context } from "./common";
 
-export const JSONfyResultsHandler = (logger?: Logger): NextCallback => {
-  if (!logger) {
-    logger = getLogger("JSONfyResultsHandler");
-  }
-  return NextHandler(async (req, _res) => {
-    const results = getResults(req);
-    setResults(req, JSON.parse(JSON.stringify(results)) as any[]);
+export const JSONfyResultsHandler: Handler =
+  async (ctx: Context) => {
+    const results = ctx.results;
+    ctx.results = JSON.parse(JSON.stringify(results)) as any[];
     return true;
-  }, logger);
-}
+  }
 

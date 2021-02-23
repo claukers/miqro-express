@@ -1,6 +1,6 @@
-import {APIResponse} from "./api";
-import {Response} from "express";
-import {RequestOptions} from "@miqro/core";
+import { APIResponse } from "./api";
+import { RequestOptions } from "@miqro/core";
+import { Context } from "../common";
 
 export interface ProxyResponseOptions {
   data: any;
@@ -16,12 +16,10 @@ export class ProxyResponse extends APIResponse {
     super();
   }
 
-  public send(res: Response): void {
-    res.status(this.response.status);
-    const keys = Object.keys(this.response.headers);
-    for (const key of keys) {
-      res.set(key, this.response.headers[key]);
-    }
-    res.send(this.response.data);
+  public async send(ctx: Context): Promise<void> {
+    this.status = this.response.status;
+    this.headers = this.response.headers;
+    this.body = this.response.data;
+    return super.send(ctx);
   }
 }

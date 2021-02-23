@@ -1,68 +1,42 @@
-import { Logger, Util } from "@miqro/core";
+import { request } from "@miqro/core";
 import { inspect } from "util";
-import { createProxyResponse, Handler, NextCallback, ProxyOptionsInterface } from "./common";
+import { Context, Handler, createProxyResponse, ProxyOptionsInterface } from "./common";
 
-/**
- * Wraps a request and add the response to req.results
- *
- * @param options IProxyOptions options for transforming requests into a request
- * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
- */
-export const ProxyHandler = (options: ProxyOptionsInterface, logger?: Logger): NextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("ProxyHandler");
-  }
-  /* eslint-disable  @typescript-eslint/no-unused-vars */
-  return Handler(async (req) => {
+export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
+  async (ctx) => {
     const resolver = options.proxyService;
-    const requestConfig = await resolver.resolveRequest(req);
-    if (requestConfig) {
-      try {
-        if (logger) {
-          logger.debug(`request[${req.uuid}] proxy resolveRequest to [${inspect(requestConfig, {
-            depth: 1
-          })}]`);
-        }
-        const response = await Util.request(requestConfig);
-        if (logger) {
-          logger.debug(`request[${req.uuid}] response[${inspect(response, {
-            depth: 0
-          })}]`);
-        }
-        return response;
-      } catch (e) {
-        if (logger) {
-          logger.error(`request[${req.uuid}] Error connecting to endpoint in [${requestConfig.url}] [${e.message}]`);
-        }
-        if (e.response) {
-          return e.response;
-        }
-      }
-    }
-    return null;
-  }, logger);
-};
-
-/**
- * Express middleware that uses the last req.results to create a proxy response.
- *
- * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
- */
-export const ProxyResponseHandler = (logger?: Logger): NextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("ProxyResponseHandler");
-  }
-  return (req, res, next) => {
-    const response = createProxyResponse(req);
-    if (logger) {
-      logger.debug(`request[${req.uuid}] response[${inspect(response, {
+    const requestConfig = await resolver.resolveRequest(ctx);
+    try {
+      ctx.logger.debug(`proxy resolveRequest to [${inspect(requestConfig, {
         depth: 1
       })}]`);
+      const response = await request(requestConfig);
+      ctx.logger.debug(`response[${inspect(response, {
+        depth: 0
+      })}]`);
+      ctx.results.push(response);
+      return true;
+    } catch (e) {
+      ctx.logger.error(`Error connecting to endpoint in [${requestConfig.url}] [${e.message}]`);
+      if (e.response) {
+        ctx.results.push(e.response);
+        return true;
+      } else {
+        throw e;
+      }
     }
+  }
+
+export const ProxyResponseHandler: Handler =
+  async (ctx: Context) => {
+    const response = createProxyResponse(ctx);
+    ctx.logger.debug(`response[${inspect(response, {
+      depth: 1
+    })}]`);
     if (!response) {
-      next();
+      return true;
     } else {
-      response.send(res);
+      response.send(ctx);
+      return false;
     }
-  };
-};
+  }

@@ -7,36 +7,29 @@ import {
   UnAuthorizedError,
   Util
 } from "@miqro/core";
-import {AsyncNextCallback} from "./common";
+import { Context, Handler } from "./common";
 
-export const GroupPolicyHandler = (options: GroupPolicy, logger?: Logger): AsyncNextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("GroupPolicyHandler");
-  }
-  return async (req, _res, next) => {
+export const GroupPolicyHandler = (options: GroupPolicy): Handler => {
+  return async (ctx: Context) => {
     try {
-      if (!req.session) {
-        next(new ParseOptionsError(`No Session!`));
+      if (!ctx.session) {
+        throw new ParseOptionsError(`No Session!`);
       } else {
-        const result = await GroupPolicyValidator.validate(req.session, options, logger as Logger);
+        const result = await GroupPolicyValidator.validate(ctx.session, options, ctx.logger);
         if (result) {
-          (logger as Logger).debug(`request[${req.uuid}] ` +
-            `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] validated!`);
-
-          next();
+          ctx.logger.debug(`groups [${ctx && ctx.session && ctx.session.groups ? ctx.session.groups.join(",") : ""}] validated!`);
+          return true;
         } else {
-          (logger as Logger).warn(`request[${req.uuid}] ` +
-            `groups [${req && req.session && req.session.groups ? req.session.groups.join(",") : ""}] fail to validate!`);
-
-          next(new UnAuthorizedError(`Invalid session. You are not permitted to do this!`));
+          ctx.logger.warn(`groups [${ctx && ctx.session && ctx.session.groups ? ctx.session.groups.join(",") : ""}] fail to validate!`);
+          throw new UnAuthorizedError(`Invalid session. You are not permitted to do this!`);
         }
       }
     } catch (e) {
       //(logger as Logger).warn(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
       if (e.name && e.name !== "Error") {
-        next(e);
+        throw e;
       } else {
-        next(new ForbiddenError(`Invalid session. You are not permitted to do this!`));
+        throw new ForbiddenError(`Invalid session. You are not permitted to do this!`);
       }
     }
   };

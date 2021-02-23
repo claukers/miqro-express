@@ -1,15 +1,13 @@
-import {Handler, NextCallback, ResponseHandler} from "../../src/handler";
-import {Logger} from "@miqro/core";
+import { Context, ResponseHandler } from "../../src/handler";
 
 export default {
   path: ["/:name", "/bla/:name"],
-  handler: (logger: Logger): NextCallback[] | NextCallback => {
-    return [
-      Handler(async (req) => {
-        logger.info(req.params.name);
-        return `bye ${req.params.name}`
-      }, logger),
-      ResponseHandler(undefined, logger)
-    ];
-  }
+  handler: [
+    async (ctx: Context) => {
+      ctx.logger.info(ctx.params.name);
+      ctx.results.push(`bye ${ctx.params.name}`);
+      return true;
+    },
+    ResponseHandler(undefined)
+  ]
 }

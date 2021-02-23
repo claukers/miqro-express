@@ -1,17 +1,14 @@
-import {APIRoute, FeatureHandler, Handler, NextCallback, ResponseHandler} from "../../src/handler";
-import {Logger} from "@miqro/core";
-import {RouterOptions} from "express";
+import { APIRoute, FeatureHandler, ResponseHandler } from "../../src/handler";
 
-const hello: FeatureHandler = (logger: Logger): NextCallback[] | NextCallback => {
-  return [
-    Handler(async () => {
-      return {
-        message: "custom"
-      };
-    }, logger),
-    ResponseHandler(undefined, logger)
-  ];
-}
+const hello: FeatureHandler = [
+  async (ctx) => {
+    ctx.results.push({
+      message: "custom"
+    });
+    return true;
+  },
+  ResponseHandler()
+];
 
 module.exports = {
   path: "/",

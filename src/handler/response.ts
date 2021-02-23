@@ -1,39 +1,11 @@
 import {
   APIResponse,
-  BadRequestResponse,
-  ErrorResponse,
-  ForbiddenResponse,
-  NotFoundResponse,
-  ServiceResponse,
-  UnAuthorizedResponse
+  ServiceResponse
 } from "./responses";
 import { inspect } from "util";
-import { Logger, Util } from "@miqro/core";
-import { ErrorCallback, getResults, NextCallback, NextHandler } from "./common";
-import { Request } from "express";
+import { Logger } from "@miqro/core";
 import { OutgoingHttpHeaders } from "http";
-
-export const createErrorResponse = (e: Error): APIResponse | null => {
-  if (!e.name || e.name === "Error") {
-    return null;
-  } else {
-    switch (e.name) {
-      case "MethodNotImplementedError":
-        return new NotFoundResponse();
-      case "ForbiddenError":
-        return new ForbiddenResponse(e.message);
-      case "UnAuthorizedError":
-        return new UnAuthorizedResponse(e.message);
-      case "ParseOptionsError":
-      case "SequelizeValidationError":
-      case "SequelizeEagerLoadingError":
-      case "SequelizeUniqueConstraintError":
-        return new BadRequestResponse(e.message);
-      default:
-        return new ErrorResponse(e);
-    }
-  }
-};
+import { Handler, Context } from "./common";
 
 /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
 export const createServiceResponse = (results: any[]): ServiceResponse | undefined => {
@@ -50,67 +22,24 @@ export interface ResponseHandlerOptions {
   createResponse: (results: any[]) => APIResponse | undefined;
 }
 
-/**
- * Express middleware that uses req.results to create a response.
- *
- * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
- */
-export const ResponseHandler = (options?: ResponseHandlerOptions, logger?: Logger): NextCallback => {
-  if (!logger) {
-    logger = Util.getLogger("ResponseHandler");
-  }
-  return (req, res, next) => {
-    try {
-      (logger as Logger).debug(`request[${req.uuid}] results[${inspect(req.results)}]`);
-      const response = options ? options.createResponse(req.results) : createServiceResponse(req.results);
-      if (response !== undefined) {
-        (logger as Logger).debug(`request[${req.uuid}] response[${inspect(response)}]`);
-        response.send(res);
-      }
-    } catch (e) {
-      (logger as Logger).error(`request[${req.uuid}] message[${e.message}]`);
-      next(e);
+export const ResponseHandler = (options?: ResponseHandlerOptions): Handler => {
+  return async (ctx: Context) => {
+    ctx.logger.debug(`results[${inspect(ctx.results)}]`);
+    const response = options ? options.createResponse(ctx.results) : createServiceResponse(ctx.results);
+    if (response !== undefined) {
+      ctx.logger.debug(`response[${inspect(response)}]`);
+      await response.send(ctx);
     }
+    return false;
   };
 };
 
-export interface ErrorHandlerOptions {
-  createResponse: (err: Error) => APIResponse | null;
-}
 
-// noinspection SpellCheckingInspection
-/**
- * Express middleware that catches sequelize and other known errors. If the error is not **known** the next callback is called.
- *
- * @param logger  [OPTIONAL] logger for logging errors ´ILogger´.
- */
-export const ErrorHandler = (options?: ErrorHandlerOptions, logger?: Logger): ErrorCallback => {
-  if (!logger) {
-    logger = Util.getLogger("ErrorHandler");
-  }
-  return (err: Error, req, res, next): void => {
-    try {
-      (logger as Logger).error(`request[${req.uuid}] message[${err.message}]`);
-      const response = options ? options.createResponse(err) : createErrorResponse(err);
-      if (response) {
-        response.send(res);
-      } else {
-        (logger as Logger).warn(`request[${req.uuid}] cannot create response of error message[${err.message}] so not responding and calling next`);
-        next(err);
-      }
-    } catch (e) {
-      (logger as Logger).error(`request[${req.uuid}] message[${e.message}]`);
-      next(e);
-    }
-  };
-};
+export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (ctx: Context) => Promise<string>; }
 
-export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (req: Request) => Promise<string>; }
-
-export const HTMLResponseHandler = (logger?: Logger): NextCallback => {
-  logger = logger ? logger : Util.getLogger("HTMLResponseHandle");
-  return NextHandler(async (req, res) => {
-    const results = getResults(req);
+export const HTMLResponseHandler = (logger?: Logger): Handler =>
+  async (ctx: Context) => {
+    const results = ctx.results;
     const lastResult = results[results.length - 1];
     if (logger) {
       logger.debug(`last result is [${lastResult}]`);
@@ -126,16 +55,16 @@ export const HTMLResponseHandler = (logger?: Logger): NextCallback => {
       const headers = typeof lastResult.headers === "object" ? lastResult.headers : {
         "content-type": "text/html"
       };
-      const toSend = lastResult.template ? await lastResult.template(req) : (typeof lastResult.body === "string" ? lastResult.body : lastResult);
+      const toSend = lastResult.template ? await lastResult.template(ctx) : (typeof lastResult.body === "string" ? lastResult.body : lastResult);
       if (typeof toSend === "string") {
-        res.status(status);
+        ctx.res.statusCode = status;
         const headerNames = Object.keys(headers);
         for (const h of headerNames)
-          res.setHeader(h, headers[h]);
+          ctx.res.setHeader(h, headers[h]);
         if (logger) {
           logger.debug(`sending [${toSend}]`);
         }
-        res.send(toSend);
+        ctx.res.end(toSend);
         return false;
       } else {
         throw new Error("html result from HTMLResponseResult not string so last result not valid");
@@ -143,6 +72,6 @@ export const HTMLResponseHandler = (logger?: Logger): NextCallback => {
     } else {
       throw new Error("html result from HTMLResponseResult not string so last result not valid");
     }
-  }, logger);
-}
+  }
+
 

@@ -5,7 +5,6 @@ export class UnAuthorizedResponse extends APIResponse {
     super({
       success: false,
       message
-    });
-    this.status = 401;
+    }, 401);
   }
 }
