@@ -9,10 +9,7 @@ import { v4 } from "uuid";
 export const TestHelper = async (app: Express, options: RequestOptions, cb?: (response: RequestResponse) => void): Promise<RequestResponse | void> => {
   const unixSocket = `/tmp/socket.${v4()}`;
   if (existsSync(unixSocket)) {
-    console.log("unlink " + unixSocket);
     unlinkSync(unixSocket);
-  } else {
-    console.log("usocket free" + unixSocket);
   }
   const server = app.listen(unixSocket);
   return new Promise<RequestResponse | void>((resolve, reject) => {
