@@ -49,7 +49,7 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   }
   ret.push(ParseRequestHandler({
     ...options
-  }, getLogger(`${options.identifier}_REQUEST`)));
+  }, getLogger(`${identifier}_REQUEST`)));
 
   const realHandlers = options.handler(logger);
 
