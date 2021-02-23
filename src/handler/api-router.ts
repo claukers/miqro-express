@@ -1,7 +1,7 @@
 import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
 import { Router, RouterOptions } from "express";
-import { GroupPolicy, Logger, SimpleMap, Util } from "@miqro/core";
+import { getLogger, GroupPolicy, Logger, SimpleMap, Util } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
 import { ParseRequestHandler, ParseHandlerOptions } from "./parse";
 import { NextCallback, ParseResultsHandler, ParseResultsHandlerOptions } from "./common";
@@ -37,7 +37,7 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   if (!logger) {
     logger = Util.getLogger("APIRouteHandler");
   }
-  let ret: NextCallback[] = [];
+  const ret: NextCallback[] = [];
   if (options.session || options.policy) {
     const authLogger = !options.authLogger ? logger : options.authLogger;
     if (options.session) {
@@ -51,17 +51,25 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     ...options
   }));
 
-  ret = ret.concat(options.handler(logger));
+  const realHandlers = options.handler(logger);
+
+  if (realHandlers instanceof Array) {
+    for (const h of realHandlers) {
+      ret.push(h);
+    }
+  } else {
+    ret.push(realHandlers);
+  }
 
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
     if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler());
+      responseHandlers.push(JSONfyResultsHandler(logger));
     }
     if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler());
+      responseHandlers.push(TagResponseUUIDHandler(logger));
     }
-    responseHandlers.push(ParseResultsHandler(options.results));
+    responseHandlers.push(ParseResultsHandler(options.results, logger));
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
     } else {
@@ -76,7 +84,10 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     }
     responseHandlers.push(options.responseHandler);
   }
-  return ret.concat(responseHandlers);
+  for (const r of responseHandlers) {
+    ret.push(r);
+  }
+  return ret;
 };
 
 export interface APIRouterOptions {
@@ -141,7 +152,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
         }
       }
       const handler = route.handler;
-      route.handler = (logger: Logger) => {
+      const apiHandler: FeatureHandler = (logger: Logger) => {
         return APIHandler({
           ...route,
           handler
@@ -161,7 +172,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
             },
             path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
             methods,
-            implementation: route.handler,
+            implementation: apiHandler,
             identifier: newFeatureSubPath
           };
         }
@@ -173,7 +184,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           },
           path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
           methods,
-          implementation: route.handler,
+          implementation: apiHandler,
           identifier: newFeature
         };
       }
