@@ -49,7 +49,7 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   }
   ret.push(ParseRequestHandler({
     ...options
-  }));
+  }, logger));
 
   const realHandlers = options.handler(logger);
 
@@ -77,10 +77,10 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
     }
   } else if (options.responseHandler) {
     if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler());
+      responseHandlers.push(JSONfyResultsHandler(logger));
     }
     if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler());
+      responseHandlers.push(TagResponseUUIDHandler(logger));
     }
     responseHandlers.push(options.responseHandler);
   }

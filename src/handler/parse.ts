@@ -34,12 +34,10 @@ const parseRequestPart = (part: "query" | "params" | "body", req: Request, optio
     option.ignoreUndefined = true
   }
   if (value instanceof Array) {
-    logger.debug(`req.${part} is array so parsing each element`);
     for (let i = 0; i < value.length; i++) {
       req[part][i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined);
     }
   } else {
-    logger.debug(`req.${part} is not an array so parsing the entire element`);
     req[part] = parseOptions(part, value, option.options, option.mode, option.ignoreUndefined);
   }
   logger.debug(`req.${part} parsed to [${inspect(req[part])}]`);
