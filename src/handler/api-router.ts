@@ -13,6 +13,7 @@ import { TagResponseUUIDHandler } from "./tag";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
+  identifier: string;
 }
 
 export interface APIHandlerOptions extends ParseHandlerOptions {
@@ -21,7 +22,6 @@ export interface APIHandlerOptions extends ParseHandlerOptions {
   responseHandlerOptions?: ResponseHandlerOptions;
   description?: string;
   session?: SessionHandlerOptions;
-  authLogger?: Logger;
   policy?: GroupPolicy;
   jsonfy?: true;
   tag?: true;
@@ -35,21 +35,20 @@ export interface APIRoute extends APIHandlerArgs {
 
 export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallback[] => {
   if (!logger) {
-    logger = Util.getLogger("APIRouteHandler");
+    logger = Util.getLogger(options.identifier);
   }
   const ret: NextCallback[] = [];
   if (options.session || options.policy) {
-    const authLogger = !options.authLogger ? logger : options.authLogger;
     if (options.session) {
-      ret.push(SessionHandler(options.session, authLogger));
+      ret.push(SessionHandler(options.session, getLogger(`${options.identifier}_SESSION`)));
     }
     if (options.policy) {
-      ret.push(GroupPolicyHandler(options.policy, authLogger));
+      ret.push(GroupPolicyHandler(options.policy, getLogger(`${options.identifier}_POLICY`)));
     }
   }
   ret.push(ParseRequestHandler({
     ...options
-  }, logger));
+  }, getLogger(`${options.identifier}_REQUEST`)));
 
   const realHandlers = options.handler(logger);
 
@@ -64,23 +63,23 @@ export const APIHandler = (options: APIHandlerArgs, logger?: Logger): NextCallba
   const responseHandlers: NextCallback[] = [];
   if (options.results) {
     if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler(logger));
+      responseHandlers.push(JSONfyResultsHandler(getLogger(`${options.identifier}_JSONFY`)));
     }
     if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler(logger));
+      responseHandlers.push(TagResponseUUIDHandler(getLogger(`${options.identifier}_TAG`)));
     }
-    responseHandlers.push(ParseResultsHandler(options.results, logger));
+    responseHandlers.push(ParseResultsHandler(options.results, getLogger(`${options.identifier}_RESULTS`)));
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
     } else {
-      responseHandlers.push(ResponseHandler(options.responseHandlerOptions, logger));
+      responseHandlers.push(ResponseHandler(options.responseHandlerOptions, getLogger(`${options.identifier}_RESPONSE`)));
     }
   } else if (options.responseHandler) {
     if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler(logger));
+      responseHandlers.push(JSONfyResultsHandler(getLogger(`${options.identifier}_JSONFY`)));
     }
     if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler(logger));
+      responseHandlers.push(TagResponseUUIDHandler(getLogger(`${options.identifier}_TAG`)));
     }
     responseHandlers.push(options.responseHandler);
   }
@@ -131,7 +130,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
       if (typeof route === "function") {
         route = {
           handler: route
-        };
+        } as any;
       } else {
         if (typeof route.methods !== "undefined" && !(route.methods instanceof Array)) {
           throw new Error(`${resolve(dirname, name)} doesnt export methods as a string array`);
@@ -151,13 +150,8 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           throw new Error(`${resolve(dirname, name)} doesnt export name as a string`);
         }
       }
-      const handler = route.handler;
-      const apiHandler: FeatureHandler = (logger: Logger) => {
-        return APIHandler({
-          ...route,
-          handler
-        }, logger);
-      };
+      const realHandler = route.handler;
+
       if (route.path instanceof Array) {
         for (let i = 0; i < route.path.length; i++) {
           const p = route.path[i];
@@ -166,6 +160,14 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           }
           const subName = p.replace(/[^a-z0-9+]+/gi, '_');
           const newFeatureSubPath = `${featureName}_${route.name ? route.name : name}_${subName}`.toUpperCase();
+          const identifier = newFeatureSubPath;
+          const apiHandler: FeatureHandler = (logger: Logger) => {
+            return APIHandler({
+              ...route,
+              identifier,
+              handler: realHandler
+            }, logger);
+          };
           features.features[newFeatureSubPath] = {
             apiHandlerOptions: {
               ...route
@@ -173,11 +175,19 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
             path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
             methods,
             implementation: apiHandler,
-            identifier: newFeatureSubPath
+            identifier
           };
         }
       } else {
         const newFeature = `${featureName}_${route.name ? route.name : name}`.toUpperCase();
+        const identifier = newFeature;
+        const apiHandler: FeatureHandler = (logger: Logger) => {
+          return APIHandler({
+            ...route,
+            identifier,
+            handler: realHandler
+          }, logger);
+        };
         features.features[newFeature] = {
           apiHandlerOptions: {
             ...route
@@ -185,7 +195,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
           methods,
           implementation: apiHandler,
-          identifier: newFeature
+          identifier
         };
       }
     }
