@@ -8,6 +8,6 @@ export default {
       ctx.results.push(`bye ${ctx.params.name}`);
       return true;
     },
-    ResponseHandler(undefined)
+    ResponseHandler()
   ]
 }

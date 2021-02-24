@@ -2,7 +2,7 @@ import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOp
 import { inspect } from "util";
 import { Handler, Context } from "./common";
 
-export interface BasicParseOptions {
+export interface ParseOptions {
   disableAsArray?: boolean;
   options: ParseOption[] | ParseOptionMap;
   mode?: ParseOptionsMode;
@@ -10,12 +10,12 @@ export interface BasicParseOptions {
 }
 
 export interface ParseHandlerOptions {
-  query?: BasicParseOptions | false;
-  params?: BasicParseOptions | false;
-  body?: BasicParseOptions | false;
+  query?: ParseOptions | false;
+  params?: ParseOptions | false;
+  body?: ParseOptions | false;
 }
 
-const getParseOption = (option?: BasicParseOptions | false): BasicParseOptions =>
+const getParseOption = (option?: ParseOptions | false): ParseOptions =>
   option ? option : (option === false ? {
     options: [],
     mode: "no_extra"
@@ -24,7 +24,7 @@ const getParseOption = (option?: BasicParseOptions | false): BasicParseOptions =
       mode: "add_extra"
     });
 
-const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, option: BasicParseOptions) => {
+const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, option: ParseOptions) => {
   const value = ctx[part];
   if (option.disableAsArray && value instanceof Array) {
     throw new ParseOptionsError(`${part} cannot be an array`);

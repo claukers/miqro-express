@@ -1,7 +1,7 @@
 import { gunzipSync } from "zlib";
 import { Handler, Context } from "../handler";
 
-export const ReadBufferHandler: Handler =
+export const ReadBuffer = (): Handler =>
   async (ctx: Context) => {
     return new Promise<boolean>((resolve, reject) => {
       try {

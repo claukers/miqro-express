@@ -9,3 +9,5 @@ export class NotFoundResponse extends APIResponse {
     }, 404);
   }
 }
+
+export const NOT_FOUND = new NotFoundResponse();

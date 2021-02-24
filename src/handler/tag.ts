@@ -1,6 +1,6 @@
 import { Context, Handler } from "./common";
 
-export const TagResponseUUIDHandler: Handler =
+export const TagResponseUUIDHandler = (): Handler =>
   async (ctx: Context) => {
     ctx.res.setHeader("uuid", ctx.uuid);
     const requestUUID = ctx.headers['request-uuid'];

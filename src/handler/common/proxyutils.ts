@@ -1,6 +1,6 @@
 import { RequestOptions } from "@miqro/core";
 import { Context } from ".";
-import { ProxyResponse } from "../responses/proxy";
+import { ProxyResponse } from "../../responses/proxy";
 
 export interface ProxyServiceInterface {
   resolveRequest(ctx: Context): Promise<RequestOptions>;

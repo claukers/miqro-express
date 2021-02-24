@@ -1,14 +1,16 @@
 import { RequestListener } from "http";
-import { Context, Handler } from "./common";
-import { NotFoundResponse } from "./responses";
+import { AppHandler, Context, Handler } from "./handler";
+import { NOT_FOUND } from "./responses";
 
-const NOT_FOUND = new NotFoundResponse()
-
-export interface AppHandler {
-  handler: Handler | Handler[];
-  method?: string;
-  pathname?: string;
-}
+const callHandler = async (ctx: Context, hh: Handler): Promise<boolean> => {
+  const shouldContinue = await hh(ctx);
+  if (shouldContinue === undefined || shouldContinue === false) {
+    return false;
+  } else if (shouldContinue !== true) {
+    ctx.results.push(shouldContinue);
+  }
+  return true;
+};
 
 export class App {
   public readonly listener: RequestListener;
@@ -17,7 +19,7 @@ export class App {
     this.handlers = [];
     this.listener = (req, res) => {
       const ctx = new Context(req, res);
-      ctx.logger.debug(``);
+      ctx.logger.debug(`request received`);
       (async () => {
         try {
           let closed = false;
@@ -25,7 +27,10 @@ export class App {
             closed = true;
           });
           for (const h of this.handlers) {
-            let shouldContinue: void | boolean = true;
+            let shouldContinue: boolean = true;
+            if (!shouldContinue) {
+              break;
+            }
             if ((h.method === undefined || h.method.toLocaleLowerCase() === ctx.method.toLocaleLowerCase())
               && (h.pathname === undefined || h.pathname.toLocaleLowerCase() === ctx.pathname.toLocaleLowerCase())) {
               if (h.handler instanceof Array) {
@@ -34,7 +39,7 @@ export class App {
                     shouldContinue = false;
                     break;
                   }
-                  shouldContinue = await hh(ctx);
+                  shouldContinue = await callHandler(ctx, hh);
                   if (!shouldContinue) {
                     break;
                   }
@@ -47,7 +52,7 @@ export class App {
                   shouldContinue = false;
                   break;
                 }
-                shouldContinue = await h.handler(ctx);
+                shouldContinue = await callHandler(ctx, h.handler);
                 if (!shouldContinue) {
                   break;
                 }

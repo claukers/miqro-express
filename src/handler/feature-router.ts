@@ -1,6 +1,5 @@
 import { getLogger, isFeatureEnabled, Logger, SimpleMap } from "@miqro/core";
-import { Handler } from "./common";
-import { AppHandler } from "./router";
+import { Handler, AppHandler } from "./common";
 
 export type FeatureHandler = Array<Handler> | Handler;
 
@@ -43,7 +42,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): A
         if (methods.length > 0) {
           for (const method of methods) {
             if (FEATURE_ROUTER_METHODS.indexOf(method.toLowerCase()) === -1) {
-              throw new Error(`feature [${featureName}] method [${method.toLowerCase()}] not defined! use only [${FEATURE_ROUTER_METHODS.join(",")}]`);
+              throw new Error(`feature [${featureName}] method [${method.toUpperCase()}] not defined! use only [${FEATURE_ROUTER_METHODS.join(",")}]`);
             }
           }
         } else {
@@ -53,7 +52,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): A
           logger.debug(`feature [${featureName}] enabled`);
           enabled.push(featureName);
           for (const method of methods) {
-            logger.info(`setting up feature [${featureName}] on [${method.toLowerCase()}][${path}]`);
+            logger.info(`[${featureName}] on [${method.toUpperCase()}:${path}]`);
             ret.push({
               method: method.toLocaleLowerCase(),
               pathname: path,

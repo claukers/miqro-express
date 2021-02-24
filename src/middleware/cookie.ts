@@ -1,8 +1,12 @@
 import { Handler, Context } from "../handler";
-import { parse as cookieParse } from "cookie";
+import { CookieParseOptions, parse as cookieParse } from "cookie";
 
-export const CookieParserHandler: Handler =
+export const CookieParser = (options?: CookieParseOptions): Handler =>
   async (ctx: Context) => {
-    ctx.cookies = cookieParse(ctx.headers.cookie || '');
+    const cookies = cookieParse(ctx.headers.cookie || '', options);
+    const cookieList = Object.keys(cookies);
+    for (const name of cookieList) {
+      ctx.cookies[name] = cookies[name];
+    }
     return true;
   }

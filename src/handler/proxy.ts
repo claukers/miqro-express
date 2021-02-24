@@ -27,7 +27,7 @@ export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
     }
   }
 
-export const ProxyResponseHandler: Handler =
+export const ProxyResponseHandler = (): Handler =>
   async (ctx: Context) => {
     const response = createProxyResponse(ctx);
     ctx.logger.debug(`response[${inspect(response, {

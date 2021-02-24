@@ -1,10 +1,13 @@
 import { Context, Handler } from "../handler";
 
-export const LoggerHandler = (): Handler =>
+export const Logger = (options?: {
+  formatter: (ctx: Context) => string;
+}): Handler =>
   async (ctx: Context) => {
     ctx.res.on("close", () => {
-      const took = 0;
-      const entry = `request[${ctx.uuid}](${ctx.req.socket.remoteAddress}) [${ctx.method}] [${ctx.pathname}] [${ctx.res.statusCode}] conttent-length[${ctx.res.getHeaders()["content-length"]}] [${took}]ms`;
+      const took = Date.now() - ctx.startMS;
+      ctx.tookMS = took;
+      const entry = options ? options.formatter(ctx) : `request[${ctx.uuid}](${ctx.req.socket.remoteAddress}) [${ctx.method}] [${ctx.pathname}] [${ctx.res.statusCode}] content-length[${ctx.res.getHeaders()["content-length"]}] [${ctx.tookMS}]ms`;
       if (ctx.res.statusCode < 400) {
         ctx.logger.info(entry);
       } else if (ctx.res.statusCode >= 400 && ctx.res.statusCode < 500) {

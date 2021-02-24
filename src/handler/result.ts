@@ -1,9 +1,9 @@
 import { parseOptions } from "@miqro/core";
 import { inspect } from "util";
 import { Context, Handler } from "./common";
-import { BasicParseOptions } from "./parse";
+import { ParseOptions } from "./parse";
 
-export const ResultParser = (options: BasicParseOptions): Handler =>
+export const ResultParser = (options: ParseOptions): Handler =>
   async (ctx: Context) => {
     const { results, query, logger } = ctx;
     if (results && !query.attributes) {

@@ -1,11 +1,11 @@
 import { OutgoingHttpHeaders } from "http";
-import { Context } from "../common";
+import { Context, Response } from "../handler/common";
 
-export class APIResponse {
+export class TextResponse implements Response {
 
   /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
   constructor(public body?: any, public status = 200, public headers: OutgoingHttpHeaders = {
-    ['Content-Type']: 'application/json'
+    ['Content-Type']: 'plain/text'
   }) {
   }
 
@@ -19,7 +19,7 @@ export class APIResponse {
             ctx.res.setHeader(key, this.headers[key] as any);
           }
         }
-        ctx.res.end(JSON.stringify(this.body), () => {
+        ctx.res.end(String(this.body), () => {
           ctx.req.socket.end(() => {
             resolve();
           });

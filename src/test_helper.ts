@@ -1,9 +1,7 @@
-import { Logger, request, RequestOptions, RequestResponse, ResponseError } from "@miqro/core";
+import { request, RequestOptions, RequestResponse, ResponseError } from "@miqro/core";
 import { existsSync, unlinkSync } from "fs";
-import { setup } from "../middleware";
-import { APIRouter, APIRouterOptions } from "./api-router";
 import { v4 } from "uuid";
-import { App } from "./router";
+import { App } from "./app";
 import { createServer } from "http";
 
 export const TestHelper = async (app: App, options: RequestOptions, cb?: (response: RequestResponse) => void): Promise<RequestResponse | void> => {
@@ -44,11 +42,4 @@ export const TestHelper = async (app: App, options: RequestOptions, cb?: (respon
       });
     });
   });
-}
-
-export const APITestHelper = async (api: APIRouterOptions, options: RequestOptions, cb?: (response: RequestResponse) => void, logger?: Logger): Promise<RequestResponse | void> => {
-  const app = new App();
-  app.add(setup());
-  app.add(APIRouter(api, logger));
-  return TestHelper(app, options, cb);
 }

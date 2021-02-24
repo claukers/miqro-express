@@ -1,5 +1,5 @@
 import { Context, Handler } from "./common";
-import { APIResponse, BadRequestResponse, ErrorResponse, ForbiddenResponse, NotFoundResponse, UnAuthorizedResponse } from "./responses";
+import { APIResponse, BadRequestResponse, ErrorResponse, ForbiddenResponse, NotFoundResponse, UnAuthorizedResponse } from "../responses";
 
 export const createErrorResponse = (e: Error): APIResponse | null => {
   if (!e.name || e.name === "Error") {

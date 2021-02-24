@@ -7,7 +7,7 @@ const echo: FeatureHandler = [
     ctx.results.push(ctx.body);
     return true;
   },
-  ResponseHandler(undefined)
+  ResponseHandler()
 ];
 
 

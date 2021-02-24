@@ -7,7 +7,7 @@ const echo: FeatureHandler =
       ctx.results.push(`hello ${ctx.params.name}`);
       return true;
     },
-    ResponseHandler(undefined)
+    ResponseHandler()
   ];
 
 

@@ -1,41 +1,33 @@
 import { FeatureToggle } from "@miqro/core";
-import { Handler, ErrorHandler } from "../handler";
-import { ReadBufferHandler } from "./buffer";
-import { CookieParserHandler } from "./cookie";
-import { URLEncodedBodyParserHandler } from "./form";
-import { JSONBodyParserHandler } from "./json";
-import { LoggerHandler } from "./logger";
-import { UUIDHandler } from "./uuid";
+import { Handler } from "../handler";
+import { ReadBuffer } from "./buffer";
+import { CookieParser } from "./cookie";
+import { URLEncodedBodyParser } from "./form";
+import { JSONBodyParser } from "./json";
+import { Logger } from "./logger";
 
-export * from "./uuid";
 export * from "./logger";
 export * from "./json";
 export * from "./form";
 export * from "./cookie";
 export * from "./buffer";
 
-export const setup = (): Handler[] => {
+export const midleware = (): Handler[] => {
   const ret: Handler[] = [];
-  if (FeatureToggle.isFeatureEnabled("REQUEST_UUID", true)) {
-    ret.push(UUIDHandler());
-  }
   if (FeatureToggle.isFeatureEnabled("MORGAN", true)) {
-    ret.push(LoggerHandler());
-  }
-  if (FeatureToggle.isFeatureEnabled("ERROR_HANDLER", true)) {
-    ret.push(ErrorHandler());
+    ret.push(Logger());
   }
   if (FeatureToggle.isFeatureEnabled("READ_BUFFER", true)) {
-    ret.push(ReadBufferHandler);
+    ret.push(ReadBuffer());
   }
   if (FeatureToggle.isFeatureEnabled("COOKIE_PARSER", true)) {
-    ret.push(CookieParserHandler);
+    ret.push(CookieParser());
   }
   if (FeatureToggle.isFeatureEnabled("BODY_PARSER", true)) {
-    ret.push(JSONBodyParserHandler());
+    ret.push(JSONBodyParser());
   }
   if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED", true)) {
-    ret.push(URLEncodedBodyParserHandler());
+    ret.push(URLEncodedBodyParser());
   }
   return ret;
 };
