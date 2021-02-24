@@ -5,13 +5,12 @@ export const ResponseHandler = (): Handler =>
   async (ctx: Context) => {
     ctx.logger.debug(`results[${inspect(ctx.results)}]`);
     const response = createServiceResponse(ctx);
+    ctx.logger.debug(`response[${inspect(response)}]`);
     if (response !== undefined) {
-      ctx.logger.debug(`response[${inspect(response)}]`);
       await response.send(ctx);
     } else {
-      ctx.logger.warn(`no response to send. is your handler returning a value differente than boolean 'true|false' ?`);
+      throw new Error(`no response to send. Is your handler returning a value differente than boolean 'true|false' ?`);
     }
-    return false;
   };
 
 
