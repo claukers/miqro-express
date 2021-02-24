@@ -6,7 +6,7 @@ import { URL } from "url";
 import { v4 } from "uuid";
 import { parse as queryParse } from "querystring";
 import EventEmitter from "events";
-import { ServiceResponse } from "../../responses";
+import { APIResponse, BadRequestResponse, ErrorResponse, ForbiddenResponse, NotFoundResponse, ServiceResponse, UnAuthorizedResponse } from "../../responses";
 
 export interface AppHandler {
   handler: Handler | Handler[];
@@ -92,3 +92,29 @@ export const getParseOption = (option?: ParseOptions | false): ParseOptions =>
     options: [],
     mode: "add_extra"
   });
+
+export const createErrorResponse = (e: Error): APIResponse | null => {
+  if (!e.name || e.name === "Error") {
+    if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
+      return new ErrorResponse(`${e.message}. You are seeing this message because NODE_ENV === "development" || NODE_ENV === "test"`);
+    } else {
+      return null;
+    }
+  } else {
+    switch (e.name) {
+      case "MethodNotImplementedError":
+        return new NotFoundResponse();
+      case "ForbiddenError":
+        return new ForbiddenResponse(e.message);
+      case "UnAuthorizedError":
+        return new UnAuthorizedResponse(e.message);
+      case "ParseOptionsError":
+      case "SequelizeValidationError":
+      case "SequelizeEagerLoadingError":
+      case "SequelizeUniqueConstraintError":
+        return new BadRequestResponse(e.message);
+      default:
+        return new ErrorResponse(e);
+    }
+  }
+};
