@@ -7,7 +7,7 @@ export interface FeatureRouterPathOptions {
   identifier: string;
   path: string;
   methods: string[];
-  implementation: FeatureHandler;
+  handler: FeatureHandler;
 }
 
 export interface FeatureRouterOptions {
@@ -29,7 +29,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): A
     if (!handlerOptions) {
       throw new Error(`no handler options for feature [${featureName}]`);
     } else {
-      const { path, implementation, identifier, methods } = handlerOptions;
+      const { path, handler: implementation, identifier, methods } = handlerOptions;
       if (!methods) {
         throw new Error(`no methods for feature [${featureName}]`);
       } else if (!identifier) {

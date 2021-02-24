@@ -89,7 +89,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
               },
               path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
               methods,
-              implementation: apiHandler,
+              handler: apiHandler,
               identifier
             };
           }
@@ -107,7 +107,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
             },
             path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
             methods,
-            implementation: apiHandler,
+            handler: apiHandler,
             identifier
           };
         }
