@@ -1,28 +1,12 @@
-import { ParseOption, parseOptions, ParseOptionsError, ParseOptionsMode, ParseOptionMap } from "@miqro/core";
+import { parseOptions, ParseOptionsError } from "@miqro/core";
 import { inspect } from "util";
-import { Handler, Context } from "./common";
+import { ParseOptions, Handler, Context, getParseOption } from "./common";
 
-export interface ParseOptions {
-  disableAsArray?: boolean;
-  options: ParseOption[] | ParseOptionMap;
-  mode?: ParseOptionsMode;
-  ignoreUndefined?: boolean;
-}
-
-export interface ParseHandlerOptions {
+export interface ParseRequestOptions {
   query?: ParseOptions | false;
   params?: ParseOptions | false;
   body?: ParseOptions | false;
 }
-
-const getParseOption = (option?: ParseOptions | false): ParseOptions =>
-  option ? option : (option === false ? {
-    options: [],
-    mode: "no_extra"
-  } : {
-      options: [],
-      mode: "add_extra"
-    });
 
 const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, option: ParseOptions) => {
   const value = ctx[part];
@@ -43,7 +27,7 @@ const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, optio
 }
 
 
-export const ParseRequestHandler = (options: ParseHandlerOptions): Handler => {
+export const ParseRequest = (options: ParseRequestOptions): Handler => {
   const query = getParseOption(options.query);
   const params = getParseOption(options.params);
   const body = getParseOption(options.body);

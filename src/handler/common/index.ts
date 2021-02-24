@@ -1,5 +1,5 @@
 export * from "./proxyutils";
-import { Logger, Session, SimpleMap, getLogger } from "@miqro/core";
+import { Logger, Session, SimpleMap, getLogger, ParseOption, ParseOptionMap, ParseOptionsMode } from "@miqro/core";
 import { IncomingHttpHeaders, IncomingMessage, OutgoingHttpHeaders, ServerResponse } from "http";
 import { ParsedUrlQuery } from "querystring";
 import { URL } from "url";
@@ -74,3 +74,21 @@ export class Context extends EventEmitter {
 }
 
 export type Handler = (ctx: Context) => Promise<boolean | void | any>;
+
+export interface ParseOptions {
+  disableAsArray?: boolean;
+  options: ParseOption[] | ParseOptionMap;
+  mode?: ParseOptionsMode;
+  ignoreUndefined?: boolean;
+}
+
+const NO_OPTIONS: ParseOptions = {
+  options: [],
+  mode: "no_extra"
+};
+
+export const getParseOption = (option?: ParseOptions | false): ParseOptions =>
+  option ? option : (option === false ? NO_OPTIONS : {
+    options: [],
+    mode: "add_extra"
+  });

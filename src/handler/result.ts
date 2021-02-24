@@ -1,7 +1,6 @@
 import { parseOptions } from "@miqro/core";
 import { inspect } from "util";
-import { Context, Handler } from "./common";
-import { ParseOptions } from "./parse";
+import { Context, Handler, ParseOptions } from "./common";
 
 export const ResultParser = (options: ParseOptions): Handler =>
   async (ctx: Context) => {

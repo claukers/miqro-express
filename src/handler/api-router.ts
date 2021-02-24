@@ -1,91 +1,15 @@
 import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
-import { getLogger, GroupPolicy, Logger, SimpleMap } from "@miqro/core";
+import { getLogger, Logger, SimpleMap } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
-import { ParseRequestHandler, ParseHandlerOptions, ParseOptions } from "./parse";
-import { AppHandler, Handler } from "./common";
-import { ResponseHandler } from "./response";
-import { SessionHandler, SessionHandlerOptions } from "./session";
-import { GroupPolicyHandler } from "./group";
-import { JSONfyResultsHandler } from "./jsonfy";
-import { TagResponseUUIDHandler } from "./tag";
-import { ResultParser } from "./result";
-
-export interface APIHandlerArgs extends APIHandlerOptions {
-  handler: FeatureHandler;
-  identifier?: string;
-}
-
-export interface APIHandlerOptions extends ParseHandlerOptions {
-  results?: ParseOptions;
-  responseHandler?: Handler;
-  description?: string;
-  session?: SessionHandlerOptions;
-  policy?: GroupPolicy;
-  jsonfy?: true;
-  tag?: true;
-}
+import { AppHandler } from "./common";
+import { APIHandler, APIHandlerArgs, APIHandlerOptions } from "./api-handler";
 
 export interface APIRoute extends APIHandlerArgs {
   name?: string;
   methods?: string[];
   path?: string | string[];
 }
-
-export const APIHandler = (options: APIHandlerArgs): Array<Handler> => {
-  const ret: Array<Handler> = [];
-  if (options.session || options.policy) {
-    if (options.session) {
-      ret.push(
-        SessionHandler(options.session)
-      );
-    }
-    if (options.policy) {
-      ret.push(GroupPolicyHandler(options.policy));
-    }
-  }
-  ret.push(ParseRequestHandler({
-    ...options
-  }));
-
-  const realHandlers = options.handler;
-
-  if (realHandlers instanceof Array) {
-    for (const h of realHandlers) {
-      ret.push(h);
-    }
-  } else {
-    ret.push(realHandlers);
-  }
-
-  const responseHandlers: Handler[] = [];
-  if (options.results) {
-    if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler());
-    }
-    if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler());
-    }
-    responseHandlers.push(ResultParser(options.results));
-    if (options.responseHandler) {
-      responseHandlers.push(options.responseHandler);
-    } else {
-      responseHandlers.push(ResponseHandler());
-    }
-  } else if (options.responseHandler) {
-    if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler());
-    }
-    if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler());
-    }
-    responseHandlers.push(options.responseHandler);
-  }
-  for (const r of responseHandlers) {
-    ret.push(r);
-  }
-  return ret;
-};
 
 export interface APIRouterOptions {
   dirname: string;
@@ -189,7 +113,6 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
         }
       }
     }
-
     return features;
   } catch (e) {
     console.error(e);

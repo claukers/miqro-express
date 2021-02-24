@@ -5,9 +5,13 @@ import { NOT_FOUND } from "./responses";
 const callHandler = async (ctx: Context, hh: Handler): Promise<boolean> => {
   const shouldContinue = await hh(ctx);
   if (shouldContinue === undefined || shouldContinue === false) {
+    ctx.logger.debug(`avoiding next handlers because handler returned false or undefined.`);
     return false;
   } else if (shouldContinue !== true) {
+    ctx.logger.debug(`pushing to results [${shouldContinue}]`);
     ctx.results.push(shouldContinue);
+  } else {
+    ctx.logger.debug(`NOT pushing to results [${shouldContinue}]`);
   }
   return true;
 };

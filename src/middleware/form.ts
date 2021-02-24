@@ -1,6 +1,7 @@
 import { checkEnvVariables } from "@miqro/core";
-import { BadRequestError, Context, Handler } from "../handler";
+import { Context, Handler } from "../handler";
 import { parse as queryParse } from "querystring";
+import { BadRequestError } from "../responses";
 
 export const URLEncodedBodyParser = (options?: {
   extended: boolean;

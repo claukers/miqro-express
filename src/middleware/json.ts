@@ -1,5 +1,6 @@
 import { checkEnvVariables } from "@miqro/core";
-import { Handler, Context, BadRequestError } from "../handler";
+import { Handler, Context } from "../handler";
+import { BadRequestError } from "../responses";
 
 export const JSONBodyParser = (options?: {
   inflate: boolean;
