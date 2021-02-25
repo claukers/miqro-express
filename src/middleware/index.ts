@@ -12,7 +12,7 @@ export * from "./form";
 export * from "./cookie";
 export * from "./buffer";
 
-export const midleware = (): Handler[] => {
+export const middleware = (): Handler[] => {
   const ret: Handler[] = [];
   if (FeatureToggle.isFeatureEnabled("REQUEST_LOGGER", true)) {
     ret.push(Logger());
