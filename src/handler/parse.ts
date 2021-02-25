@@ -8,7 +8,7 @@ export interface ParseRequestOptions {
   body?: ParseOptions | false;
 }
 
-const parseRequestPart = (part: "query" /*| "params"*/ | "body", ctx: Context, option: ParseOptions) => {
+const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, option: ParseOptions) => {
   const value = ctx[part];
   if (value === undefined) {
     ctx.logger.debug(`req.${part} NOT parsed [${inspect(ctx[part])}]`);
@@ -33,7 +33,7 @@ const parseRequestPart = (part: "query" /*| "params"*/ | "body", ctx: Context, o
 
 export const ParseRequest = (options: ParseRequestOptions): Handler => {
   const query = getParseOption(options.query);
-  const params = getParseOption(options.params);
+  // const params = getParseOption(options.params);
   const body = getParseOption(options.body);
 
   return async (ctx: Context) => {

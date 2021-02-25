@@ -1,4 +1,3 @@
-import { Logger } from "@miqro/core";
 import { AppHandler, Handler, normalizePath, Context, ErrorHandler } from "./common";
 import { Method } from "./feature-router";
 
@@ -41,7 +40,7 @@ export class Router {
     }
     return this;
   }
-  public catch(errorHandler: Array<ErrorHandler> | ErrorHandler) {
+  public catch(errorHandler: Array<ErrorHandler> | ErrorHandler): Router {
     if (errorHandler instanceof Array) {
       for (const e of errorHandler) {
         this.errorHandlers.push(e);
@@ -49,6 +48,7 @@ export class Router {
     } else {
       this.errorHandlers.push(errorHandler);
     }
+    return this;
   }
   protected isMatch(ctx: Context, h: AppHandler, prePath?: string): boolean {
     if ((h.method === undefined || h.method.toLocaleLowerCase() === ctx.method.toLocaleLowerCase())) {

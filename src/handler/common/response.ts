@@ -2,7 +2,7 @@ import { Response } from ".";
 
 const JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 
-export const NOT_FOUND = (message: string = "NOT FOUND"): Response => {
+export const NOT_FOUND = (message = "NOT FOUND"): Response => {
   return {
     headers: {
       ["Content-Type"]: JSON_CONTENT_TYPE
@@ -15,7 +15,7 @@ export const NOT_FOUND = (message: string = "NOT FOUND"): Response => {
   }
 };
 
-export const FORBIDDEN = (message: string = "FORBIDDEN"): Response => {
+export const FORBIDDEN = (message = "FORBIDDEN"): Response => {
   return {
     headers: {
       ["Content-Type"]: JSON_CONTENT_TYPE
@@ -28,7 +28,7 @@ export const FORBIDDEN = (message: string = "FORBIDDEN"): Response => {
   }
 }
 
-export const UNAUTHORIZED = (message: string = "UNAUTHORIZED"): Response => {
+export const UNAUTHORIZED = (message = "UNAUTHORIZED"): Response => {
   return {
     headers: {
       ["Content-Type"]: JSON_CONTENT_TYPE
@@ -41,7 +41,7 @@ export const UNAUTHORIZED = (message: string = "UNAUTHORIZED"): Response => {
   }
 }
 
-export const BAD_REQUEST = (message: string = "BAD REQUEST"): Response => {
+export const BAD_REQUEST = (message = "BAD REQUEST"): Response => {
   return {
     headers: {
       ["Content-Type"]: JSON_CONTENT_TYPE

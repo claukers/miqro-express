@@ -1,5 +1,5 @@
 import { getLogger, isFeatureEnabled, Logger, SimpleMap } from "@miqro/core";
-import { Handler, AppHandler } from "./common";
+import { Handler } from "./common";
 import { Router } from "./router";
 
 export type FeatureHandler = Array<Handler> | Handler;

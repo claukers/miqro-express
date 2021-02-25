@@ -1,7 +1,6 @@
 import { checkEnvVariables, parseOptions, UnAuthorizedError } from "@miqro/core";
 import { ExtendedVerifyTokenService } from "../service";
 import { Handler, Context } from "./common";
-import { serialize as cookieSerialize } from "cookie";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";

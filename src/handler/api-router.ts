@@ -2,7 +2,6 @@ import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
 import { getLogger, Logger, SimpleMap } from "@miqro/core";
 import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions, Method } from "./feature-router";
-import { AppHandler } from "./common";
 import { APIHandler, APIHandlerArgs, APIHandlerOptions } from "./api-handler";
 import { Router } from "./router";
 

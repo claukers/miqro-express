@@ -124,9 +124,11 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
       throw new UnAuthorizedError(`Fail to authenticate token!`);
     }
   }
+  /* eslint-disable  @typescript-eslint/no-unused-vars */
   protected async getResponse(config: RequestOptions, ctx?: Context): Promise<RequestResponse> {
     return request(config);
   }
+  /* eslint-disable  @typescript-eslint/no-unused-vars */
   protected checkSession(session: NoTokenSession, ctx?: Context): boolean {
     parseOptions("session", session, [
       { name: "username", required: true, type: "string" },

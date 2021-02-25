@@ -1,4 +1,3 @@
-import { Logger } from "@miqro/core";
 import { OutgoingHttpHeaders } from "http";
 import { Context, Handler } from "./common";
 

@@ -1,26 +1,22 @@
 import { checkEnvVariables } from "@miqro/core";
-import { Handler, Context } from "../handler";
+import { Handler, Context, BadRequestError } from "../handler";
 import { BAD_REQUEST } from "../handler/common/response";
 
 export const JSONParser = (options?: {
-  inflate: boolean;
   limit: number;
   strict: boolean;
   type: string;
 }): Handler => {
-  let inflate = false;
   let strict = false;
   let limit = 1000;
   let type = "application/json";
   if (options) {
-    inflate = options.inflate;
     strict = options.strict;
     limit = options.limit;
     type = options.type;
   } else {
-    const [inflateS, limitS, strictS, typeS] =
-      checkEnvVariables(["BODY_PARSER_INFLATE", "BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], ["true", "1000", "true", "application/json"])
-    inflate = inflateS === "true";
+    const [limitS, strictS, typeS] =
+      checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], ["1000", "false", "application/json"])
     strict = strictS === "true";
     limit = parseInt(limitS, 10);
     type = typeS;
@@ -28,10 +24,14 @@ export const JSONParser = (options?: {
   return async (ctx: Context) => {
     try {
       const isType = ctx.headers["content-type"] ? ctx.headers["content-type"].toLocaleLowerCase().indexOf(type.toLocaleLowerCase()) !== -1 : false;
-      if (isType && ctx.buffer) {
+      if (isType && ctx.buffer && ctx.buffer.length <= limit) {
         const string = ctx.buffer.toString();
         if (string) {
-          ctx.body = JSON.parse(string);
+          const parsed = JSON.parse(string);
+          if (parsed instanceof Array && strict) {
+            throw new BadRequestError(`body cannot be an array`, 'body');
+          }
+          ctx.body = parsed;
         }
       }
       return true;

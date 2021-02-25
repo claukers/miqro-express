@@ -5,7 +5,6 @@ import { URL } from "url";
 import { Response } from "./index";
 import { serialize as cookieSerialize, CookieSerializeOptions } from "cookie";
 import { v4 } from "uuid";
-import { inspect } from "util";
 
 // adds "/" to the final of path 
 // cannot account for query or hash params so send only new URL().pathname 
@@ -66,7 +65,7 @@ export class Context {
     const identifier = `${this.method}:${this.url} ${this.uuid}(${this.remoteAddress})`;
     this.logger = getLogger(identifier);
   }
-  public setCookie(name: string, value: string, options?: CookieSerializeOptions) {
+  public setCookie(name: string, value: string, options?: CookieSerializeOptions): void {
     this.res.setHeader('Set-Cookie', cookieSerialize(name, String(value), options));
   }
   public async end({ status, headers, body }: Response): Promise<void> {
@@ -89,27 +88,28 @@ export class Context {
       }
     });
   }
+  /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
   public async json(body: any, status?: number): Promise<void> {
     return this.end({
-      status: 200,
+      status: status !== undefined ? status : 200,
       headers: {
         ['Content-Type']: 'application/json; charset=utf-8'
       },
       body: JSON.stringify(body)
     })
   }
-  public async text(body: any, status?: number): Promise<void> {
+  public async text(text: string, status?: number): Promise<void> {
     return this.end({
-      status: 200,
+      status: status !== undefined ? status : 200,
       headers: {
         ['Content-Type']: 'plain/text; charset=utf-8'
       },
-      body
+      body: text
     });
   }
   public async html(html: string, status?: number): Promise<void> {
     return this.end({
-      status: 200,
+      status: status !== undefined ? status : 200,
       headers: {
         ['Content-Type']: 'plain/html; charset=utf-8'
       },
