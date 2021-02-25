@@ -2,7 +2,7 @@ import { describe, it } from "mocha";
 import path, { resolve } from "path";
 import { strictEqual } from "assert";
 import { Util } from "@miqro/core";
-import { App, midleware, APIRouter, TestHelper as FuncTestHelper, ErrorHandler, TestHelper } from "../src";
+import { App, midleware, APIRouter, TestHelper as FuncTestHelper, TestHelper } from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
@@ -41,7 +41,6 @@ describe("api-router functional tests", function () {
   it("root post with APITestHelper", (done) => {
     const app = new App();
     app.use(midleware());
-    app.use(ErrorHandler());
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
@@ -65,7 +64,6 @@ describe("api-router functional tests", function () {
   it("root get with APITestHelper", (done) => {
     const app = new App();
     app.use(midleware());
-    app.use(ErrorHandler());
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
@@ -380,7 +378,6 @@ describe("api-router functional tests", function () {
   });*/
 
   it("sink happy path bad query", (done) => {
-    app.use(ErrorHandler());
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",

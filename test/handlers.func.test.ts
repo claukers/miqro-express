@@ -13,7 +13,6 @@ Util.loadConfig();
 describe("handlers functional tests", function () {
   this.timeout(10000);
   it("ErrorHandler catches ParseOptionsError as 400", (done) => {
-    const { ErrorHandler } = require("../src/");
     const myFunc = () => {
       throw new ParseOptionsError("myerror");
     };
@@ -27,7 +26,6 @@ describe("handlers functional tests", function () {
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
     app.use(midleware());
-    app.use(ErrorHandler());
     app.get("/myFunc", myFunc);
 
     FuncTestHelper(app, {

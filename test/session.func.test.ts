@@ -219,7 +219,7 @@ describe("session functional tests", () => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { SessionHandler, ErrorHandler } = require("../src/");
+            const { SessionHandler } = require("../src/");
 
             const fakeToken = "FakeToken";
             const fakeSession = null;
@@ -234,7 +234,6 @@ describe("session functional tests", () => {
               strictEqual(ctx.session, fakeSession);
               await new APIResponse(true).send(ctx);
             });
-            app.use(ErrorHandler());
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);
@@ -261,7 +260,7 @@ describe("session functional tests", () => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { SessionHandler, ErrorHandler } = require("../src/");
+            const { SessionHandler } = require("../src/");
 
             const authService = {
               verify: fake(async ({ token }: any) => {
@@ -271,7 +270,6 @@ describe("session functional tests", () => {
             const finalHandler = fake(async (ctx: any) => {
               await new APIResponse("asdlkjasdliasjdaijal").send(ctx);
             });
-            app.use(ErrorHandler());
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);
@@ -298,7 +296,7 @@ describe("session functional tests", () => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { SessionHandler, ErrorHandler } = require("../src/");
+            const { SessionHandler } = require("../src/");
 
             const fakeToken = "FakeToken";
 
@@ -312,7 +310,6 @@ describe("session functional tests", () => {
             const finalHandler = fake(async (ctx: any) => {
               await new APIResponse("asdlkjasdliasjdaijal").send(ctx);
             });
-            app.use(ErrorHandler());
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);

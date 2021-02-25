@@ -1,14 +1,47 @@
 # @miqro/handlers
 
-this module provides some express middleware for.
-
-- request logging using **morgan** and **@miqro/core** configured via env vars.
+- request logging.
 - proxy request handler.
-- request uuid handler.
+- request taging.
 - **FeatureToggleRouter** for enabling/disabling features via env vars.
-- **body-parser** configuration and feature toggle via env vars.
+- request parser for json, x-www-form-urlencoded.
+- cookie parser.
+- session validation.
+- request parsing.
+
+```javascript
+const http = require("http");
+const {App, ReadBuffer, JSONBodyParser} = require("@miqro/handler");
+
+const app = new App();
+...
+app.use(ReadBuffer());
+app.use(JSONBodyParser());
+...
+app.get("/echo", async (ctx) => {
+  ctx.res.setHeader("Content-Type", "application/json; charset=utf-8");
+  ctx.res.end(JSON.stringfy(ctx.body));
+});
+...
+const server = new http.createServer(app.listener); 
+server.listen(8080);
+// same as app.listen(8080);
+...
+```
 
 ## handlers
+
+##### Router
+
+```javascript
+...
+const router = new Router();
+router.post("/echo", async (ctx) => {
+  ...
+});
+app.use(router, "/api");
+...
+```
 
 ##### APIRouter(...)
 
@@ -45,7 +78,6 @@ module.exports = {
   methods: ["GET"],
   path: "/health",
   query: false,
-  params: false,
   body: false,
   results: {
     options: [
@@ -104,17 +136,16 @@ API_HEALTH=false
 
 ```javascript
 ...
-app.get("/add/:a/:b/:c", [
+app.get("/add", [
     ...
-    Handler(async () => {
+    async () => {
         return 123; 
-    }),
-    Handler(()=>{
+    },
+    async ()=>{
         return 2; 
-    }),
-    (req, res, next)=>{
-        // req.results will have [123, 2]
-        next();    
+    },
+    async (ctx)=>{
+        // ctx.results will have [123, 2]
     },
     ...
 ]);
@@ -127,8 +158,6 @@ app.get("/add/:a/:b/:c", [
 ...
 app.post(..., [SessionHandler(...), protectedHandler, ResponseHandler(...)])
 ...
-app.use(ErrorHandler(...)) // this is needed for resolving a failed session validation as a 401 or 403
-...
 ```
 
 ##### GroupPolicyHandler(...)
@@ -137,19 +166,20 @@ app.use(ErrorHandler(...)) // this is needed for resolving a failed session vali
 ...
 app.post(..., [SessionHandler(...), GroupPolicyHandler(...), protectedHandler, ResponseHandler(...)])
 ...
-app.use(ErrorHandler(...)) // this is needed for resolving a failed session validation as a 401 or 403
-...
 ```
 
-##### ErrorHandler(...)
+##### Catch errors
 
 ```javascript
 ...
+app.catch(myFallBackerrorHandler1) // this will catch all throws
+app.catch(myFallBackerrorHandler2) // this will catch all throws if 'myFallBackerrorHandler1' didnt send a responde and not returned 'false' to stop the execution of the next error handler
+...
 app.use(..., [
     ...
-    ({body}) => {
-        // for example this is interpreted in ErrorHandler as a 400 if req.body doesnt match
-        Util.parseOptions("body", body, [
+    async ({body}) => {
+        // for example this is interpreted as a 400 if req.body doesnt match
+        parseOptions("body", body, [
           { name: "name", type: "string", required: true },
           { name: "age", type: "number", required: true },
           { name: "likes", type: "array", required: true, arrayType: "string" }
@@ -157,46 +187,6 @@ app.use(..., [
     },
     ...
 ]);
-...
-app.use(ErrorHandler(...))
-...
-app.use(myFallBackerrorHandler) // this will catch all throws that are not reconized by ErrorHandler()
-```
-
-or to catch common errors with custom handler
-
-```javascript
-...
-app.post(..., ()=>{
-    throw new UnAuthorizedError(...);
-});
-...
-app.use((err, next, req)=>{
-  if (!e.name || e.name === "Error") {
-    ... // unknown error ?
-  } else {
-    // try to capture common errors
-    switch (e.name) {
-      case "MethodNotImplementedError":
-        // 404
-        ...
-      case "ForbiddenError":
-        // 403 
-        ...
-      case "UnAuthorizedError":
-        // 401
-        ...
-      case "ParseOptionsError":  
-      case "SequelizeValidationError":
-      case "SequelizeEagerLoadingError": 
-      case "SequelizeUniqueConstraintError":
-        // 400 
-        ...
-      default:
-        ...
-    }
-  }
-})
 ```
 
 ##### ProxyHandler(...) and ProxyResponseHandler(...)
@@ -205,12 +195,12 @@ app.use((err, next, req)=>{
 app.use([
     ProxyHandler({
         proxyService: {
-            resolveRequest: (req) => {
+            resolveRequest: (ctx) => {
                 return { url: ..., method: ... };
             }
         }
-    }, logger),
-    ProxyResponseHandler(logger)
+    }),
+    ProxyResponseHandler()
 ])
 ```
 
@@ -226,58 +216,39 @@ app.use(FeatureRouter({
 
 ## middleware
 
-##### setupMiddleware(...)
+##### middleware(...)
 
 ```javascript
 ...
-// put this at the start of the app setup
-setupMiddleware(app, logger);
+// put this to add ReadBuffer, JSONParser, URLEncodedBodyParser, CookieParser and the requets logger
+app.use(middleware());
 ...
 ```
 
-or
-
-##### UUIDHandler(...), MorganHandler(...), BodyParserHandler(...)
+or add them manually 
 
 ```javascript
 ...
-// put this at the start of the app setup
-if (FeatureToggle.isFeatureEnabled("DISABLE_POWERED")) {
-  app.disable("x-powered-by");
-}
-if (FeatureToggle.isFeatureEnabled("REQUEST_UUID")) {
-  app.use(UUIDHandler());
-}
-if (FeatureToggle.isFeatureEnabled("MORGAN")) {
-  app.use(MorganHandler(logger));
-}
-if (FeatureToggle.isFeatureEnabled("BODY_PARSER")) {
-  app.use(JSONBodyParserHandler());
-}
-if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED")) {
-  app.use(URLEncodedBodyParserHandler());
-}
+app.use(ReadBuffer())
+app.use(JSONParser())
 ...
 ```
 
-###### body-parser env vars
+###### some env vars
 
 ```
-FEATURE_TOGGLE_BODY_PARSER=true
-BODY_PARSER_INFLATE=true
-BODY_PARSER_LIMIT=100kb
-BODY_PARSER_STRICT=true
-BODY_PARSER_TYPE=application/json
+READ_BUFFER=true
+REQUEST_LOGGER=true
 
-FEATURE_TOGGLE_BODY_PARSER_URL_ENCODED=true
-BODY_PARSER_URL_ENCODED_INFLATE=true
-BODY_PARSER_URL_ENCODED_LIMIT=100kb
-BODY_PARSER_URL_ENCODED_EXTENDED=true
-BODY_PARSER_URL_ENCODED_TYPE=application/x-www-form-urlencoded
-```
+JSON_PARSER=true
+JSON_PARSER_INFLATE=true
+JSON_PARSER_LIMIT=100kb
+JSON_PARSER_STRICT=true
+JSON_PARSER_TYPE=application/json
 
-###### morgan env vars
-
-```
-MORGAN_FORMAT=request[:uuid] [:method] [:url] [:status] [:response-time]ms
+URL_ENCODED_PARSER=true
+URL_ENCODED_PARSER_INFLATE=true
+URL_ENCODED_PARSER_LIMIT=100kb
+URL_ENCODED_PARSER_EXTENDED=100kb
+URL_ENCODED_PARSER_TYPE=application/x-www-form-urlencoded
 ```

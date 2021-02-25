@@ -3,7 +3,7 @@ import { Context, Handler } from "../handler";
 import { parse as queryParse } from "querystring";
 import { BadRequestError } from "../responses";
 
-export const URLEncodedBodyParser = (options?: {
+export const URLEncodedParser = (options?: {
   extended: boolean;
   inflate: boolean;
   limit: number;

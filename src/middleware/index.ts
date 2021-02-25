@@ -2,8 +2,8 @@ import { FeatureToggle } from "@miqro/core";
 import { Handler } from "../handler";
 import { ReadBuffer } from "./buffer";
 import { CookieParser } from "./cookie";
-import { URLEncodedBodyParser } from "./form";
-import { JSONBodyParser } from "./json";
+import { URLEncodedParser } from "./form";
+import { JSONParser } from "./json";
 import { Logger } from "./logger";
 
 export * from "./logger";
@@ -14,7 +14,7 @@ export * from "./buffer";
 
 export const midleware = (): Handler[] => {
   const ret: Handler[] = [];
-  if (FeatureToggle.isFeatureEnabled("MORGAN", true)) {
+  if (FeatureToggle.isFeatureEnabled("REQUEST_LOGGER", true)) {
     ret.push(Logger());
   }
   if (FeatureToggle.isFeatureEnabled("READ_BUFFER", true)) {
@@ -23,11 +23,11 @@ export const midleware = (): Handler[] => {
   if (FeatureToggle.isFeatureEnabled("COOKIE_PARSER", true)) {
     ret.push(CookieParser());
   }
-  if (FeatureToggle.isFeatureEnabled("BODY_PARSER", true)) {
-    ret.push(JSONBodyParser());
+  if (FeatureToggle.isFeatureEnabled("JSON_PARSER", true)) {
+    ret.push(JSONParser());
   }
-  if (FeatureToggle.isFeatureEnabled("BODY_PARSER_URL_ENCODED", true)) {
-    ret.push(URLEncodedBodyParser());
+  if (FeatureToggle.isFeatureEnabled("URL_ENCODED_PARSER", true)) {
+    ret.push(URLEncodedParser());
   }
   return ret;
 };

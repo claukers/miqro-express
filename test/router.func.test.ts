@@ -1,7 +1,7 @@
 import { describe, it } from "mocha";
-import path, { resolve } from "path";
+import path from "path";
 import { strictEqual } from "assert";
-import { Logger, Util } from "@miqro/core";
+import { Util } from "@miqro/core";
 import { TestHelper as FuncTestHelper, midleware, APIRouter, App, ErrorHandler, TestHelper, Router, APIResponse, BadRequestError } from "../src";
 import { inspect } from "util";
 
@@ -16,7 +16,6 @@ describe("router functional tests", function () {
 
   it("nested simple happy path", (done) => {
     const app = new App();
-    app.use(ErrorHandler());
     app.use(midleware());
     const router = new Router();
     const response = new APIResponse({

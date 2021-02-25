@@ -2,7 +2,7 @@ import { checkEnvVariables } from "@miqro/core";
 import { Handler, Context } from "../handler";
 import { BadRequestError } from "../responses";
 
-export const JSONBodyParser = (options?: {
+export const JSONParser = (options?: {
   inflate: boolean;
   limit: number;
   strict: boolean;

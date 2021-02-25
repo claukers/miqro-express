@@ -1,23 +1,13 @@
-import { Context, createErrorResponse, Handler } from "./common";
-import { APIResponse } from "../responses";
+import { Context, createErrorResponse, ErrorHandler } from "./common";
 
-export interface ErrorHandlerOptions {
-  createResponse: (err: Error) => APIResponse | null;
-}
-
-export const ErrorHandler = (options?: ErrorHandlerOptions): Handler => {
-  return async (ctx: Context) => {
-    ctx.on("error", async (err: Error) => {
-      ctx.logger.error(err);
-      const response = options ? options.createResponse(err) : createErrorResponse(err);
-      if (response) {
-        response.send(ctx);
-        return false;
-      } else {
-        ctx.logger.warn(`cannot create error response for error message[${err.message}] so not sending error response`);
-        return true;
-      }
-    });
-    return true;
+export const DefaultErrorHandler = (): ErrorHandler => {
+  return async (err: Error, ctx: Context) => {
+    ctx.logger.error(err);
+    const response = createErrorResponse(err);
+    if (response) {
+      await response.send(ctx);
+    } else {
+      ctx.logger.warn(`cannot create error response for error message[${err.message}] so not sending error response`);
+    }
   };
 };

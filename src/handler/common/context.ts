@@ -28,7 +28,7 @@ export const normalizePath = (path: string): string => {
   }
 }
 
-export class Context extends EventEmitter {
+export class Context {
   public readonly logger: Logger;
   public readonly startMS: number;
   public tookMS?: number;
@@ -46,9 +46,6 @@ export class Context extends EventEmitter {
   public readonly remoteAddress?: string;
   public body: any; // a middleware will fill this reading the buffer
   constructor(public readonly req: IncomingMessage, public readonly res: ServerResponse) {
-    super({
-      captureRejections: true
-    });
     this.body = undefined as any;
     const url = new URL(`http://localhost${req.url}`);
     this.url = req.url as string;

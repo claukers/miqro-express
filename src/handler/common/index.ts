@@ -33,6 +33,8 @@ export interface Response<T = any> {
 
 export type Handler = (ctx: Context) => Promise<boolean | void | any>;
 
+export type ErrorHandler = (e: Error, ctx: Context) => Promise<boolean | void | any>;
+
 export interface ParseOptions {
   disableAsArray?: boolean;
   options: ParseOption[] | ParseOptionMap;

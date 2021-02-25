@@ -1,8 +1,10 @@
-import { AppHandler, Handler, normalizePath, Context } from "./common";
+import { Logger } from "@miqro/core";
+import { AppHandler, Handler, normalizePath, Context, ErrorHandler } from "./common";
 import { Method } from "./feature-router";
 
 export class Router {
   protected readonly handlers: AppHandler[] = [];
+  protected readonly errorHandlers: ErrorHandler[] = [];
   public get(path: string, handler: Array<Handler> | Handler | Router): Router {
     return this.use(handler, path, "get");
   }
@@ -38,6 +40,15 @@ export class Router {
       });
     }
     return this;
+  }
+  public catch(errorHandler: Array<ErrorHandler> | ErrorHandler) {
+    if (errorHandler instanceof Array) {
+      for (const e of errorHandler) {
+        this.errorHandlers.push(e);
+      }
+    } else {
+      this.errorHandlers.push(errorHandler);
+    }
   }
   protected isMatch(ctx: Context, h: AppHandler, prePath?: string): boolean {
     if ((h.method === undefined || h.method.toLocaleLowerCase() === ctx.method.toLocaleLowerCase())) {
@@ -75,13 +86,19 @@ export class Router {
     }
     return true;
   };
+  protected async handleError(e: Error, ctx: Context): Promise<boolean> {
+    for (const eH of this.errorHandlers) {
+      const ret = await eH(e, ctx);
+      if (ret === false) {
+        return false;
+      } else if (ctx.res.headersSent) {
+        return false;
+      }
+    }
+    throw e; // pass the error along
+  }
   public async run(ctx: Context, prePath?: string): Promise<boolean> {
-    let closed = false;
-    const closeListener = () => {
-      closed = true;
-    };
     try {
-      ctx.res.once("close", closeListener);
       let shouldContinue = true;
       for (const h of this.handlers) {
 
@@ -91,7 +108,7 @@ export class Router {
         if (this.isMatch(ctx, h, prePath)) {
           if (h.handler instanceof Array) {
             for (const hh of h.handler) {
-              if (closed || ctx.res.headersSent) {
+              if (ctx.res.headersSent) {
                 shouldContinue = false;
                 break;
               }
@@ -104,7 +121,7 @@ export class Router {
               break;
             }
           } else {
-            if (closed || ctx.res.headersSent) {
+            if (ctx.res.headersSent) {
               shouldContinue = false;
               break;
             }
@@ -120,17 +137,13 @@ export class Router {
           }
         }
       }
-      if (!closed && !ctx.res.headersSent) {
-        ctx.res.removeListener("close", closeListener);
+      if (!ctx.res.headersSent) {
         return shouldContinue !== false;
       } else {
-        ctx.res.removeListener("close", closeListener);
         return true;
       }
     } catch (e) {
-      ctx.res.removeListener("close", closeListener);
-      ctx.emit("error", e);
-      return false;
+      return this.handleError(e, ctx);
     }
   }
 }
