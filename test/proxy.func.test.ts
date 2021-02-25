@@ -1,9 +1,8 @@
-import {describe, it, before, after} from "mocha";
-import {strictEqual} from "assert";
-import express, {Express, Request} from "express";
-import {RequestOptions, ResponseError, Util} from "@miqro/core";
-import {Server} from "http";
-import {TestHelper as FuncTestHelper} from "../src";
+import { describe, it, before, after } from "mocha";
+import { strictEqual } from "assert";
+import { RequestOptions } from "@miqro/core";
+import { Server } from "http";
+import { App, Context, TestHelper as FuncTestHelper } from "../src";
 
 describe("proxyhandler functional tests", function () {
   this.timeout(100000);
@@ -12,18 +11,18 @@ describe("proxyhandler functional tests", function () {
 
   before((done) => {
     (async () => {
-      const app = express();
+      const app = new App();
 
-      app.use("/echo", (req, res) => {
-        res.status(200);
-        const keys = Object.keys(req.headers);
+      app.get("/echo", async (ctx) => {
+        const keys = Object.keys(ctx.headers);
         for (const key of keys) {
-          res.set(key, req.headers[key]);
+          ctx.res.setHeader(key, ctx.headers[key] as any);
         }
-        res.send(req.body);
+        ctx.res.statusCode = 200;
+        ctx.res.end(ctx.body);
       });
-
       server = app.listen(9999);
+
     })().then(done).catch(done);
   });
 
@@ -35,36 +34,36 @@ describe("proxyhandler functional tests", function () {
 
   it("Happy path GET echo", (done) => {
     (async () => {
-      const app = express();
-      const {ProxyHandler, ProxyResponseHandler} = require("../src");
-      app.use("/proxy", [
+      const app = new App();
+      const { ProxyHandler, ProxyResponseHandler } = require("../src");
+      app.get("/proxy", [
         ProxyHandler({
           proxyService: {
-            resolveRequest: async (req: Request): Promise<RequestOptions> => {
+            resolveRequest: async (ctx: Context): Promise<RequestOptions> => {
               return {
                 url: `http://localhost:9999/echo`,
-                method: req.method,
+                method: ctx.method,
                 headers: {
                   "myheader": "echo"
                 },
-                data: req.body
+                data: ctx.body ? ctx.body : undefined
               };
             }
           }
         }),
         ProxyResponseHandler()
-      ] as any);
+      ]);
       const response: any = await new Promise((resolve, reject) => {
-        FuncTestHelper(app,{
+        FuncTestHelper(app, {
           url: '/proxy',
           method: "get"
-        }, (res)=>{
+        }, (res) => {
           resolve(res);
         });
       });
       strictEqual(response.status, 200);
       strictEqual(Object.keys(response.data).length, 0);
-      strictEqual(Object.keys(response.headers).length, 9);
+      strictEqual(Object.keys(response.headers).length, 6);
       strictEqual(response.headers.myheader, "echo");
     })().then(done).catch(done);
   });

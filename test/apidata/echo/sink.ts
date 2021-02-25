@@ -3,23 +3,16 @@ import { FeatureHandler } from "../../../src/handler";
 const echo: FeatureHandler = [
   async (ctx) => {
     ctx.logger.info(ctx.body);
-    ctx.logger.info(ctx.params);
-    const ret = ctx.params.param1 ? { bla: ctx.params.param1.toString() } : ctx.body;
+    ctx.logger.info(ctx.query);
+    const ret = ctx.body;
     ctx.logger.info(ret);
-    ctx.results.push(ret);
-    return true;
+    return ret;
   }
 ];
 
 module.exports = {
-  path: "/bbb/:param1?",
+  path: "/bbb/",
   methods: ["put"],
-  params: {
-    options: [
-      { name: "param1", required: false, type: "number" }
-    ],
-    mode: "no_extra"
-  },
   body: {
     options: [
       { name: "bla", required: true, type: "string" }

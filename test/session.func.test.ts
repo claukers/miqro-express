@@ -1,9 +1,7 @@
-import { describe, it } from "mocha";
+import { describe, it, beforeEach } from "mocha";
 import { strictEqual } from "assert";
-import express from "express";
-import cookieParser from "cookie-parser";
 import { fake, RequestOptions } from "@miqro/core";
-import { TestHelper as FuncTestHelper } from "../src";
+import { APIResponse, App, CookieParser, TestHelper as FuncTestHelper } from "../src";
 import { inspect } from "util";
 
 describe("session functional tests", () => {
@@ -63,6 +61,11 @@ describe("session functional tests", () => {
       };
 
       describe("session functional tests using options " + inspect(options), () => {
+        let app: App;
+        beforeEach(async () => {
+          app = new App();
+          app.use(CookieParser());
+        });
 
         it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through update token with expiration`, (done) => {
           (async () => {
@@ -77,23 +80,22 @@ describe("session functional tests", () => {
               expires: expDate
             };
 
-            const app = express();
-            app.use(cookieParser());
             const authService = {
               verify: fake(async ({ token }: { token: any }) => {
                 strictEqual(token, fakeToken);
                 return fakeSession;
               })
             };
-            const finalHandler = fake((req: any, res: any) => {
-              strictEqual(req.session.token, fakeSession.token);
-              res.json(true);
+            const finalHandler = fake(async (ctx: any) => {
+              strictEqual(ctx.session.token, fakeSession.token);
+              await new APIResponse(true).send(ctx);
             });
 
             app.get("/user", [SessionHandler({
               authService,
               options
             }), finalHandler]);
+
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {
@@ -129,22 +131,21 @@ describe("session functional tests", () => {
               token: fakeToken
             };
 
-            const app = express();
-            app.use(cookieParser());
             const authService = {
               verify: fake(async ({ token }: { token: any }) => {
                 strictEqual(token, fakeToken);
                 return fakeSession;
               })
             };
-            const finalHandler = fake((req: any, res: any) => {
-              strictEqual(req.session.token, fakeToken);
-              res.json(true);
+            const finalHandler = fake(async (ctx: any) => {
+              strictEqual(ctx.session.token, fakeToken);
+              await new APIResponse(true).send(ctx);
             });
 
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);
+
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {
@@ -176,17 +177,15 @@ describe("session functional tests", () => {
               token: "newFakeToken"
             };
 
-            const app = express();
-            app.use(cookieParser());
             const authService = {
               verify: fake(async ({ token }: { token: any }) => {
                 strictEqual(token, fakeToken);
                 return fakeSession;
               })
             };
-            const finalHandler = fake((req: any, res: any) => {
-              strictEqual(req.session.token, fakeSession.token);
-              res.json(true);
+            const finalHandler = fake(async (ctx: any) => {
+              strictEqual(ctx.session.token, fakeSession.token);
+              await new APIResponse(true).send(ctx);
             });
 
             app.get("/user", [SessionHandler({
@@ -225,22 +224,20 @@ describe("session functional tests", () => {
             const fakeToken = "FakeToken";
             const fakeSession = null;
 
-            const app = express();
-            app.use(cookieParser());
             const authService = {
               verify: fake(async ({ token }: any) => {
                 strictEqual(token, fakeToken);
                 return fakeSession;
               })
             };
-            const finalHandler = fake((req: any, res: any) => {
-              strictEqual(req.session, fakeSession);
-              res.json(true);
+            const finalHandler = fake(async (ctx: any) => {
+              strictEqual(ctx.session, fakeSession);
+              await new APIResponse(true).send(ctx);
             });
+            app.use(ErrorHandler());
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);
-            app.use(ErrorHandler());
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {
@@ -266,21 +263,18 @@ describe("session functional tests", () => {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler, ErrorHandler } = require("../src/");
 
-            const app = express();
-            app.use(cookieParser());
             const authService = {
               verify: fake(async ({ token }: any) => {
                 // empty
               })
             };
-            const finalHandler = fake((req: any, res: any) => {
-              res.json("asdlkjasdliasjdaijal");
+            const finalHandler = fake(async (ctx: any) => {
+              await new APIResponse("asdlkjasdliasjdaijal").send(ctx);
             });
+            app.use(ErrorHandler());
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);
-            app.use(ErrorHandler());
-
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(), (res) => {
                 try {
@@ -308,8 +302,6 @@ describe("session functional tests", () => {
 
             const fakeToken = "FakeToken";
 
-            const app = express();
-            app.use(cookieParser());
             const authService = {
               verify: fake(async ({ token }: any) => {
                 throw {
@@ -317,15 +309,13 @@ describe("session functional tests", () => {
                 }
               })
             };
-            const finalHandler = fake((req: any, res: any) => {
-              res.json("asdlkjasdliasjdaijal");
+            const finalHandler = fake(async (ctx: any) => {
+              await new APIResponse("asdlkjasdliasjdaijal").send(ctx);
             });
+            app.use(ErrorHandler());
             app.get("/user", [SessionHandler({
               authService, options
             }), finalHandler]);
-            app.use(ErrorHandler());
-
-
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {

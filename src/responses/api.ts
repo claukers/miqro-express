@@ -5,7 +5,7 @@ export class APIResponse implements Response {
 
   /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
   constructor(public body?: any, public status = 200, public headers: OutgoingHttpHeaders = {
-    ['Content-Type']: 'application/json'
+    ['Content-Type']: 'application/json; charset=utf-8'
   }) {
   }
 

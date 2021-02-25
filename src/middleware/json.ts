@@ -28,7 +28,7 @@ export const JSONBodyParser = (options?: {
   return async (ctx: Context) => {
     try {
       const isType = ctx.headers["content-type"] ? ctx.headers["content-type"].toLocaleLowerCase().indexOf(type.toLocaleLowerCase()) !== -1 : false;
-      if (isType) {
+      if (isType && ctx.buffer) {
         const string = ctx.buffer.toString();
         if (string) {
           ctx.body = JSON.parse(string);

@@ -1,9 +1,9 @@
 import { after, before, describe, it } from 'mocha';
 import { strictEqual } from 'assert';
-import express, { Express } from "express";
 import { Server } from "http";
-import { CookieParserHandler } from "../src/middleware";
+import { CookieParser } from "../src/middleware";
 import { inspect } from 'util';
+import { App, Context, Handler } from '../src';
 
 process.env.TOKEN_HEADER = "Authorization";
 
@@ -32,7 +32,7 @@ describe(`verifytokenendpointservice func tests`, () => {
       describe("verifytokenendpointservice functional tests using options " + inspect(options), () => {
 
         describe(`verifytokenendpointservice [${TOKENVARS.location}]func tests`, () => {
-          let fakeAuthServer: Express;
+          let fakeAuthServer: App;
           let server: Server;
           const fakeSession1 = {
             username: "usera",
@@ -50,14 +50,14 @@ describe(`verifytokenendpointservice func tests`, () => {
           const goodToken1 = jwt.sign(fakeSession1, fakeSecret);
           const goodToken2 = jwt.sign(fakeSession2, fakeSecret);
 
-          let fakeValidate: any = null;
+          let fakeValidate: Handler;
 
           before((done) => {
             (async () => {
-              fakeAuthServer = express();
-              fakeAuthServer.use(CookieParserHandler());
-              fakeAuthServer.get("/validate", (req: any, res: any) => {
-                fakeValidate(req, res);
+              fakeAuthServer = new App();
+              fakeAuthServer.use(CookieParser());
+              fakeAuthServer.get("/validate", async (ctx: Context) => {
+                fakeValidate(ctx);
               });
               server = fakeAuthServer.listen(9999);
               if (useOptions) {
@@ -98,17 +98,17 @@ describe(`verifytokenendpointservice func tests`, () => {
             (async () => {
               // eslint-disable-next-line @typescript-eslint/no-var-requires
               const { VerifyJWTEndpointService } = require("../src");
-              fakeValidate = (req: any, res: any) => {
+              fakeValidate = async (ctx: Context) => {
                 let token;
                 switch (TOKENVARS.location) {
                   case "header":
-                    token = req.headers[(options ? options.tokenLocationName : process.env.TOKEN_HEADER as string).toLowerCase()];
+                    token = ctx.headers[(options ? options.tokenLocationName : process.env.TOKEN_HEADER as string).toLowerCase()];
                     break;
                   case "query":
-                    token = req.query[options ? options.tokenLocationName : process.env.TOKEN_QUERY as string];
+                    token = ctx.query[options ? options.tokenLocationName : process.env.TOKEN_QUERY as string];
                     break;
                   case "cookie":
-                    token = req.cookies[options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string] as string;
+                    token = ctx.cookies[options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string] as string;
                     break;
                 }
                 strictEqual(token, goodToken1);
@@ -119,11 +119,15 @@ describe(`verifytokenendpointservice func tests`, () => {
                 strictEqual(verified.groups[0], fakeSession1.groups[0]);
                 strictEqual(verified.groups[1], fakeSession1.groups[1]);
                 strictEqual(verified.token, undefined);
-                res.sendStatus(200);
+                ctx.res.statusCode = 200;
+                ctx.res.end();
               };
               const instance = new VerifyJWTEndpointService(options);
               const args = {
-                token: goodToken1
+                token: goodToken1,
+                ctx: {
+                  logger: console as any
+                }
               };
               const session = await instance.verify(args);
               strictEqual(session.username, fakeSession1.username);
@@ -139,18 +143,18 @@ describe(`verifytokenendpointservice func tests`, () => {
             (async () => {
               // eslint-disable-next-line @typescript-eslint/no-var-requires
               const { VerifyJWTEndpointService } = require("../src");
-              fakeValidate = (req: any, res: any) => {
+              fakeValidate = async (ctx: Context) => {
                 let token;
                 switch (TOKENVARS.location) {
                   case "header":
-                    token = req.headers[(options ? options.tokenLocationName : process.env.TOKEN_HEADER as string).toLowerCase()];
+                    token = ctx.headers[(options ? options.tokenLocationName : process.env.TOKEN_HEADER as string).toLowerCase()];
                     break;
                   case "query":
-                    token = req.query[options ? options.tokenLocationName : process.env.TOKEN_QUERY as string];
+                    token = ctx.query[options ? options.tokenLocationName : process.env.TOKEN_QUERY as string];
                     break;
                   case "cookie":
-                    token = req.cookies[options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string] as string;
-                    res.cookie(options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string, goodToken2, {
+                    token = ctx.cookies[options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string] as string;
+                    ctx.setCookie(options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string, goodToken2, {
                       httpOnly: true
                     });
                     break;
@@ -163,11 +167,15 @@ describe(`verifytokenendpointservice func tests`, () => {
                 strictEqual(verified.groups[0], fakeSession1.groups[0]);
                 strictEqual(verified.groups[1], fakeSession1.groups[1]);
                 strictEqual(verified.token, undefined);
-                res.sendStatus(200);
+                ctx.res.statusCode = 200;
+                ctx.res.end();
               };
               const instance = new VerifyJWTEndpointService(options);
               const args = {
-                token: goodToken1
+                token: goodToken1,
+                ctx: {
+                  logger: console as any
+                }
               };
               const session = await instance.verify(args);
               strictEqual(session.username, fakeSession1.username);

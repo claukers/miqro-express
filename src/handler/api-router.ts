@@ -1,13 +1,14 @@
 import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
 import { getLogger, Logger, SimpleMap } from "@miqro/core";
-import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
+import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions, Method } from "./feature-router";
 import { AppHandler } from "./common";
 import { APIHandler, APIHandlerArgs, APIHandlerOptions } from "./api-handler";
+import { Router } from "./router";
 
 export interface APIRoute extends APIHandlerArgs {
   name?: string;
-  methods?: string[];
+  methods?: Method[];
   path?: string | string[];
 }
 
@@ -43,7 +44,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
         if ((route as any).default && (route as any).__esModule === true) {
           route = (route as any).default;
         }
-        const methods = [name];
+        let methods: Method[] = [name] as Method[];
         if (typeof route === "function") {
           route = {
             handler: route
@@ -52,7 +53,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
           if (typeof route.methods !== "undefined" && !(route.methods instanceof Array)) {
             throw new Error(`${resolve(dirname, name)} doesnt export methods as a string array`);
           } else if (typeof route.methods !== "undefined") {
-            methods.splice(0, methods.length);
+            methods = [];
             for (const m of route.methods) {
               methods.push(m);
             }
@@ -120,7 +121,7 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
   }
 };
 
-export const APIRouter = (options: APIRouterOptions, logger?: Logger): Array<AppHandler> => {
+export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router => {
   const { dirname } = options;
   const apiName = options.apiName ? options.apiName : basename(dirname);
   const apiPath = options.path ? options.path : `/${apiName}`;

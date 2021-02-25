@@ -2,12 +2,12 @@ import { describe, it } from "mocha";
 import path, { resolve } from "path";
 import { strictEqual } from "assert";
 import { Util } from "@miqro/core";
-import { App, setup, APIRouter, APITestHelper, TestHelper as FuncTestHelper, ErrorHandler } from "../src";
+import { App, midleware, APIRouter, TestHelper as FuncTestHelper, ErrorHandler, TestHelper } from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
 Util.loadConfig();
-;
+
 process.env.DISABLE_POWERED = "true";
 process.env.REQUEST_UUID = "true";
 process.env.MORGAN = "true";
@@ -31,39 +31,28 @@ process.env.APINAMEBLA_PATCH__BLA_NAME = "true";
 describe("api-router functional tests", function () {
   this.timeout(10000);
 
+  let app: App;
+
+  beforeEach(() => {
+    app = new App();
+    app.use(midleware());
+  });
 
   it("root post with APITestHelper", (done) => {
-
-    APITestHelper({
+    const app = new App();
+    app.use(midleware());
+    app.use(ErrorHandler());
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
       path: "/api/apiNameBla"
-    }, {
-      url: `/api/apiNameBla`,
-      method: "post"
-    }, (res) => {
-      const { status, data, headers } = res;
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "45");
-      strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.message, "hello");
-      done();
-    });
-  });
-
-  it("root post", (done) => {
-    const app = new App();
-    app.add(setup());
-    app.add(APIRouter({
-      dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
     }));
-    FuncTestHelper(app, {
+    TestHelper(app, {
       url: `/api/apiNameBla`,
       method: "post"
     }, (res) => {
       const { status, data, headers } = res;
+      console.log({ status, data, headers });
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "45");
       strictEqual(status, 200);
@@ -71,15 +60,41 @@ describe("api-router functional tests", function () {
       strictEqual(data.result.message, "hello");
       done();
     });
-
   });
 
-  /*it("root put custom", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/api", APIRouter({
+  it("root get with APITestHelper", (done) => {
+    const app = new App();
+    app.use(midleware());
+    app.use(ErrorHandler());
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }));
+    TestHelper(app, {
+      url: `/api/apiNameBla`,
+      query: {
+        name: "bla"
+      },
+      method: "get"
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye bla");
+      done();
+    });
+  });
+
+  it("root put custom", (done) => {
+
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }))
 
     FuncTestHelper(app, {
@@ -98,11 +113,11 @@ describe("api-router functional tests", function () {
   });
 
   it("root delete custom", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/api", APIRouter({
+
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }))
 
     FuncTestHelper(app, {
@@ -120,12 +135,12 @@ describe("api-router functional tests", function () {
 
   });
 
-  it("root patch with param", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/api", APIRouter({
+  /*it("root patch with param", (done) => {
+
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }))
 
     FuncTestHelper(app, {
@@ -144,11 +159,11 @@ describe("api-router functional tests", function () {
   });
 
   it("root patch with nested param", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/api", APIRouter({
+
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }))
 
     FuncTestHelper(app, {
@@ -167,11 +182,11 @@ describe("api-router functional tests", function () {
   });
 
   it("root get with param", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/api", APIRouter({
+
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }))
 
     FuncTestHelper(app, {
@@ -187,14 +202,13 @@ describe("api-router functional tests", function () {
       done();
     });
 
-  });
+  });*/
 
   it("simple echo", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/api", APIRouter({
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla"
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
     }))
 
     FuncTestHelper(app, {
@@ -216,9 +230,7 @@ describe("api-router functional tests", function () {
   });
 
   it("simple echo async testhelper", (done) => {
-    const app = express();
-    setupMiddleware(app);
-    app.use("/", APIRouter({
+    app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
       path: "/api/apiNameBla"
@@ -247,8 +259,6 @@ describe("api-router functional tests", function () {
   });
 
   it("other echo", (done) => {
-    const app = express();
-    setupMiddleware(app);
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
@@ -273,9 +283,7 @@ describe("api-router functional tests", function () {
 
   });
 
-  it("other echo get with param", (done) => {
-    const app = express();
-    setupMiddleware(app);
+  /*it("other echo get with param", (done) => {
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
@@ -297,8 +305,6 @@ describe("api-router functional tests", function () {
   });
 
   it("sink happy path without param", (done) => {
-    const app = express();
-    setupMiddleware(app);
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
@@ -326,15 +332,12 @@ describe("api-router functional tests", function () {
   });
 
   it("sink happy path with param", (done) => {
-    const app = express();
-    setupMiddleware(app);
+    app.use(ErrorHandler());
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
       path: "/api/apiNameBlo/sink"
     }));
-
-    app.use(ErrorHandler());
 
     FuncTestHelper(app, {
       url: `/api/apiNameBlo/sink/echo/bbb/1`,
@@ -374,21 +377,18 @@ describe("api-router functional tests", function () {
         done();
       });
     });
-  });
+  });*/
 
   it("sink happy path bad query", (done) => {
-    const app = express();
-    setupMiddleware(app);
+    app.use(ErrorHandler());
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
       path: "/api/apiNameBlo/sink"
     }));
 
-    app.use(ErrorHandler());
-
     FuncTestHelper(app, {
-      url: `/api/apiNameBlo/sink/echo/bbb/1`,
+      url: `/api/apiNameBlo/sink/echo/bbb`,
       query: {
         bla2: "bla"
       },
@@ -406,5 +406,5 @@ describe("api-router functional tests", function () {
       strictEqual(data.message, "query.bla not defined");
       done();
     });
-  });*/
+  });
 });

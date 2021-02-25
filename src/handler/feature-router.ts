@@ -1,12 +1,13 @@
 import { getLogger, isFeatureEnabled, Logger, SimpleMap } from "@miqro/core";
 import { Handler, AppHandler } from "./common";
+import { Router } from "./router";
 
 export type FeatureHandler = Array<Handler> | Handler;
 
 export interface FeatureRouterPathOptions {
   identifier: string;
   path: string;
-  methods: string[];
+  methods: Method[];
   handler: FeatureHandler;
 }
 
@@ -14,13 +15,14 @@ export interface FeatureRouterOptions {
   features: SimpleMap<FeatureRouterPathOptions>;
 }
 
-export const FEATURE_ROUTER_METHODS = ["use", "get", "post", "put", "delete", "patch", "options"];
+export const FEATURE_ROUTER_METHODS = ["get", "post", "put", "delete", "patch", "options"];
+export type Method = "get" | "post" | "put" | "delete" | "patch" | "options";
 
-export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Array<AppHandler> => {
+export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
   if (!logger) {
     logger = getLogger("FeatureRouter");
   }
-  const ret: Array<AppHandler> = [];
+  const router: Router = new Router();
   const toSetup = Object.keys(options.features);
   const enabled: string[] = [];
   const disabled: string[] = [];
@@ -53,11 +55,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): A
           enabled.push(featureName);
           for (const method of methods) {
             logger.info(`[${featureName}] on [${method.toUpperCase()}:${path}]`);
-            ret.push({
-              method: method.toLocaleLowerCase(),
-              pathname: path,
-              handler: implementation
-            });
+            router.use(implementation, path, method.toLocaleLowerCase() as Method);
           }
         } else {
           logger.debug(`feature [${featureName}] disabled`);
@@ -75,5 +73,5 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): A
   } else {
     logger.debug(`no features disabled`);
   }
-  return ret;
+  return router;
 };
