@@ -41,7 +41,6 @@ export class Context extends EventEmitter {
   public readonly method: string;
   public readonly headers: IncomingHttpHeaders;
   public readonly cookies: SimpleMap<string>;
-  public params: SimpleMap<string>;
   public query: ParsedUrlQuery;
   public buffer: Buffer; // empty buffer. middleware must read it
   public readonly remoteAddress?: string;
@@ -61,7 +60,6 @@ export class Context extends EventEmitter {
     };
     this.buffer = Buffer.from("");
     this.remoteAddress = req.socket.remoteAddress;
-    this.params = {};
     this.cookies = {}; // a middleware will fill
     this.headers = req.headers;
     this.startMS = Date.now();

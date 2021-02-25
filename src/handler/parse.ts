@@ -8,7 +8,7 @@ export interface ParseRequestOptions {
   body?: ParseOptions | false;
 }
 
-const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, option: ParseOptions) => {
+const parseRequestPart = (part: "query" /*| "params"*/ | "body", ctx: Context, option: ParseOptions) => {
   const value = ctx[part];
   if (value === undefined) {
     ctx.logger.debug(`req.${part} NOT parsed [${inspect(ctx[part])}]`);
@@ -17,9 +17,9 @@ const parseRequestPart = (part: "query" | "params" | "body", ctx: Context, optio
   if (option.disableAsArray && value instanceof Array) {
     throw new ParseOptionsError(`${part} cannot be an array`);
   }
-  if (part === "params" && option.ignoreUndefined === undefined) {
+  /*if (part === "params" && option.ignoreUndefined === undefined) {
     option.ignoreUndefined = true
-  }
+  }*/
   if (value instanceof Array) {
     for (let i = 0; i < value.length; i++) {
       (ctx[part] as any)[i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined) as any;
@@ -39,7 +39,7 @@ export const ParseRequest = (options: ParseRequestOptions): Handler => {
   return async (ctx: Context) => {
     try {
       parseRequestPart("query", ctx, query);
-      parseRequestPart("params", ctx, params);
+      // parseRequestPart("params", ctx, params);
       parseRequestPart("body", ctx, body);
       return true;
     } catch (e) {
