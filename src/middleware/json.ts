@@ -1,6 +1,6 @@
 import { checkEnvVariables } from "@miqro/core";
 import { Handler, Context } from "../handler";
-import { BadRequestError } from "../responses";
+import { BAD_REQUEST } from "../handler/common/response";
 
 export const JSONParser = (options?: {
   inflate: boolean;
@@ -33,11 +33,11 @@ export const JSONParser = (options?: {
         if (string) {
           ctx.body = JSON.parse(string);
         }
-
       }
       return true;
     } catch (e) {
-      throw new BadRequestError(`cannot parse body: ${e.message}`);
+      ctx.logger.error(e);
+      await ctx.end(BAD_REQUEST(`cannot parse body: ${e.message}`));
     }
   };
 };

@@ -1,6 +1,6 @@
 import { request } from "@miqro/core";
 import { inspect } from "util";
-import { Context, Handler, createProxyResponse, ProxyOptionsInterface } from "./common";
+import { Context, Handler, ProxyOptionsInterface } from "./common";
 
 export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
   async (ctx) => {
@@ -29,14 +29,19 @@ export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
 
 export const ProxyResponseHandler = (): Handler =>
   async (ctx: Context) => {
-    const response = createProxyResponse(ctx);
-    ctx.logger.debug(`response[${inspect(response, {
-      depth: 1
-    })}]`);
-    if (!response) {
-      return true;
-    } else {
-      response.send(ctx);
-      return false;
+    if (!ctx.results || ctx.results.length === 0) {
+      return null;
     }
+    const r = ctx.results && ctx.results.length > 1 ? ctx.results[ctx.results.length - 1] : (
+      ctx.results && ctx.results.length === 1 ? ctx.results[0] : null
+    );
+
+    ctx.logger.debug(`response[${inspect(r, {
+      depth: 0
+    })}]`);
+    ctx.end({
+      headers: r.headers,
+      body: r.data,
+      status: r.status
+    });
   }

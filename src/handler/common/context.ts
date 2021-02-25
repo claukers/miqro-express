@@ -1,10 +1,11 @@
 import { getLogger, Logger, Session, SimpleMap } from "@miqro/core";
-import EventEmitter from "events";
 import { IncomingHttpHeaders, IncomingMessage, ServerResponse } from "http";
 import { ParsedUrlQuery, parse as queryParse } from "querystring";
 import { URL } from "url";
+import { Response } from "./index";
 import { serialize as cookieSerialize, CookieSerializeOptions } from "cookie";
 import { v4 } from "uuid";
+import { inspect } from "util";
 
 // adds "/" to the final of path 
 // cannot account for query or hash params so send only new URL().pathname 
@@ -65,7 +66,62 @@ export class Context {
     const identifier = `${this.method}:${this.url} ${this.uuid}(${this.remoteAddress})`;
     this.logger = getLogger(identifier);
   }
-  setCookie(name: string, value: string, options?: CookieSerializeOptions) {
+  public setCookie(name: string, value: string, options?: CookieSerializeOptions) {
     this.res.setHeader('Set-Cookie', cookieSerialize(name, String(value), options));
+  }
+  public async end({ status, headers, body }: Response): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      try {
+        this.res.statusCode = status;
+        const keys = Object.keys(headers);
+        for (const key of keys) {
+          if (headers[key] !== undefined) {
+            this.res.setHeader(key, headers[key] as any);
+          }
+        }
+        this.res.end(String(body), () => {
+          this.req.socket.end(() => {
+            resolve();
+          });
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  public async json(body: any, status?: number): Promise<void> {
+    return this.end({
+      status: 200,
+      headers: {
+        ['Content-Type']: 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(body)
+    })
+  }
+  public async text(body: any, status?: number): Promise<void> {
+    return this.end({
+      status: 200,
+      headers: {
+        ['Content-Type']: 'plain/text; charset=utf-8'
+      },
+      body
+    });
+  }
+  public async html(html: string, status?: number): Promise<void> {
+    return this.end({
+      status: 200,
+      headers: {
+        ['Content-Type']: 'plain/html; charset=utf-8'
+      },
+      body: html
+    })
+  }
+  public async redirect(url: string): Promise<void> {
+    return this.end({
+      status: 302,
+      headers: {
+        ['Location']: url
+      }
+    })
   }
 }

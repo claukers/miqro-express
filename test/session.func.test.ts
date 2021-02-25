@@ -1,7 +1,7 @@
 import { describe, it, beforeEach } from "mocha";
 import { strictEqual } from "assert";
 import { fake, RequestOptions } from "@miqro/core";
-import { APIResponse, App, CookieParser, TestHelper as FuncTestHelper } from "../src";
+import { App, CookieParser, TestHelper as FuncTestHelper } from "../src";
 import { inspect } from "util";
 
 describe("session functional tests", () => {
@@ -88,7 +88,7 @@ describe("session functional tests", () => {
             };
             const finalHandler = fake(async (ctx: any) => {
               strictEqual(ctx.session.token, fakeSession.token);
-              await new APIResponse(true).send(ctx);
+              ctx.json(true);
             });
 
             app.get("/user", [SessionHandler({
@@ -139,7 +139,7 @@ describe("session functional tests", () => {
             };
             const finalHandler = fake(async (ctx: any) => {
               strictEqual(ctx.session.token, fakeToken);
-              await new APIResponse(true).send(ctx);
+              ctx.json(true);
             });
 
             app.get("/user", [SessionHandler({
@@ -185,7 +185,7 @@ describe("session functional tests", () => {
             };
             const finalHandler = fake(async (ctx: any) => {
               strictEqual(ctx.session.token, fakeSession.token);
-              await new APIResponse(true).send(ctx);
+              ctx.json(true);
             });
 
             app.get("/user", [SessionHandler({
@@ -232,7 +232,7 @@ describe("session functional tests", () => {
             };
             const finalHandler = fake(async (ctx: any) => {
               strictEqual(ctx.session, fakeSession);
-              await new APIResponse(true).send(ctx);
+              ctx.json(true);
             });
             app.get("/user", [SessionHandler({
               authService, options
@@ -268,7 +268,7 @@ describe("session functional tests", () => {
               })
             };
             const finalHandler = fake(async (ctx: any) => {
-              await new APIResponse("asdlkjasdliasjdaijal").send(ctx);
+              ctx.json(true);
             });
             app.get("/user", [SessionHandler({
               authService, options
@@ -308,7 +308,7 @@ describe("session functional tests", () => {
               })
             };
             const finalHandler = fake(async (ctx: any) => {
-              await new APIResponse("asdlkjasdliasjdaijal").send(ctx);
+              ctx.json(true);
             });
             app.get("/user", [SessionHandler({
               authService, options

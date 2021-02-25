@@ -1,12 +1,14 @@
 # @miqro/handlers
 
+lightweight module for api development.
+
 - request logging.
 - proxy request handler.
-- request taging.
-- **FeatureToggleRouter** for enabling/disabling features via env vars.
-- request parser for json, x-www-form-urlencoded.
-- cookie parser.
+- request taging using **uuid** module.
+- request parser for json and x-www-form-urlencoded.
+- cookie parser using **cookie** module.
 - session validation.
+- jwt token validation using **jsonwebtoken** module.
 - request parsing.
 
 ```javascript
@@ -19,8 +21,7 @@ app.use(ReadBuffer());
 app.use(JSONBodyParser());
 ...
 app.get("/echo", async (ctx) => {
-  ctx.res.setHeader("Content-Type", "application/json; charset=utf-8");
-  ctx.res.end(JSON.stringfy(ctx.body));
+  ctx.json(ctx.body);
 });
 ...
 const server = new http.createServer(app.listener); 
@@ -109,7 +110,6 @@ module.exports = {
 module.exports = {
   description: "...",
   query: false,
-  params: false,
   body: {
     options: ...,
     ...
@@ -234,7 +234,7 @@ app.use(JSONParser())
 ...
 ```
 
-###### some env vars
+##### some env vars
 
 ```
 READ_BUFFER=true

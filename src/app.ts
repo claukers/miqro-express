@@ -1,7 +1,7 @@
 import { createServer, RequestListener, Server } from "http";
 import { Context, DefaultErrorHandler, ErrorHandler } from "./handler";
+import { NOT_FOUND } from "./handler/common/response";
 import { Router } from "./handler/router";
-import { NOT_FOUND } from "./responses";
 
 export class App extends Router {
   public readonly listener: RequestListener;
@@ -16,7 +16,7 @@ export class App extends Router {
       (async () => {
         await this.run(ctx);
         if (!ctx.res.headersSent) {
-          await NOT_FOUND.send(ctx);
+          await ctx.end(NOT_FOUND());
         }
       })().catch(async (e) => {
         try {

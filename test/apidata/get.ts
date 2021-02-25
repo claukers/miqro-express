@@ -14,8 +14,7 @@ export default {
   handler: [
     async (ctx: Context) => {
       ctx.logger.info(ctx.query.name);
-      return `bye ${ctx.query.name}`
-    },
-    ResponseHandler()
+      ctx.json({ success: true, result: `bye ${ctx.query.name}` });
+    }
   ]
 }

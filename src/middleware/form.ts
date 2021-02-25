@@ -1,7 +1,7 @@
 import { checkEnvVariables } from "@miqro/core";
 import { Context, Handler } from "../handler";
 import { parse as queryParse } from "querystring";
-import { BadRequestError } from "../responses";
+import { BAD_REQUEST } from "../handler/common/response";
 
 export const URLEncodedParser = (options?: {
   extended: boolean;
@@ -40,7 +40,8 @@ export const URLEncodedParser = (options?: {
       }
       return true;
     } catch (e) {
-      throw new BadRequestError(`cannot parse body: ${e.message}`);
+      ctx.logger.error(e);
+      await ctx.end(BAD_REQUEST(`cannot parse body: ${e.message}`));
     }
   };
 };

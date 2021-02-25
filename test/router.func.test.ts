@@ -2,7 +2,7 @@ import { describe, it } from "mocha";
 import path from "path";
 import { strictEqual } from "assert";
 import { Util } from "@miqro/core";
-import { TestHelper as FuncTestHelper, midleware, APIRouter, App, ErrorHandler, TestHelper, Router, APIResponse, BadRequestError } from "../src";
+import { TestHelper as FuncTestHelper, midleware, App, Router, BadRequestError } from "../src";
 import { inspect } from "util";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
@@ -18,18 +18,14 @@ describe("router functional tests", function () {
     const app = new App();
     app.use(midleware());
     const router = new Router();
-    const response = new APIResponse({
-      status: "OK"
-    });
-    const response2 = new APIResponse({
-      status: "OK2"
-    });
     router.get("/ble", async (ctx) => {
       throw new BadRequestError(`bla`);
     });
     app.use(router, "/api");
     router.get("/bla", async (ctx) => {
-      await response.send(ctx);
+      ctx.json({
+        status: "OK"
+      });
     });
     app.get("/api/blo", async () => {
       throw new BadRequestError(`blo`);
@@ -38,7 +34,9 @@ describe("router functional tests", function () {
     router.use(router2, "/bli/blu");
 
     router2.get("/blubli", async (ctx) => {
-      await response2.send(ctx);
+      ctx.json({
+        status: "OK2"
+      });
     });
 
     FuncTestHelper(app, {
