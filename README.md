@@ -76,7 +76,7 @@ declare routes creating files in the ```api_dirname```
 // [GET] /api/health
 module.exports = {
   description: "...",
-  methods: ["GET"],
+  methods: ["get"],
   path: "/health",
   query: false,
   body: false,
