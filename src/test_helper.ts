@@ -4,6 +4,7 @@ import { v4 } from "uuid";
 import { App } from "./app";
 import { createServer } from "http";
 import { APIRouter, APIRouterOptions } from "./handler";
+import { midleware } from "./middleware";
 
 export const TestHelper = async (app: App, options: RequestOptions, cb?: (response: RequestResponse) => void): Promise<RequestResponse | void> => {
   const unixSocket = `/tmp/socket.${v4()}`;
@@ -47,6 +48,7 @@ export const TestHelper = async (app: App, options: RequestOptions, cb?: (respon
 
 export const APITestHelper = async (options: APIRouterOptions, request: RequestOptions, cb?: (response: RequestResponse) => void): Promise<RequestResponse | void> => {
   const app = new App();
+  app.use(midleware());
   app.use(APIRouter(options));
   return TestHelper(app, request, cb);
 }
