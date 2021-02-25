@@ -10,21 +10,21 @@ export class App extends Router {
   constructor() {
     super();
     this.errorHandler = DefaultErrorHandler();
-    this.listener = (req, res) => {
+    this.listener = async (req, res) => {
       const ctx = new Context(req, res);
       ctx.logger.debug(`request received`);
-      (async () => {
+      try {
         await this.run(ctx);
         if (!ctx.res.headersSent) {
           await ctx.end(NOT_FOUND());
         }
-      })().catch(async (e) => {
+      } catch (e) {
         try {
           await this.handleError(e, ctx);
-        } catch (e) {
+        } catch (e2) {
           this.errorHandler(e, ctx).catch(ctx.logger.error);
         }
-      });
+      }
     };
   }
   public listen(...args: any[]): Server {
