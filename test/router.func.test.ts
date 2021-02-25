@@ -2,7 +2,7 @@ import { describe, it } from "mocha";
 import path from "path";
 import { strictEqual } from "assert";
 import { Util } from "@miqro/core";
-import { TestHelper as FuncTestHelper, midleware, App, Router, BadRequestError } from "../src";
+import { TestHelper as FuncTestHelper, middleware, App, Router, BadRequestError } from "../src";
 import { inspect } from "util";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
@@ -16,7 +16,7 @@ describe("router functional tests", function () {
 
   it("nested simple happy path", (done) => {
     const app = new App();
-    app.use(midleware());
+    app.use(middleware());
     const router = new Router();
     router.get("/ble", async (ctx) => {
       throw new BadRequestError(`bla`);

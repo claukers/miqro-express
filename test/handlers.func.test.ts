@@ -2,7 +2,7 @@ import { describe, it } from "mocha";
 import path from "path";
 import { strictEqual } from "assert";
 import { ParseOptionsError, Util } from "@miqro/core";
-import { midleware } from "../src/middleware";
+import { middleware } from "../src/middleware";
 import { App, TestHelper as FuncTestHelper } from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
@@ -25,7 +25,7 @@ describe("handlers functional tests", function () {
     process.env.BODY_PARSER_LIMIT = "100kb";
     process.env.BODY_PARSER_STRICT = "true";
     process.env.BODY_PARSER_TYPE = "application/json";
-    app.use(midleware());
+    app.use(middleware());
     app.get("/myFunc", myFunc);
 
     FuncTestHelper(app, {
