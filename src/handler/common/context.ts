@@ -65,6 +65,12 @@ export class Context {
     const identifier = `${this.method}:${this.url} ${this.uuid}(${this.remoteAddress})`;
     this.logger = getLogger(identifier);
   }
+  public clearCookie(name: string): void {
+    this.setCookie(name, "", {
+      path: "/",
+      expires: new Date(Date.now())
+    });
+  }
   public setCookie(name: string, value: string, options?: CookieSerializeOptions): void {
     this.res.setHeader('Set-Cookie', cookieSerialize(name, String(value), options));
   }
