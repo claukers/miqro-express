@@ -36,6 +36,8 @@ export class Context {
   public session?: Session;
   public results: any[];
   public readonly path: string;
+  public readonly hostname: string;
+  public readonly protocol: string;
   public readonly url: string;
   public readonly hash: string;
   public readonly method: string;
@@ -48,6 +50,8 @@ export class Context {
   constructor(public readonly req: IncomingMessage, public readonly res: ServerResponse) {
     this.body = undefined as any;
     const url = new URL(`http://localhost${req.url}`);
+    this.protocol = url.protocol;
+    this.hostname = url.hostname;
     this.url = req.url as string;
     this.method = req.method as string;
     this.path = normalizePath(url.pathname);
