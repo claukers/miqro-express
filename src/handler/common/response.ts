@@ -7,7 +7,7 @@ export const NOT_FOUND = (message = "NOT FOUND"): Response => {
     headers: {
       ["Content-Type"]: JSON_CONTENT_TYPE
     },
-    status: 200,
+    status: 404,
     body: JSON.stringify({
       success: false,
       message
