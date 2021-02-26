@@ -24,9 +24,11 @@ export const URLEncodedParser = (options?: {
       if (isType && ctx.buffer && ctx.buffer.length <= limit) {
         const string = ctx.buffer.toString();
         if (string) {
-          ctx.body = queryParse(string, undefined, undefined, {
-            maxKeys: 20
-          });
+          ctx.body = {
+            ...queryParse(string, undefined, undefined, {
+              maxKeys: 20
+            })
+          };
         }
       }
       return true;
