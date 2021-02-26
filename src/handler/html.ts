@@ -17,7 +17,7 @@ export const HTMLResponseHandler = (): Handler =>
     ) {
       const status = typeof lastResult.status === "number" ? lastResult.status : 200;
       const headers = typeof lastResult.headers === "object" ? lastResult.headers : {
-        "content-type": "text/html"
+        "content-type": "text/html; charset=utf-8"
       };
       const toSend = lastResult.template ? await lastResult.template(ctx) : (typeof lastResult.body === "string" ? lastResult.body : lastResult);
       if (typeof toSend === "string") {

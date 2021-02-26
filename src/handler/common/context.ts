@@ -119,7 +119,7 @@ export class Context {
     return this.end({
       status: status !== undefined ? status : 200,
       headers: {
-        ['Content-Type']: 'plain/html; charset=utf-8'
+        ['Content-Type']: 'text/html; charset=utf-8'
       },
       body: html
     })
