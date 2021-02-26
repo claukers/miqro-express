@@ -4,7 +4,7 @@ import { ParseOptions, Handler, Context, getParseOption } from "./common";
 
 export interface ParseRequestOptions {
   query?: ParseOptions | false;
-  params?: ParseOptions | false;
+  // params?: ParseOptions | false;
   body?: ParseOptions | false;
 }
 
