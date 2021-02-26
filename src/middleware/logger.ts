@@ -8,7 +8,6 @@ export const Logger = (options?: {
       const took = Date.now() - ctx.startMS;
       ctx.tookMS = took;
       const contentLength = (ctx.res as any)._contentLength;
-      ctx.logger.info(contentLength);
       const entry = options ? options.formatter(ctx) : `request[${ctx.uuid}](${ctx.req.socket.remoteAddress}) [${ctx.method}] [${ctx.path}] [${ctx.res.statusCode}] content-length[${contentLength}] [${ctx.tookMS}]ms`;
       if (ctx.res.statusCode < 400) {
         ctx.logger.info(entry);
