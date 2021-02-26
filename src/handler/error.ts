@@ -7,8 +7,6 @@ export const DefaultErrorHandler = (): ErrorHandler => {
     if (!e.name || e.name === "Error") {
       if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
         await ctx.end(ERROR_RESPONSE(`${e.message}. You are seeing this message because NODE_ENV === "development" || NODE_ENV === "test"`));
-      } else {
-        return null;
       }
     } else {
       switch (e.name) {

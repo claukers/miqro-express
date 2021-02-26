@@ -22,7 +22,7 @@ export class App extends Router {
         try {
           await this.handleError(e, ctx);
         } catch (e2) {
-          this.errorHandler(e, ctx).catch(ctx.logger.error);
+          this.errorHandler(e, ctx).catch(e => ctx.logger.error(e));
         }
       }
     };
