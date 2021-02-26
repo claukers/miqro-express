@@ -85,9 +85,7 @@ export class Context {
           }
         }
         this.res.end(String(body), () => {
-          this.req.socket.end(() => {
-            resolve();
-          });
+          resolve();
         });
       } catch (e) {
         reject(e);
