@@ -19,7 +19,8 @@ export interface Response<T = any> {
   headers: OutgoingHttpHeaders;
 }
 
-export type Handler = (ctx: Context) => Promise<boolean | void | any>;
+export type Handler = (ctx: Context) => Promise<boolean | void | any> | HandlerFunction;
+type HandlerFunction = (ctx: Context) => boolean | void | any;
 
 export type ErrorHandler = (e: Error, ctx: Context) => Promise<boolean | void | any>;
 
