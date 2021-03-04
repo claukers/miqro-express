@@ -14,7 +14,7 @@ export const URLEncodedParser = (options?: {
     type = options.type;
   } else {
     const [limitS, typeS] =
-      checkEnvVariables(["BODY_PARSER_URL_ENCODED_LIMIT", "BODY_PARSER_URL_ENCODED_TYPE"], ["1000", "application/x-www-form-urlencoded"]);
+      checkEnvVariables(["BODY_PARSER_URL_ENCODED_LIMIT", "BODY_PARSER_URL_ENCODED_TYPE"], [String(1024*8), "application/x-www-form-urlencoded"]);
     limit = parseInt(limitS, 10);
     type = typeS;
   }

@@ -16,7 +16,7 @@ export const JSONParser = (options?: {
     type = options.type;
   } else {
     const [limitS, strictS, typeS] =
-      checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], ["1000", "false", "application/json"])
+      checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], [String(1024*8), "false", "application/json"])
     strict = strictS === "true";
     limit = parseInt(limitS, 10);
     type = typeS;
