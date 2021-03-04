@@ -1,5 +1,5 @@
-import { getLogger, Logger, Session, SimpleMap } from "@miqro/core";
-import { IncomingHttpHeaders, IncomingMessage, ServerResponse } from "http";
+import { defaultLoggerFormatter, getLogger, Logger, Session, SimpleMap } from "@miqro/core";
+import { IncomingHttpHeaders, IncomingMessage, OutgoingHttpHeaders, ServerResponse } from "http";
 import { ParsedUrlQuery, parse as queryParse } from "querystring";
 import { URL } from "url";
 import { Response } from "./index";
@@ -62,8 +62,17 @@ export class Context {
     this.startMS = Date.now();
     this.uuid = v4();
     this.results = []; // handlers will fill this
-    const identifier = `${this.method}:${this.url} ${this.uuid}(${this.remoteAddress})`;
-    this.logger = getLogger(identifier);
+    this.logger = getLogger(`${this.method}:${this.url}`, {
+      formatter: ({
+        identifier,
+        level,
+        message,
+      }) => defaultLoggerFormatter({
+        identifier,
+        level,
+        message: `[${this.uuid}] (${this.remoteAddress}): ${message}`
+      })
+    });
   }
   public clearCookie(name: string): void {
     this.setCookie(name, "", {
@@ -93,37 +102,41 @@ export class Context {
     });
   }
   /* eslint-disable  @typescript-eslint/explicit-module-boundary-types */
-  public async json(body: any, status?: number): Promise<void> {
+  public async json(body: any, headers?: OutgoingHttpHeaders, status?: number): Promise<void> {
     return this.end({
       status: status !== undefined ? status : 200,
       headers: {
+        ...headers,
         ['Content-Type']: 'application/json; charset=utf-8'
       },
       body: JSON.stringify(body)
     })
   }
-  public async text(text: string, status?: number): Promise<void> {
+  public async text(text: string, headers?: OutgoingHttpHeaders, status?: number): Promise<void> {
     return this.end({
       status: status !== undefined ? status : 200,
       headers: {
+        ...headers,
         ['Content-Type']: 'plain/text; charset=utf-8'
       },
       body: text
     });
   }
-  public async html(html: string, status?: number): Promise<void> {
+  public async html(html: string, headers?: OutgoingHttpHeaders, status?: number): Promise<void> {
     return this.end({
       status: status !== undefined ? status : 200,
       headers: {
-        ['Content-Type']: 'text/html; charset=utf-8'
+        ...headers,
+        ['Content-Type']: 'text/html; charset=utf-8',
       },
       body: html
     })
   }
-  public async redirect(url: string): Promise<void> {
+  public async redirect(url: string, headers?: OutgoingHttpHeaders, status?: number): Promise<void> {
     return this.end({
-      status: 302,
+      status: status !== undefined ? status : 302,
       headers: {
+        ...headers,
         ['Location']: url
       }
     })
