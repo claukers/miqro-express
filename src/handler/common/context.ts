@@ -70,7 +70,7 @@ export class Context {
       }) => defaultLoggerFormatter({
         identifier,
         level,
-        message: `[${this.uuid}] (${this.remoteAddress}): ${message}`
+        message: `[${this.uuid}] (${this.remoteAddress}) ${message}`
       })
     });
   }
