@@ -62,7 +62,7 @@ export class Context {
     this.startMS = Date.now();
     this.uuid = v4();
     this.results = []; // handlers will fill this
-    this.logger = getLogger(`${this.method}:${this.url}`, {
+    this.logger = getLogger(`${this.method.toUpperCase()}${this.url.replace(/\//ig, "_").toUpperCase()}`, {
       formatter: ({
         identifier,
         level,
@@ -70,7 +70,7 @@ export class Context {
       }) => defaultLoggerFormatter({
         identifier,
         level,
-        message: `[${this.uuid}] (${this.remoteAddress}) ${message}`
+        message: `${this.url} [${this.uuid}] (${this.remoteAddress})${this.session ? ` session[${this.session.username}:${this.session.account}:[${this.session.groups ? this.session.groups.join(",") : ""}]]` : ""} ${message}`
       })
     });
   }
