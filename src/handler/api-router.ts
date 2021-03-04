@@ -115,7 +115,6 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
     }
     return features;
   } catch (e) {
-    console.error(e);
     throw e;
   }
 };

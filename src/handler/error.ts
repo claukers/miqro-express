@@ -3,7 +3,6 @@ import { BAD_REQUEST, ERROR_RESPONSE, FORBIDDEN, NOT_FOUND, UNAUTHORIZED } from 
 
 export const DefaultErrorHandler = (): ErrorHandler => {
   return async (e: Error, ctx: Context) => {
-    ctx.logger.error(e);
     if (!e.name || e.name === "Error") {
       if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test") {
         await ctx.end(ERROR_RESPONSE(`${e.message}. You are seeing this message because NODE_ENV === "development" || NODE_ENV === "test"`));
@@ -33,5 +32,6 @@ export const DefaultErrorHandler = (): ErrorHandler => {
       return false;
     }
     ctx.logger.warn(`cannot create error response for error message[${e.message}] so not sending error response`);
+    return true;
   };
 };

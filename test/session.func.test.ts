@@ -1,7 +1,7 @@
 import { describe, it, beforeEach } from "mocha";
 import { strictEqual } from "assert";
 import { fake, RequestOptions } from "@miqro/core";
-import { App, CookieParser, TestHelper as FuncTestHelper } from "../src";
+import { App, CookieParser, Logger, TestHelper as FuncTestHelper } from "../src";
 import { inspect } from "util";
 
 describe("session functional tests", () => {
@@ -65,6 +65,7 @@ describe("session functional tests", () => {
         beforeEach(async () => {
           app = new App();
           app.use(CookieParser());
+          app.use(Logger());
         });
 
         it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through update token with expiration`, (done) => {

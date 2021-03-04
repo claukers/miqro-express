@@ -120,8 +120,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
         return null;
       }
     } catch (e) {
-      ctx.logger.error(`error verifying [${token}] [${e.response ? e.response.status : ""}][${e.config ? e.config.url : ""}][${e.message}]`);
-      throw new UnAuthorizedError(`Fail to authenticate token!`);
+      throw new UnAuthorizedError(`Fail to authenticate token! error verifying [${token}] [${e.status}][${e.config ? e.config.url : ""}]`);
     }
   }
   /* eslint-disable  @typescript-eslint/no-unused-vars */
