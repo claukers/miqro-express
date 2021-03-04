@@ -99,10 +99,10 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
       }
     } catch (e) {
       // (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
-      if (e.name) {
+      if (e.name && e.name !== "Error") {
         throw e;
       } else {
-        throw new UnAuthorizedError(`Fail to authenticate token!`);
+        throw new UnAuthorizedError(`Fail to authenticate token!${e.message ? ` ${e.message}` : ""}`);
       }
     }
   };

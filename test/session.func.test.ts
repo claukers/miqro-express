@@ -317,6 +317,8 @@ describe("session functional tests", () => {
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {
+                  const { status, data, headers } = res;
+                  console.log({ status, data, headers });
                   strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
                   strictEqual(res.headers["content-length"], "57");
                   strictEqual(res.status, 401);

@@ -31,6 +31,25 @@ module.exports = {
     ],
     mode: "no_extra"
   },
+  session: {
+    authService: {
+      verify: async ({ token }: { token: string; ctx: any }) => {
+        if (token === "throw") {
+          throw new Error("bla");
+        }
+        return token ? {
+          account: "account",
+          username: "username",
+          groups: [],
+          token
+        } : null;
+      }
+    },
+    options: {
+      tokenLocation: "header",
+      tokenLocationName: "Authorization"
+    }
+  },
   tag: true,
   jsonfy: true,
   handler: echo

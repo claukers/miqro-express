@@ -48,7 +48,10 @@ describe("api-router functional tests", function () {
     }));
     TestHelper(app, {
       url: `/api/apiNameBla`,
-      method: "post"
+      method: "post",
+      headers: {
+        Authorization: "bla"
+      }
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
@@ -74,7 +77,10 @@ describe("api-router functional tests", function () {
       query: {
         name: "bla"
       },
-      method: "get"
+      method: "get",
+      headers: {
+        Authorization: "bla"
+      }
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
@@ -97,7 +103,10 @@ describe("api-router functional tests", function () {
 
     FuncTestHelper(app, {
       url: `/api/apiNameBla`,
-      method: "put"
+      method: "put",
+      headers: {
+        Authorization: "bla"
+      }
     }, (res) => {
       const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
@@ -120,7 +129,10 @@ describe("api-router functional tests", function () {
 
     FuncTestHelper(app, {
       url: `/api/apiNameBla`,
-      method: "delete"
+      method: "delete",
+      headers: {
+        Authorization: "bla"
+      }
     }, (res) => {
       const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
@@ -132,75 +144,6 @@ describe("api-router functional tests", function () {
     });
 
   });
-
-  /*it("root patch with param", (done) => {
-
-    app.use(APIRouter({
-      dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla",
-      path: "/api/apiNameBla"
-    }))
-
-    FuncTestHelper(app, {
-      url: `/api/apiNameBla/blo`,
-      method: "patch"
-    }, (res) => {
-      const { status, data, headers } = res;
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "35");
-      strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "bye blo");
-      done();
-    });
-
-  });
-
-  it("root patch with nested param", (done) => {
-
-    app.use(APIRouter({
-      dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla",
-      path: "/api/apiNameBla"
-    }))
-
-    FuncTestHelper(app, {
-      url: `/api/apiNameBla/bla/blo`,
-      method: "patch"
-    }, (res) => {
-      const { status, data, headers } = res;
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "35");
-      strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "bye blo");
-      done();
-    });
-
-  });
-
-  it("root get with param", (done) => {
-
-    app.use(APIRouter({
-      dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla",
-      path: "/api/apiNameBla"
-    }))
-
-    FuncTestHelper(app, {
-      url: `/api/apiNameBla/blo`,
-      method: "get"
-    }, (res) => {
-      const { status, data, headers } = res;
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "35");
-      strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "bye blo");
-      done();
-    });
-
-  });*/
 
   it("simple echo", (done) => {
     app.use(APIRouter({
@@ -281,7 +224,162 @@ describe("api-router functional tests", function () {
 
   });
 
-  /*it("other echo get with param", (done) => {
+  it("sink happy path bad query", (done) => {
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb`,
+      query: {
+        bla2: "bla"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put",
+      headers: {
+        Authorization: "bla"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "51");
+      strictEqual(status, 400);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "query.bla not defined");
+      done();
+    });
+  });
+
+  it("sink happy path no token", (done) => {
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata")
+    }));
+
+    FuncTestHelper(app, {
+      url: `/apidata/echo/bbb`,
+      query: {
+        bla2: "bla"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put"
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "48");
+      strictEqual(status, 401);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "No token provided!");
+      done();
+    });
+  });
+
+  it("sink happy path session throws", (done) => {
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata")
+    }));
+
+    FuncTestHelper(app, {
+      url: `/apidata/echo/bbb`,
+      query: {
+        bla2: "bla"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put",
+      headers: {
+        Authorization: "throw"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "61");
+      strictEqual(status, 401);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "Fail to authenticate token! bla");
+      done();
+    });
+  });
+
+  /*it("root patch with param", (done) => {
+
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/blo`,
+      method: "patch"
+    }, (res) => {
+      const { status, data, headers } = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye blo");
+      done();
+    });
+
+  });
+
+  it("root patch with nested param", (done) => {
+
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/bla/blo`,
+      method: "patch"
+    }, (res) => {
+      const { status, data, headers } = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye blo");
+      done();
+    });
+
+  });
+
+  it("root get with param", (done) => {
+
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }))
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBla/blo`,
+      method: "get"
+    }, (res) => {
+      const { status, data, headers } = res;
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "35");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      strictEqual(data.result, "bye blo");
+      done();
+    });
+
+  });
+
+  it("other echo get with param", (done) => {
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata"),
       apiName: "apiNameBla",
@@ -376,32 +474,4 @@ describe("api-router functional tests", function () {
       });
     });
   });*/
-
-  it("sink happy path bad query", (done) => {
-    app.use(APIRouter({
-      dirname: resolve(__dirname, "apidata"),
-      apiName: "apiNameBla",
-      path: "/api/apiNameBlo/sink"
-    }));
-
-    FuncTestHelper(app, {
-      url: `/api/apiNameBlo/sink/echo/bbb`,
-      query: {
-        bla2: "bla"
-      },
-      data: {
-        bla: "bla"
-      },
-      method: "put"
-    }, (res) => {
-      const { status, data, headers } = res;
-      console.log({ status, data, headers });
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "51");
-      strictEqual(status, 400);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "query.bla not defined");
-      done();
-    });
-  });
 });
