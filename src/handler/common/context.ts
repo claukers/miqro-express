@@ -62,7 +62,9 @@ export class Context {
     this.startMS = Date.now();
     this.uuid = v4();
     this.results = []; // handlers will fill this
-    this.logger = getLogger(`${this.method.toUpperCase()}${this.path.replace(/\//ig, "_").toUpperCase()}`, {
+    const pathToEnv = this.path.replace(/\//ig, "_").toUpperCase();
+    const identifier = `${this.method.toUpperCase()}${pathToEnv.substring(0, pathToEnv.length - 1)}`;
+    this.logger = getLogger(identifier, {
       formatter: ({
         identifier,
         level,
