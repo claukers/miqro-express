@@ -63,7 +63,7 @@ export class Context {
     this.uuid = v4();
     this.results = []; // handlers will fill this
     const pathToEnv = this.path.replace(/\//ig, "_").toUpperCase();
-    const identifier = `${this.method.toUpperCase()}${pathToEnv.substring(0, pathToEnv.length - 1)}`;
+    const identifier = `${this.method.toUpperCase()}${pathToEnv.charAt(pathToEnv.length - 1) === "_" ? pathToEnv.substring(0, pathToEnv.length - 1) : pathToEnv}`;
     this.logger = getLogger(identifier, {
       formatter: ({
         identifier,
