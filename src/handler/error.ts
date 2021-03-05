@@ -9,6 +9,9 @@ export const DefaultErrorHandler = (): ErrorHandler => {
         return false;
       }
     } else {
+      if (e.name === "SequelizeConnectionAcquireTimeoutError") {
+        ctx.logger.error(`${e.name}: ${e.message}`);
+      }
       switch (e.name) {
         case "MethodNotImplementedError":
           await ctx.end(NOT_FOUND(e.message));
