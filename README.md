@@ -1,6 +1,6 @@
 # @miqro/handlers
 
-lightweight module for api development.
+lightweight module for api development using the native http module.
 
 - request logging.
 - proxy request handler.
@@ -212,6 +212,40 @@ app.use(FeatureRouter({
     features: ....
     ....
 }, logger));
+```
+
+## ctx
+
+```typescript
+class Context {
+    readonly req: IncomingMessage;
+    readonly res: ServerResponse;
+    readonly logger: Logger;
+    readonly startMS: number;
+    tookMS?: number;
+    readonly uuid: string;
+    session?: Session;
+    results: any[];
+    readonly path: string;
+    readonly url: string;
+    readonly hash: string;
+    readonly method: string;
+    readonly headers: IncomingHttpHeaders;
+    readonly cookies: SimpleMap<string>;
+    query: ParsedUrlQuery;
+    buffer: Buffer;
+    readonly remoteAddress?: string;
+    body: any;
+    constructor(req: IncomingMessage, res: ServerResponse);
+    clearCookie(name: string): void;
+    setHeader(name: string, value: number | string | ReadonlyArray<string>): void;
+    setCookie(name: string, value: string, options?: CookieSerializeOptions): void;
+    end({ status, headers, body }: Response): Promise<void>;
+    json(body: any, headers?: OutgoingHttpHeaders, status?: number): Promise<void>;
+    text(text: string, headers?: OutgoingHttpHeaders, status?: number): Promise<void>;
+    html(html: string, headers?: OutgoingHttpHeaders, status?: number): Promise<void>;
+    redirect(url: string, headers?: OutgoingHttpHeaders, status?: number): Promise<void>;
+}
 ```
 
 ## middleware
