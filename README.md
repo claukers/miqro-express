@@ -11,64 +11,32 @@ lightweight module for api development using the native http module.
 - jwt token validation using **jsonwebtoken** module.
 - request parsing.
 
-```javascript
-const http = require("http");
-const {App, ReadBuffer, JSONBodyParser} = require("@miqro/handler");
 
-const app = new App();
-...
-app.use(ReadBuffer());
-app.use(JSONBodyParser());
-...
-app.get("/echo", async (ctx) => {
-  ctx.json(ctx.body);
-});
-...
-const server = new http.createServer(app.listener); 
-server.listen(8080);
-// same as app.listen(8080);
-...
-```
-
-## handlers
-
-##### Router
-
+```src/api/campaign/contact/post.js```
 ```javascript
 ...
-const router = new Router();
-router.post("/echo", async (ctx) => {
+// [POST] /api/campaign/contact
+module.exports = {
+  description: "...",
+  query: {
+    options: ...,
+    ...
+  },
+  body: {
+    options: ...,
+    ...
+  },
+  results: ...,
   ...
-});
-app.use(router, "/api");
-...
+  handler: (logger: Logger, db = Database.getInstance())=> {
+    return [
+        Handler(async ({body}) => {
+          return ...
+      }, logger)
+    ];
+  }
+}
 ```
-
-##### APIRouter(...)
-
-```src/main.js```
-```javascript
-...
-app.use(APIRouter({
-  dirname: apiPath,
-  ...
-}, logger));
-...
-```
-
-or 
-
-```
-npx miqro start:api [cluster_count] [cluster] <api_dirname>
-```
-
-to generate api documentation.
-
-```
-npx miqro doc:md <api_dirname> /api api.md
-```
-
-declare routes creating files in the ```api_dirname```
 
 ```src/api/health.js```
 ```javascript
@@ -103,33 +71,81 @@ module.exports = {
 }
 ```
 
-```src/api/campaign/contact/post.js```
-```javascript
-...
-// [POST] /api/campaign/contact
-module.exports = {
-  description: "...",
-  query: false,
-  body: {
-    options: ...,
-    ...
-  },
-  results: ...,
-  ...
-  handler: (logger: Logger, db = Database.getInstance())=> {
-    return [
-        Handler(async ({body}) => {
-          return ...
-      }, logger)
-    ];
-  }
-}
+start with
+
 ```
+npx miqro start:api [cluster_count] [cluster] <api_dirname>
+```
+
+to generate api documentation.
+
+```
+npx miqro doc:md <api_dirname> /api api.md
+```
+
+you can also watch for changes and re-start the server
+
+```
+npx miqro watch:api <api_dirname>
+```
+
+declare routes creating files in the ```api_dirname```
 
 APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with the name of the feature to **false**.
 
 ```
 API_HEALTH=false
+```
+
+or with your use your own structure
+
+```src/main.js```
+```javascript
+const http = require("http");
+const {App, ReadBuffer, JSONBodyParser, Router} = require("@miqro/handler");
+
+const app = new App();
+...
+app.use(ReadBuffer());
+app.use(JSONBodyParser());
+...
+app.get("/echo", async (ctx) => {
+  ctx.json(ctx.body);
+});
+...
+const router = new Router();
+...
+app.use(router);
+...
+const server = new http.createServer(app.listener); 
+server.listen(8080);
+// same as app.listen(8080);
+...
+```
+
+## handlers
+
+##### Router
+
+```javascript
+...
+const router = new Router();
+router.post("/echo", async (ctx) => {
+  ...
+});
+app.use(router, "/api");
+...
+```
+
+##### APIRouter(...)
+
+```javascript
+...
+app.use(APIRouter({
+  dirname: apiPath,
+  ...
+}, logger));
+...
 ```
 
 ##### Handler(...) 
