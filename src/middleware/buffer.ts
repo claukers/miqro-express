@@ -21,7 +21,7 @@ export const ReadBuffer = (options?: {
         let cLength = 0;
         const buffers: Buffer[] = [];
         const endListener = () => {
-          const responseBuffer: Buffer = ctx.req.headers["content-encoding"] === "gzip" ?
+          const responseBuffer: Buffer = ctx.headers["content-encoding"] === "gzip" ?
             gunzipSync(Buffer.concat(buffers)) : Buffer.concat(buffers);
           ctx.buffer = responseBuffer;
           resolve(true);

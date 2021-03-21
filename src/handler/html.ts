@@ -21,12 +21,12 @@ export const HTMLResponseHandler = (): Handler =>
       };
       const toSend = lastResult.template ? await lastResult.template(ctx) : (typeof lastResult.body === "string" ? lastResult.body : lastResult);
       if (typeof toSend === "string") {
-        ctx.res.statusCode = status;
-        const headerNames = Object.keys(headers);
-        for (const h of headerNames)
-          ctx.res.setHeader(h, headers[h]);
         ctx.logger.debug(`sending [${toSend}]`);
-        ctx.res.end(toSend);
+        await ctx.end({
+          status,
+          headers,
+          body: toSend
+        });
         return false;
       } else {
         throw new Error("html result from HTMLResponseResult not string so last result not valid");

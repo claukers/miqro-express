@@ -82,8 +82,11 @@ export class Context {
       expires: new Date(Date.now())
     });
   }
+  public setHeader(name: string, value: number | string | ReadonlyArray<string>): void {
+    return this.res.setHeader(name, value);
+  }
   public setCookie(name: string, value: string, options?: CookieSerializeOptions): void {
-    this.res.setHeader('Set-Cookie', cookieSerialize(name, String(value), options));
+    return this.setHeader('Set-Cookie', cookieSerialize(name, String(value), options));
   }
   public async end({ status, headers, body }: Response): Promise<void> {
     return new Promise<void>((resolve, reject) => {

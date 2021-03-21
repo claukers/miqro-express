@@ -1,12 +1,12 @@
 {
   "name": "@miqro/handlers",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/claukers/miqro-express.git"
+    "url": "https://github.com/claukers/miqro-handlers.git"
   },
   "scripts": {
     "prepare": "npm run build",
