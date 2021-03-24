@@ -97,12 +97,12 @@ APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with th
 API_HEALTH=false
 ```
 
-or with your use your own structure
+or use your own structure
 
 ```src/main.js```
 ```javascript
 const http = require("http");
-const {App, ReadBuffer, JSONBodyParser, Router} = require("@miqro/handler");
+const {App, ReadBuffer, JSONBodyParser, Router, APIRouter} = require("@miqro/handler");
 
 const app = new App();
 ...
@@ -116,6 +116,11 @@ app.get("/echo", async (ctx) => {
 const router = new Router();
 ...
 app.use(router);
+...
+app.use(APIRouter({
+  dirname: apiPath,
+  ...
+}, logger));
 ...
 const server = new http.createServer(app.listener); 
 server.listen(8080);
@@ -189,7 +194,7 @@ app.post(..., [SessionHandler(...), GroupPolicyHandler(...), protectedHandler, R
 ```javascript
 ...
 app.catch(myFallBackerrorHandler1) // this will catch all throws
-app.catch(myFallBackerrorHandler2) // this will catch all throws if 'myFallBackerrorHandler1' didnt send a responde and not returned 'false' to stop the execution of the next error handler
+app.catch(myFallBackerrorHandler2) // this will catch all throws if 'myFallBackerrorHandler1' didnt send a responde or not returned 'false' to stop the execution of the next error handler
 ...
 app.use(..., [
     ...
@@ -297,11 +302,11 @@ READ_BUFFER=true
 REQUEST_LOGGER=true
 
 JSON_PARSER=true
-JSON_PARSER_LIMIT=1000
+JSON_PARSER_LIMIT=8000
 JSON_PARSER_STRICT=false
 JSON_PARSER_TYPE=application/json
 
 URL_ENCODED_PARSER=true
-URL_ENCODED_PARSER_LIMIT=100kb
+URL_ENCODED_PARSER_LIMIT=8000
 URL_ENCODED_PARSER_TYPE=application/x-www-form-urlencoded
 ```
