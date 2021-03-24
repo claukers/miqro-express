@@ -29,12 +29,8 @@ module.exports = {
   },
   results: ...,
   ...
-  handler: (logger: Logger, db = Database.getInstance())=> {
-    return [
-        Handler(async ({body}) => {
-          return ...
-      }, logger)
-    ];
+  handler: async (ctx) => {
+    return ...
   }
 }
 ```
@@ -57,18 +53,17 @@ module.exports = {
     ...
   },
   ...
-  handler: (logger: Logger, db = Database.getInstance())=>
-    Handler(async () => {
-      try {
-        await db.query({ query: "SELECT 1+1", values: [] });
-        return {
-          status: "OK"
-        };
-      } catch (e) {
-        logger.error(e);
-        throw new ParseOptionsError(`NOK`);
-      }
-    }, logger)
+  handler: async () => {
+    try {
+      await db.query({ query: "SELECT 1+1", values: [] });
+      return {
+        status: "OK"
+      };
+    } catch (e) {
+      logger.error(e);
+      throw new ParseOptionsError(`NOK`);
+    }
+  }
 }
 ```
 
