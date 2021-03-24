@@ -27,7 +27,6 @@ describe("session functional tests", () => {
         let ret: any = null;
         switch (TOKENVARS.location) {
           case "header":
-            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
             ret = {
               url: "/user",
               method: "get",
@@ -37,7 +36,6 @@ describe("session functional tests", () => {
             };
             break;
           case "query":
-            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
             ret = {
               url: "/user",
               method: "get",
@@ -47,7 +45,6 @@ describe("session functional tests", () => {
             };
             break;
           case "cookie":
-            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             ret = {
               url: "/user",
               method: "get",
@@ -71,6 +68,9 @@ describe("session functional tests", () => {
         it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through update token with expiration`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
+            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler } = require("../src/");
 
@@ -124,6 +124,9 @@ describe("session functional tests", () => {
         it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
+            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler } = require("../src/");
 
@@ -170,6 +173,9 @@ describe("session functional tests", () => {
         it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through update token`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
+            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler } = require("../src/");
 
@@ -219,6 +225,9 @@ describe("session functional tests", () => {
         it(`createSessionHandler [${TOKENVARS.location}] happy path doesnt allow pass through is 401`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
+            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler } = require("../src/");
 
@@ -260,6 +269,9 @@ describe("session functional tests", () => {
         it(`createSessionHandler [${TOKENVARS.location}] no token is 401`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
+            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler } = require("../src/");
 
@@ -296,6 +308,9 @@ describe("session functional tests", () => {
         it(`createSessionHandler [${TOKENVARS.location}] verify throws is 401`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
+            process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+            process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { SessionHandler } = require("../src/");
 

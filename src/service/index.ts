@@ -24,42 +24,50 @@ export interface VerifyEndpointServiceOptions {
 
 export class VerifyEndpointService implements ExtendedVerifyTokenService {
 
-  constructor(protected options?: VerifyEndpointServiceOptions) {
+  protected options: VerifyEndpointServiceOptions;
+
+  constructor(options?: VerifyEndpointServiceOptions) {
     if (!options) {
-      checkEnvVariables(["TOKEN_VERIFY_ENDPOINT", "TOKEN_VERIFY_ENDPOINT_METHOD"]);
+      const [url, method] = checkEnvVariables(["TOKEN_VERIFY_ENDPOINT", "TOKEN_VERIFY_ENDPOINT_METHOD"]);
       const [tokenVerifyLocation] = checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION]);
+      let tokenLocationName;
       switch (tokenVerifyLocation) {
         case "header":
-          checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER]);
+          tokenLocationName = checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER])[0];
           break;
         case "query":
-          checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY]);
+          tokenLocationName = checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY])[0];
           break;
         case "cookie":
-          checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE]);
+          tokenLocationName = checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
           break;
         default:
           throw new Error(`TOKEN_VERIFY_LOCATION=${tokenVerifyLocation} not supported use (header or query)`);
       }
+      this.options = {
+        url, method,
+        tokenLocation: tokenVerifyLocation,
+        tokenLocationName
+      }
     } else {
-      parseOptions("options", options as any, [
+      this.options = parseOptions("options", options as any, [
         { name: "url", required: true, type: "string", stringMinLength: 1 },
         { name: "method", required: true, type: "string", stringMinLength: 1 },
         { name: "tokenLocation", required: true, type: "enum", enumValues: ["header", "query", "cookie"] },
         { name: "tokenLocationName", required: true, type: "string", stringMinLength: 1 }
-      ], "no_extra");
+      ], "no_extra") as any;
     }
   }
 
   public async verify({ token, ctx }: ExtendedVerifyTokenServiceArgs): Promise<Session | null> {
     try {
       let response = null;
-      const tokenVerifyLocation = this.options ? this.options.tokenLocation : checkEnvVariables(["TOKEN_VERIFY_LOCATION"], [DEFAULT_TOKEN_LOCATION])[0];
-      const url = this.options ? this.options.url : `${process.env.TOKEN_VERIFY_ENDPOINT}`;
-      const method = this.options ? this.options.method : `${process.env.TOKEN_VERIFY_ENDPOINT_METHOD}` as any;
+      const tokenVerifyLocation = this.options.tokenLocation;
+      const url = this.options.url;
+      const method = this.options.method;
       switch (tokenVerifyLocation) {
         case "header":
-          const tokenHeaderLocation = this.options ? this.options.tokenLocationName : checkEnvVariables(["TOKEN_HEADER"], [DEFAULT_TOKEN_HEADER])[0];
+          const tokenHeaderLocation = this.options.tokenLocationName;
           ctx.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
           response = await this.getResponse({
             url,
@@ -70,7 +78,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           }, ctx);
           break;
         case "query":
-          const tokenQueryLocation = this.options ? this.options.tokenLocationName : checkEnvVariables(["TOKEN_QUERY"], [DEFAULT_TOKEN_QUERY])[0];
+          const tokenQueryLocation = this.options.tokenLocationName;
           ctx.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
           response = await this.getResponse({
             url,
@@ -81,7 +89,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           }, ctx);
           break;
         case "cookie":
-          const tokenCookieLocation = this.options ? this.options.tokenLocationName : checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
+          const tokenCookieLocation = this.options.tokenLocationName;
           ctx.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
           response = await this.getResponse({
             url,
@@ -104,7 +112,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           ctx.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
 
           if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
-            const tokenCookieLocation = this.options ? this.options.tokenLocationName : checkEnvVariables(["TOKEN_COOKIE"], [DEFAULT_TOKEN_COOKIE])[0];
+            const tokenCookieLocation = this.options.tokenLocationName;
             const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
             if (cookies.length === 1) {
               session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
