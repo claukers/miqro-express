@@ -72,7 +72,10 @@ export class Context {
       }) => defaultLoggerFormatter({
         identifier,
         level,
-        message: `${this.url} [${this.uuid}] (${this.remoteAddress})${this.session ? ` session[${this.session.username}:${this.session.account}:[${this.session.groups ? this.session.groups.join(",") : ""}]]` : ""} ${message}`
+        message: `${this.method} ${this.url} [${this.uuid}] (${this.remoteAddress})${this.session ?
+            ` session[${this.session.username}:${this.session.account}:[${this.session.groups ? this.session.groups.join(",") : ""}]]` :
+            ""
+          } ${message}`
       })
     }, false);
   }
