@@ -1,8 +1,14 @@
-import { AppHandler, Handler, normalizePath, Context, ErrorHandler } from "./common";
+import { Handler, normalizePath, Context, ErrorHandler } from "./common";
 import { Method } from "./feature-router";
 
+interface RouterHandler {
+  handler: Handler | Handler[] | Router;
+  method?: Method;
+  path?: string;
+}
+
 export class Router {
-  protected readonly handlers: AppHandler[] = [];
+  protected readonly handlers: RouterHandler[] = [];
   protected readonly errorHandlers: ErrorHandler[] = [];
   public get(path: string, handler: Array<Handler> | Handler | Router): Router {
     return this.use(handler, path, "get");
@@ -50,7 +56,7 @@ export class Router {
     }
     return this;
   }
-  protected isMatch(ctx: Context, h: AppHandler, prePath?: string): boolean {
+  protected isMatch(ctx: Context, h: RouterHandler, prePath?: string): boolean {
     if ((h.method === undefined || h.method.toLocaleLowerCase() === ctx.method.toLocaleLowerCase())) {
       if (typeof h.handler === "function" || h.handler instanceof Array) {
         // the paths have been already normalized

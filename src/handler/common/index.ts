@@ -7,12 +7,6 @@ import { Context } from "./context";
 export * from "./context";
 export * from "./proxyutils";
 
-export interface AppHandler {
-  handler: Handler | Handler[] | Router;
-  method?: Method;
-  path?: string;
-}
-
 export interface Response<T = any> {
   body?: T;
   status: number;
