@@ -30,5 +30,4 @@ export class App extends Router {
   public listen(...args: any[]): Server {
     return createServer(this.listener).listen(...args)
   }
-
 }
