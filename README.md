@@ -11,6 +11,7 @@ lightweight module for api development using the native http module.
 - jwt token validation using **jsonwebtoken** module.
 - request parsing.
 
+quick start
 
 ```src/api/campaign/contact/post.js```
 ```javascript
@@ -81,6 +82,12 @@ to generate api documentation.
 
 ```
 npx miqro doc:md <api_dirname> /api api.md
+```
+
+or if you want a json
+
+```
+npx miqro doc <api_dirname> /api > api.json
 ```
 
 you can also watch for changes and re-start the server
