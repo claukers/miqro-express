@@ -137,11 +137,7 @@ export class Router {
           }
         }
       }
-      if (!ctx.res.headersSent) {
-        return shouldContinue !== false;
-      } else {
-        return true;
-      }
+      return !ctx.res.headersSent;
     } catch (e) {
       return this.handleError(e, ctx);
     }
