@@ -1,24 +1,20 @@
 import { checkEnvVariables } from "@miqro/core";
-import { Handler, Context, BadRequestError } from "../handler";
+import { Handler, Context } from "../handler";
 import { BAD_REQUEST } from "../handler/common/response";
 import { DEFAULT_READ_BUFFER_LIMIT } from "./buffer";
 
-export const JSONParser = (options?: {
+export const TextParser = (options?: {
   limit: number;
-  strict: boolean;
   type: string;
 }): Handler => {
-  let strict = false;
   let limit = DEFAULT_READ_BUFFER_LIMIT;
-  let type = "application/json";
+  let type = "plain/text";
   if (options) {
-    strict = options.strict;
     limit = options.limit;
     type = options.type;
   } else {
-    const [limitS, strictS, typeS] =
-      checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "false", "application/json"])
-    strict = strictS === "true";
+    const [limitS, typeS] =
+      checkEnvVariables(["BODY_TEXT_PARSER_LIMIT", "BODY_TEXT_PARSER_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "plain/text"]);
     limit = parseInt(limitS, 10);
     type = typeS;
   }
@@ -27,15 +23,9 @@ export const JSONParser = (options?: {
       const isType = ctx.body === undefined && ctx.headers["content-type"] ? ctx.headers["content-type"].toLocaleLowerCase().indexOf(type.toLocaleLowerCase()) !== -1 : false;
       if (isType && ctx.buffer && ctx.buffer.length <= limit) {
         const string = ctx.buffer.toString();
-        if (string) {
-          const parsed = JSON.parse(string);
-          if (parsed instanceof Array && strict) {
-            throw new BadRequestError(`body cannot be an array`, 'body');
-          }
-          ctx.body = parsed;
-        }
+        ctx.body = string;
       } else if (isType && ctx.buffer && ctx.buffer.length > limit) {
-        ctx.logger.warn(`ctx.buffer.length ${ctx.buffer.length} > ${limit}. To accept this body set BODY_PARSER_LIMIT to a higher value.`);
+        ctx.logger.warn(`ctx.buffer.length ${ctx.buffer.length} > ${limit}. To accept this body set BODY_TEXT_PARSER_LIMIT to a higher value.`);
       }
       return true;
     } catch (e) {

@@ -4,10 +4,12 @@ import { ReadBuffer } from "./buffer";
 import { CookieParser } from "./cookie";
 import { URLEncodedParser } from "./form";
 import { JSONParser } from "./json";
+import { TextParser } from "./text";
 import { Logger } from "./logger";
 
 export * from "./logger";
 export * from "./json";
+export * from "./text";
 export * from "./form";
 export * from "./cookie";
 export * from "./buffer";
@@ -28,6 +30,9 @@ export const middleware = (): Handler[] => {
   }
   if (FeatureToggle.isFeatureEnabled("URL_ENCODED_PARSER", true)) {
     ret.push(URLEncodedParser());
+  }
+  if (FeatureToggle.isFeatureEnabled("TEXT_PARSER", true)) {
+    ret.push(TextParser());
   }
   return ret;
 };

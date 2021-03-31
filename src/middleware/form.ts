@@ -21,7 +21,7 @@ export const URLEncodedParser = (options?: {
   }
   return async (ctx: Context) => {
     try {
-      const isType = ctx.headers["content-type"] ? ctx.headers["content-type"].toLocaleLowerCase().indexOf(type.toLocaleLowerCase()) !== -1 : false;
+      const isType = ctx.body === undefined && ctx.headers["content-type"] ? ctx.headers["content-type"].toLocaleLowerCase().indexOf(type.toLocaleLowerCase()) !== -1 : false;
       if (isType && ctx.buffer && ctx.buffer.length <= limit) {
         const string = ctx.buffer.toString();
         if (string) {
