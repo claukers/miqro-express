@@ -3,6 +3,7 @@ import { OutgoingHttpHeaders } from "http";
 import { Context } from "./context";
 
 export * from "./context";
+export * from "./response";
 export * from "./proxyutils";
 
 export interface Response<T = any> {
