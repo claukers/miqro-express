@@ -1,6 +1,6 @@
-import { checkEnvVariables, parseOptions, UnAuthorizedError } from "@miqro/core";
+import { Handler, Context, checkEnvVariables, parseOptions, UnAuthorizedError } from "@miqro/core";
 import { ExtendedVerifyTokenService } from "../service";
-import { Handler, Context } from "./common";
+import { serialize as cookieSerialize } from "cookie";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";
@@ -123,20 +123,20 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
 
             const newTokenCookie = String(session.token ? session.token : token);
             if (session.expires instanceof Date) {
-              ctx.setCookie(tokenLocationName, newTokenCookie, {
+              ctx.setHeader('Set-Cookie', cookieSerialize(tokenLocationName, String(newTokenCookie), {
                 httpOnly: setCookieOptions.httpOnly,
                 secure: setCookieOptions.secure,
                 path: setCookieOptions.path,
                 sameSite: setCookieOptions.sameSite,
                 expires: session.expires
-              });
+              }));
             } else {
-              ctx.setCookie(tokenLocationName, newTokenCookie, {
+              ctx.setHeader('Set-Cookie', cookieSerialize(tokenLocationName, String(newTokenCookie), {
                 httpOnly: setCookieOptions.httpOnly,
                 path: setCookieOptions.path,
                 secure: setCookieOptions.secure,
                 sameSite: setCookieOptions.sameSite
-              });
+              }));
             }
           }
           ctx.session = session;

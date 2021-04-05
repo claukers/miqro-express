@@ -1,6 +1,5 @@
-import { checkEnvVariables } from "@miqro/core";
+import { Handler, Context, checkEnvVariables } from "@miqro/core";
 import { gunzipSync } from "zlib";
-import { Handler, Context } from "../handler";
 
 export const DEFAULT_READ_BUFFER_LIMIT = 1024 * 8 * 100;
 

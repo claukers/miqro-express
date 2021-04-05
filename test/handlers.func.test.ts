@@ -1,9 +1,8 @@
 import { describe, it } from "mocha";
 import path from "path";
 import { strictEqual } from "assert";
-import { ParseOptionsError, Util } from "@miqro/core";
+import { TestHelper as FuncTestHelper, App, ParseOptionsError, Util } from "@miqro/core";
 import { middleware } from "../src/middleware";
-import { App, TestHelper as FuncTestHelper } from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 

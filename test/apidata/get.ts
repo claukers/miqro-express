@@ -1,4 +1,4 @@
-import { Context, ResponseHandler } from "../../src/handler";
+import { Context } from "@miqro/core";
 
 export default {
   path: "/",

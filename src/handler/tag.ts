@@ -1,4 +1,4 @@
-import { Context, Handler } from "./common";
+import { Context, Handler } from "@miqro/core";
 
 export const TagResponseUUIDHandler = (): Handler =>
   async (ctx: Context) => {

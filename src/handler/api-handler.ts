@@ -1,5 +1,5 @@
-import { GroupPolicy } from "@miqro/core";
-import { ParseOptions, Handler } from "./common";
+import { Handler, GroupPolicy } from "@miqro/core";
+import { ParseOptions } from "./common";
 import { FeatureHandler } from "./feature-router";
 import { GroupPolicyHandler } from "./group";
 import { JSONfyResultsHandler } from "./jsonfy";

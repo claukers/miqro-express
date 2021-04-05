@@ -3,7 +3,8 @@ import { strictEqual } from 'assert';
 import { Server } from "http";
 import { CookieParser } from "../src/middleware";
 import { inspect } from 'util';
-import { App, Context, Handler } from '../src';
+import { App, Context, Handler } from '@miqro/core';
+import { serialize as cookieSerialize } from "cookie";
 
 process.env.TOKEN_HEADER = "Authorization";
 
@@ -154,9 +155,9 @@ describe(`verifytokenendpointservice func tests`, () => {
                     break;
                   case "cookie":
                     token = ctx.cookies[options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string] as string;
-                    ctx.setCookie(options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string, goodToken2, {
+                    ctx.setHeader("Set-Cookie", cookieSerialize(options ? options.tokenLocationName : process.env.TOKEN_COOKIE as string, goodToken2, {
                       httpOnly: true
-                    });
+                    }))
                     break;
                 }
                 strictEqual(token, goodToken1);

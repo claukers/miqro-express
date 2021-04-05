@@ -1,6 +1,4 @@
-import { getLogger, isFeatureEnabled, Logger, SimpleMap } from "@miqro/core";
-import { Handler } from "./common";
-import { Router } from "./router";
+import { Router, Handler, Method, getLogger, isFeatureEnabled, Logger, SimpleMap } from "@miqro/core";
 
 export type FeatureHandler = Array<Handler> | Handler;
 
@@ -16,7 +14,6 @@ export interface FeatureRouterOptions {
 }
 
 export const FEATURE_ROUTER_METHODS = ["get", "post", "put", "delete", "patch", "options"];
-export type Method = "get" | "post" | "put" | "delete" | "patch" | "options" | "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS";
 
 export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): Router => {
   if (!logger) {

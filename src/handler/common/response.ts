@@ -1,4 +1,4 @@
-import { Response } from ".";
+import { Response } from "@miqro/core";
 
 const JSON_CONTENT_TYPE = "application/json; charset=utf-8";
 

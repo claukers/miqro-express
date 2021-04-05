@@ -3,9 +3,9 @@ import {
   GroupPolicy,
   GroupPolicyValidator,
   ParseOptionsError,
-  UnAuthorizedError
+  UnAuthorizedError,
+  Context, Handler
 } from "@miqro/core";
-import { Context, Handler } from "./common";
 
 export const GroupPolicyHandler = (options: GroupPolicy): Handler => {
   return async (ctx: Context) => {

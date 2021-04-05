@@ -1,8 +1,7 @@
 import { describe, it, before, after } from "mocha";
 import { strictEqual } from "assert";
-import { RequestOptions } from "@miqro/core";
+import { TestHelper as FuncTestHelper, App, Context, RequestOptions } from "@miqro/core";
 import { Server } from "http";
-import { App, Context, TestHelper as FuncTestHelper } from "../src";
 
 describe("proxyhandler functional tests", function () {
   this.timeout(100000);

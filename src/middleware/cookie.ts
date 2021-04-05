@@ -1,4 +1,4 @@
-import { Handler, Context } from "../handler";
+import { Handler, Context } from "@miqro/core";
 import { CookieParseOptions, parse as cookieParse } from "cookie";
 
 export const CookieParser = (options?: CookieParseOptions): Handler => {

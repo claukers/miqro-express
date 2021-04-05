@@ -1,5 +1,4 @@
 import { FeatureHandler, ResponseHandler } from "../../../../src/handler";
-import { Logger } from "@miqro/core";
 
 const echo: FeatureHandler = [
   async (ctx) => {

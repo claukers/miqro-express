@@ -1,4 +1,4 @@
-import { Handler, Context } from "./common";
+import { Handler, Context } from "@miqro/core";
 
 export const JSONfyResultsHandler = (): Handler =>
   async (ctx: Context) => {

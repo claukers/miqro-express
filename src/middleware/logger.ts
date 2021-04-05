@@ -1,6 +1,6 @@
-import { Context, Handler } from "../handler";
+import { Context, Handler } from "@miqro/core";
 
-export const Logger = (options?: {
+export const LoggerHandler = (options?: {
   formatter: (ctx: Context) => string;
 }): Handler =>
   async (ctx: Context) => {

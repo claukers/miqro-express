@@ -1,5 +1,5 @@
 import { inspect } from "util";
-import { Handler, Context } from "./common";
+import { Handler, Context } from "@miqro/core";
 
 export const ResponseHandler = (): Handler =>
   async (ctx: Context) => {

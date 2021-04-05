@@ -46,9 +46,13 @@ module.exports = {
   query: false,
   body: false,
   results: {
-    options: [
-      { name: "status", type: "enum", enumValues: ["OK"], required: true }
-    ],
+    options: {
+      status: {
+        type: "enum",
+        enumValues: ["OK"],
+        required: true
+      }
+    },
     mode: "remove_extra",
     ...
   },
@@ -67,31 +71,19 @@ module.exports = {
 }
 ```
 
-start with
-
-```
-npx miqro start:api [cluster_count] [cluster] <api_dirname>
-```
-
 to generate api documentation.
 
 ```
-npx miqro doc:md <api_dirname> /api api.md
+npx miqro doc:md src/api/ /api api.md
 ```
 
 or if you want a json
 
 ```
-npx miqro doc <api_dirname> /api > api.json
+npx miqro doc src/api/ /api > api.json
 ```
 
-you can also watch for changes and re-start the server
-
-```
-npx miqro watch:api <api_dirname>
-```
-
-declare routes creating files in the ```api_dirname```
+declare routes creating files in ```src/api/```
 
 APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with the name of the feature to **false**.
 
@@ -99,26 +91,23 @@ APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with th
 API_HEALTH=false
 ```
 
-or use your own structure
-
 ```src/main.js```
 ```javascript
 const http = require("http");
-const {App, ReadBuffer, JSONBodyParser, Router, APIRouter} = require("@miqro/handler");
+const {App} = require("@miqro/core");
+const {middleware, APIRouter} = require("@miqro/handler");
 
 const app = new App();
-...
-app.use(ReadBuffer());
-app.use(JSONBodyParser());
-...
-app.get("/echo", async (ctx) => {
+// setup default middleware (json,form,cookie,uuid,logger,etc)
+app.use(middleware());
+//app.use(ReadBuffer());
+//...
+//app.use(JSONBodyParser());
+/*app.get("/echo", async (ctx) => {
   ctx.json(ctx.body);
-});
-...
-const router = new Router();
-...
-app.use(router);
-...
+});*/
+/*const router = new Router();
+app.use(router);*/
 app.use(APIRouter({
   dirname: apiPath,
   ...
@@ -126,7 +115,7 @@ app.use(APIRouter({
 ...
 const server = new http.createServer(app.listener); 
 server.listen(8080);
-// same as app.listen(8080);
+//app.listen(8080);
 ...
 ```
 
@@ -287,6 +276,7 @@ or add them manually
 ```javascript
 ...
 app.use(ReadBuffer())
+...
 app.use(JSONParser())
 ...
 ```

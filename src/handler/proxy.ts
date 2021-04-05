@@ -1,6 +1,6 @@
-import { request } from "@miqro/core";
+import { Context, Handler, request } from "@miqro/core";
 import { inspect } from "util";
-import { Context, Handler, ProxyOptionsInterface } from "./common";
+import { ProxyOptionsInterface } from "./common";
 
 export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
   async (ctx) => {

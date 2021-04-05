@@ -1,5 +1,5 @@
 import { OutgoingHttpHeaders } from "http";
-import { Context, Handler } from "./common";
+import { Context, Handler } from "@miqro/core";
 
 export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (ctx: Context) => Promise<string>; }
 

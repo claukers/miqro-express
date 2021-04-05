@@ -1,8 +1,7 @@
 import { inspect } from "util";
 import { parse as cookieParse } from "cookie";
 import { decode as jwtDecode } from "jsonwebtoken";
-import { RequestOptions, Session, NoTokenSession, UnAuthorizedError, VerifyTokenService, RequestResponse, request, parseOptions, checkEnvVariables } from "@miqro/core";
-import { Context } from "../handler";
+import { Context, RequestOptions, Session, NoTokenSession, UnAuthorizedError, VerifyTokenService, RequestResponse, request, parseOptions, checkEnvVariables } from "@miqro/core";
 
 const DEFAULT_TOKEN_LOCATION = "header";
 const DEFAULT_TOKEN_HEADER = "Authorization";

@@ -1,8 +1,8 @@
 import { describe, it } from "mocha";
 import path, { resolve } from "path";
 import { strictEqual } from "assert";
-import { Util } from "@miqro/core";
-import { App, middleware, APIRouter, TestHelper as FuncTestHelper, TestHelper } from "../src";
+import { App, Util, TestHelper as FuncTestHelper, TestHelper } from "@miqro/core";
+import { middleware, APIRouter } from "../src";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
