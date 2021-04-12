@@ -5,12 +5,14 @@ import { URLEncodedParser } from "./form";
 import { JSONParser } from "./json";
 import { TextParser } from "./text";
 import { LoggerHandler } from "./logger";
+import { TagResponse } from "./tag";
 import { UUIDHandler } from "./uuid";
 
 export * from "./logger";
 export * from "./json";
 export * from "./text";
 export * from "./form";
+export * from "./tag";
 export * from "./cookie";
 export * from "./uuid";
 export * from "./buffer";
@@ -22,6 +24,9 @@ export const middleware = (): Handler[] => {
   }
   if (FeatureToggle.isFeatureEnabled("REQUEST_LOGGER", true)) {
     ret.push(LoggerHandler());
+  }
+  if (FeatureToggle.isFeatureEnabled("TAG_RESPONSE", false)) {
+    ret.push(TagResponse());
   }
   if (FeatureToggle.isFeatureEnabled("READ_BUFFER", true)) {
     ret.push(ReadBuffer());

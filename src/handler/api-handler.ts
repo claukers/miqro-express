@@ -2,12 +2,10 @@ import { Handler, GroupPolicy } from "@miqro/core";
 import { ParseOptions } from "./common";
 import { FeatureHandler } from "./feature-router";
 import { GroupPolicyHandler } from "./group";
-import { JSONfyResultsHandler } from "./jsonfy";
 import { ParseRequest, ParseRequestOptions } from "./parse";
 import { ResponseHandler } from "./response";
 import { ResultParser } from "./result";
 import { SessionHandler, SessionHandlerOptions } from "./session";
-import { TagResponseUUIDHandler } from "./tag";
 
 export interface APIHandlerArgs extends APIHandlerOptions {
   handler: FeatureHandler;
@@ -21,8 +19,6 @@ export interface APIHandlerOptions extends ParseRequestOptions {
   description?: string;
   session?: SessionHandlerOptions;
   policy?: GroupPolicy;
-  jsonfy?: true;
-  tag?: true;
 }
 
 export const APIHandler = (options: APIHandlerArgs): Array<Handler> => {
@@ -54,12 +50,6 @@ export const APIHandler = (options: APIHandlerArgs): Array<Handler> => {
 
   const responseHandlers: Handler[] = [];
   if (options.results) {
-    if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler());
-    }
-    if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler());
-    }
     responseHandlers.push(ResultParser(options.results));
     if (options.responseHandler) {
       responseHandlers.push(options.responseHandler);
@@ -67,12 +57,6 @@ export const APIHandler = (options: APIHandlerArgs): Array<Handler> => {
       responseHandlers.push(ResponseHandler());
     }
   } else if (options.responseHandler) {
-    if (options.jsonfy) {
-      responseHandlers.push(JSONfyResultsHandler());
-    }
-    if (options.tag) {
-      responseHandlers.push(TagResponseUUIDHandler());
-    }
     responseHandlers.push(options.responseHandler);
   }
   for (const r of responseHandlers) {

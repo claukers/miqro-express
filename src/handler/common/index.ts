@@ -1,4 +1,4 @@
-import { ParseOption, ParseOptionMap, ParseOptionsError, ParseOptionsMode } from "@miqro/core";
+import { ParseOption, ParseOptionMap, ParseOptionsMode } from "@miqro/core";
 
 export * from "./proxyutils";
 export interface ParseOptions {
