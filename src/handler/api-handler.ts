@@ -14,6 +14,7 @@ export interface APIHandlerArgs extends APIHandlerOptions {
 
 export interface APIHandlerOptions extends ParseRequestOptions {
   middleware?: Handler[];
+  afterSession?: Handler[];
   results?: ParseOptions;
   responseHandler?: Handler;
   description?: string;
@@ -34,6 +35,13 @@ export const APIHandler = (options: APIHandlerArgs): Array<Handler> => {
       ret.push(GroupPolicyHandler(options.policy));
     }
   }
+
+  if (options.afterSession) {
+    for(const h of options.afterSession) {
+      ret.push(h);
+    }
+  }
+
   ret.push(ParseRequest({
     ...options
   }));
