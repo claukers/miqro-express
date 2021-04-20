@@ -287,6 +287,69 @@ describe("api-router functional tests", function () {
     });
   });
 
+  it("sink happy path bad body", (done) => {
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb`,
+      query: {
+        bla: "bla"
+      },
+      data: JSON.stringify({
+        bla: "bla"
+      }),
+      method: "put",
+      headers: {
+        Authorization: "bla",
+        ["content-type"]: "asdasd"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "50");
+      strictEqual(status, 400);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "body.bla not defined");
+      done();
+    });
+  });
+
+  it("sink2 happy path any body", (done) => {
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb2`,
+      query: {
+        bla: "bla"
+      },
+      data: JSON.stringify({
+        bla: "bla"
+      }),
+      method: "put",
+      headers: {
+        Authorization: "bla",
+        ["content-type"]: "asdasd"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "45");
+      strictEqual(status, 200);
+      strictEqual(data.success, true);
+      done();
+    });
+  });
+
   it("sink happy path no token", (done) => {
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata")

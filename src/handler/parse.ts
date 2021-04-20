@@ -9,11 +9,7 @@ export interface ParseRequestOptions {
 }
 
 const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, option: ParseOptions) => {
-  const value = ctx[part];
-  if (value === undefined) {
-    ctx.logger.debug(`req.${part} NOT parsed [${inspect(ctx[part])}]`);
-    return;
-  }
+  const value = ctx[part] === undefined ? {} : ctx[part];
   if (option.disableAsArray && value instanceof Array) {
     throw new ParseOptionsError(`${part} cannot be an array`);
   }
