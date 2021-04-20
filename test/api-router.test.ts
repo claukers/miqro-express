@@ -255,6 +255,38 @@ describe("api-router functional tests", function () {
     });
   });
 
+  it("sink happy path bad query extra query", (done) => {
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBlo/sink"
+    }));
+
+    FuncTestHelper(app, {
+      url: `/api/apiNameBlo/sink/echo/bbb`,
+      query: {
+        bla: "bla",
+        sdkjls: "asdja"
+      },
+      data: {
+        bla: "bla"
+      },
+      method: "put",
+      headers: {
+        Authorization: "bla"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "68");
+      strictEqual(status, 400);
+      strictEqual(data.success, false);
+      strictEqual(data.message, "query.sdkjls option not valid [sdkjls]");
+      done();
+    });
+  });
+
   it("sink happy path no token", (done) => {
     app.use(APIRouter({
       dirname: resolve(__dirname, "apidata")
