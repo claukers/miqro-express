@@ -4,8 +4,8 @@ import { ParseOptions } from "./common";
 
 export const ResultParser = (options: ParseOptions): Handler =>
   async (ctx: Context) => {
-    const { results, query, logger } = ctx;
-    if (results && !query.attributes) {
+    const { results, logger } = ctx;
+    if (results) {
       const mappedResults = [];
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
@@ -20,7 +20,7 @@ export const ResultParser = (options: ParseOptions): Handler =>
       }
       logger.debug(`ctx.results mapped to ${inspect(mappedResults)}`);
       ctx.results = mappedResults;
-    } else if (query.attributes) {
+    } else {
       logger.debug(`ignoring mapping result because req.query.attributes was send`);
     }
     return true;
