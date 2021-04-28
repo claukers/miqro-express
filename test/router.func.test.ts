@@ -2,7 +2,7 @@ import { describe, it } from "mocha";
 import path from "path";
 import { strictEqual } from "assert";
 import { TestHelper as FuncTestHelper, App, Router, BadRequestError, Util } from "@miqro/core";
-import { middleware } from "../src";
+import { middleware, ResponseHandler } from "../src";
 import { inspect } from "util";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
@@ -39,6 +39,16 @@ describe("router functional tests", function () {
       });
     });
 
+    router2.get("/bluble", [async (ctx) => {
+      return "bla"
+    }, ResponseHandler()]);
+
+    router2.get("/blublo", [async (ctx) => {
+      return {
+        bla: 1
+      }
+    }, ResponseHandler()]);
+
     FuncTestHelper(app, {
       url: `/api/bla`,
       method: "get"
@@ -61,7 +71,7 @@ describe("router functional tests", function () {
         strictEqual(headers['content-type'], "plain/text; charset=utf-8");
         strictEqual(headers['content-length'], "3");
         strictEqual(status, 400);
-        
+
         strictEqual(data, "bla");
 
         FuncTestHelper(app, {
@@ -74,7 +84,7 @@ describe("router functional tests", function () {
           strictEqual(headers['content-type'], "plain/text; charset=utf-8");
           strictEqual(headers['content-length'], "3");
           strictEqual(status, 400);
-          
+
           strictEqual(data, "blo");
 
           FuncTestHelper(app, {
@@ -89,7 +99,33 @@ describe("router functional tests", function () {
             strictEqual(status, 200);
             strictEqual(data.status, "OK2");
 
-            done();
+            FuncTestHelper(app, {
+              url: `/api/bli/blu/bluble`,
+              method: "get"
+            }, (res) => {
+              let { status, data, headers } = res;
+              console.log(inspect({ status, data, headers }));
+
+              strictEqual(headers['content-type'], "application/json; charset=utf-8");
+              strictEqual(headers['content-length'], "5");
+              strictEqual(status, 200);
+              strictEqual(data, "bla");
+
+              FuncTestHelper(app, {
+                url: `/api/bli/blu/blublo`,
+                method: "get"
+              }, (res) => {
+                let { status, data, headers } = res;
+                console.log(inspect({ status, data, headers }));
+
+                strictEqual(headers['content-type'], "application/json; charset=utf-8");
+                strictEqual(headers['content-length'], "9");
+                strictEqual(status, 200);
+                strictEqual(data.bla, 1);
+
+                done();
+              });
+            });
           });
         });
       });
