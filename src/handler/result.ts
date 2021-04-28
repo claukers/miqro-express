@@ -10,9 +10,14 @@ export const ResultParser = (options: ParseOptions): Handler =>
     } else {
       const index = ctx.results.length - 1;
       const lastResult = ctx.results[ctx.results.length - 1];
-      ctx.logger.debug(`parsing lastResult[${inspect(lastResult)}]`);
-      const mappedResults = parseOptions(`ctx.results[${index}]`, lastResult, options.options, options.mode, options.ignoreUndefined);
-      ctx.logger.debug(`ctx.results[${index}] mapped to ${inspect(mappedResults)}`);
-      return mappedResults;
+      ctx.logger.debug(`parsing lastResult[%s]`, inspect(lastResult));
+      try {
+        const mappedResults = parseOptions(`ctx.results[${index}]`, lastResult, options.options, options.mode, options.ignoreUndefined);
+        ctx.logger.debug(`ctx.results[%s] mapped to %s`, index, inspect(mappedResults));
+        return mappedResults;
+      } catch (e) {
+        ctx.logger.error(`error parsing lastResult[%s]`, inspect(lastResult));
+        throw e;
+      }
     }
   };

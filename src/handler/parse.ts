@@ -1,6 +1,6 @@
 import { Handler, Context, parseOptions, ParseOptionsError } from "@miqro/core";
 import { inspect } from "util";
-import {getParseOption, ParseOptions} from "./common";
+import { getParseOption, ParseOptions } from "./common";
 
 export interface ParseRequestOptions {
   query?: ParseOptions | false;
@@ -34,9 +34,20 @@ export const ParseRequest = (options: ParseRequestOptions): Handler => {
 
   return async (ctx: Context) => {
     try {
-      parseRequestPart("query", ctx, query);
+      try {
+        parseRequestPart("query", ctx, query);
+      } catch (e) {
+        ctx.logger.error(`error parsing query %s`, inspect(body));
+        throw e;
+      }
+
       // parseRequestPart("params", ctx, params);
-      parseRequestPart("body", ctx, body);
+      try {
+        parseRequestPart("body", ctx, body);
+      } catch (e) {
+        ctx.logger.error(`error parsing body %s`, inspect(body));
+        throw e;
+      }
       return true;
     } catch (e) {
       ctx.logger.warn(`error parsing request: ${e.message}`);
