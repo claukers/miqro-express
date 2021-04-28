@@ -30,18 +30,16 @@ export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
 export const ProxyResponseHandler = (): Handler =>
   async (ctx: Context) => {
     if (!ctx.results || ctx.results.length === 0) {
-      return null;
+      return undefined;
+    } else {
+      const lastResult = ctx.results[ctx.results.length - 1];
+      ctx.logger.debug(`response[${inspect(lastResult, {
+        depth: 0
+      })}]`);
+      await ctx.end({
+        headers: lastResult.headers,
+        body: lastResult.data,
+        status: lastResult.status
+      });
     }
-    const r = ctx.results && ctx.results.length > 1 ? ctx.results[ctx.results.length - 1] : (
-      ctx.results && ctx.results.length === 1 ? ctx.results[0] : null
-    );
-
-    ctx.logger.debug(`response[${inspect(r, {
-      depth: 0
-    })}]`);
-    ctx.end({
-      headers: r.headers,
-      body: r.data,
-      status: r.status
-    });
   }
