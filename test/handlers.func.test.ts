@@ -3,6 +3,7 @@ import path from "path";
 import { strictEqual } from "assert";
 import { TestHelper as FuncTestHelper, App, ParseOptionsError, Util } from "@miqro/core";
 import { middleware } from "../src/middleware";
+import { inspect } from "util";
 
 process.env.MIQRO_DIRNAME = path.resolve(__dirname, "sample");
 
@@ -32,11 +33,16 @@ describe("handlers functional tests", function () {
       url: `/myFunc`,
       method: "get"
     }, ({ status, data, headers }) => {
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "37");
+      console.log(inspect({
+        status,
+        headers,
+        data
+      }));
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "7");
       strictEqual(status, 400);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "myerror");
+      
+      strictEqual(data, "myerror");
       done();
     });
 
@@ -92,7 +98,7 @@ describe("handlers functional tests", function () {
     app.get("/myFunc", myFunc);
     app.use(ErrorHandler());
     app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-      strictEqual(err.message, "bla");
+      strictEqual(err, "bla");
       res.status(500);
       res.json({
         bla: true
@@ -358,8 +364,8 @@ describe("handlers functional tests", function () {
         strictEqual(status, 400);
         strictEqual(headers['content-type'], "application/json; charset=utf-8");
         // strictEqual(headers['content-length'], "27");
-        strictEqual(data.success, false);
-        strictEqual(data.message, "asd");
+        
+        strictEqual(data, "asd");
         done();
       });
   });
@@ -391,7 +397,7 @@ describe("handlers functional tests", function () {
         strictEqual(headers['content-type'], "text/html; charset=utf-8");
         // strictEqual(headers['content-length'], "27");
         strictEqual(data.success, undefined);
-        strictEqual(data.message, undefined);
+        strictEqual(data, undefined);
         strictEqual(dCallCount, 1);
         done();
       });

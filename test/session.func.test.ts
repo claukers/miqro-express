@@ -250,8 +250,8 @@ describe("session functional tests", () => {
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {
-                  strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
-                  strictEqual(res.headers["content-length"], "57");
+                  strictEqual(res.headers["content-type"], "plain/text; charset=utf-8");
+                  strictEqual(res.headers["content-length"], "27");
                   strictEqual(res.status, 401);
                   strictEqual(finalHandler.callCount, 0);
                   strictEqual(authService.verify.callCount, 1);
@@ -289,8 +289,8 @@ describe("session functional tests", () => {
             await new Promise((resolve, reject) => {
               FuncTestHelper(app, getRequestConfig(), (res) => {
                 try {
-                  strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
-                  strictEqual(res.headers["content-length"], "48");
+                  strictEqual(res.headers["content-type"], "plain/text; charset=utf-8");
+                  strictEqual(res.headers["content-length"], "18");
                   strictEqual(res.status, 401);
                   strictEqual(finalHandler.callCount, 0);
                   strictEqual(authService.verify.callCount, 0);
@@ -334,8 +334,8 @@ describe("session functional tests", () => {
                 try {
                   const { status, data, headers } = res;
                   console.log({ status, data, headers });
-                  strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
-                  strictEqual(res.headers["content-length"], "57");
+                  strictEqual(res.headers["content-type"], "plain/text; charset=utf-8");
+                  strictEqual(res.headers["content-length"], "27");
                   strictEqual(res.status, 401);
                   strictEqual(finalHandler.callCount, 0);
                   strictEqual(authService.verify.callCount, 1);

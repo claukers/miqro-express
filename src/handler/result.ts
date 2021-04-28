@@ -4,24 +4,15 @@ import { ParseOptions } from "./common";
 
 export const ResultParser = (options: ParseOptions): Handler =>
   async (ctx: Context) => {
-    const { results, logger } = ctx;
-    if (results) {
-      const mappedResults = [];
-      for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        if (result instanceof Array) {
-          for (let j = 0; j < result.length; j++) {
-            const r = result[j];
-            mappedResults.push(parseOptions(`ctx.results[${i}][${j}]`, r, options.options, options.mode, options.ignoreUndefined));
-          }
-        } else {
-          mappedResults.push(parseOptions(`ctx.results[${i}]`, result, options.options, options.mode, options.ignoreUndefined));
-        }
-      }
-      logger.debug(`ctx.results mapped to ${inspect(mappedResults)}`);
-      ctx.results = mappedResults;
+    if (!ctx.results || ctx.results.length === 0) {
+      ctx.logger.debug(`not parsing results`);
+      return undefined;
     } else {
-      logger.debug(`ignoring mapping result because req.query.attributes was send`);
+      const index = ctx.results.length - 1;
+      const lastResult = ctx.results[ctx.results.length - 1];
+      ctx.logger.debug(`parsing lastResult[${inspect(lastResult)}]`);
+      const mappedResults = parseOptions(`ctx.results[${index}]`, lastResult, options.options, options.mode, options.ignoreUndefined);
+      ctx.logger.debug(`ctx.results[${index}] mapped to ${inspect(mappedResults)}`);
+      return mappedResults;
     }
-    return true;
   };

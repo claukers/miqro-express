@@ -29,7 +29,7 @@ process.env.APINAMEBLA_PATCH__NAME = "true";
 process.env.APINAMEBLA_PATCH__BLA_NAME = "true";
 
 describe("api-router functional tests", function () {
-  this.timeout(10000);
+  this.timeout(2000);
 
   let app: App;
 
@@ -56,10 +56,10 @@ describe("api-router functional tests", function () {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "45");
+      strictEqual(headers['content-length'], "19");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.message, "hello");
+      
+      strictEqual(data.message, "hello");
       done();
     });
   });
@@ -87,7 +87,7 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
+      
       strictEqual(data.result, "bye bla");
       done();
     });
@@ -109,11 +109,12 @@ describe("api-router functional tests", function () {
       }
     }, (res) => {
       const { status, data, headers } = res;
+      console.log({ status, data, headers });
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "46");
+      strictEqual(headers['content-length'], "20");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.message, "custom");
+      
+      strictEqual(data.message, "custom");
       done();
     });
 
@@ -135,11 +136,12 @@ describe("api-router functional tests", function () {
       }
     }, (res) => {
       const { status, data, headers } = res;
+      console.log({ status, data, headers });
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "46");
+      strictEqual(headers['content-length'], "20");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.message, "custom");
+      
+      strictEqual(data.message, "custom");
       done();
     });
 
@@ -161,10 +163,10 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "35");
+      strictEqual(headers['content-length'], "9");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.bla, 1);
+      
+      strictEqual(data.bla, 1);
       done();
     });
 
@@ -188,10 +190,10 @@ describe("api-router functional tests", function () {
       if (res) {
         const { status, data, headers } = res;
         strictEqual(headers['content-type'], "application/json; charset=utf-8");
-        strictEqual(headers['content-length'], "35");
+        strictEqual(headers['content-length'], "9");
         strictEqual(status, 200);
-        strictEqual(data.success, true);
-        strictEqual(data.result.bla, 1);
+        
+        strictEqual(data.bla, 1);
       } else {
         strictEqual(false, true, "no response");
       }
@@ -215,10 +217,10 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "35");
+      strictEqual(headers['content-length'], "9");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.bla, 1);
+      
+      strictEqual(data.bla, 1);
       done();
     });
 
@@ -246,11 +248,11 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "51");
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "21");
       strictEqual(status, 400);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "query.bla not defined");
+      
+      strictEqual(data, "query.bla not defined");
       done();
     });
   });
@@ -278,11 +280,11 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "68");
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "38");
       strictEqual(status, 400);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "query.sdkjls option not valid [sdkjls]");
+      
+      strictEqual(data, "query.sdkjls option not valid [sdkjls]");
       done();
     });
   });
@@ -310,11 +312,11 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "50");
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "20");
       strictEqual(status, 400);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "body.bla not defined");
+      
+      strictEqual(data, "body.bla not defined");
       done();
     });
   });
@@ -343,9 +345,9 @@ describe("api-router functional tests", function () {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "45");
+      strictEqual(headers['content-length'], "19");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
+      
       done();
     });
   });
@@ -367,11 +369,11 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "48");
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "18");
       strictEqual(status, 401);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "No token provided!");
+      
+      strictEqual(data, "No token provided!");
       done();
     });
   });
@@ -396,11 +398,11 @@ describe("api-router functional tests", function () {
     }, (res) => {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
-      strictEqual(headers['content-type'], "application/json; charset=utf-8");
-      strictEqual(headers['content-length'], "61");
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "31");
       strictEqual(status, 401);
-      strictEqual(data.success, false);
-      strictEqual(data.message, "Fail to authenticate token! bla");
+      
+      strictEqual(data, "Fail to authenticate token! bla");
       done();
     });
   });
@@ -421,8 +423,8 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "bye blo");
+      
+      strictEqual(data, "bye blo");
       done();
     });
 
@@ -444,8 +446,8 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "bye blo");
+      
+      strictEqual(data, "bye blo");
       done();
     });
 
@@ -467,8 +469,8 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "35");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "bye blo");
+      
+      strictEqual(data, "bye blo");
       done();
     });
 
@@ -489,8 +491,8 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "40");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result, "hello myname");
+      
+      strictEqual(data, "hello myname");
       done();
     });
   });
@@ -516,8 +518,8 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "39");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.bla, "bla");
+      
+      strictEqual(data.bla, "bla");
       done();
     });
   });
@@ -545,8 +547,8 @@ describe("api-router functional tests", function () {
       strictEqual(headers['content-type'], "application/json; charset=utf-8");
       strictEqual(headers['content-length'], "37");
       strictEqual(status, 200);
-      strictEqual(data.success, true);
-      strictEqual(data.result.bla, "1");
+      
+      strictEqual(data.bla, "1");
 
       FuncTestHelper(app, {
         url: `/api/apiNameBlo/sink/echo/bbb/1`,
@@ -563,7 +565,7 @@ describe("api-router functional tests", function () {
         strictEqual(res2.headers['content-length'], "37");
         strictEqual(res2.status, 200);
         strictEqual(res2.data.success, true);
-        strictEqual(res2.data.result.bla, "1");
+        strictEqual(res2.data.bla, "1");
 
         done();
       });

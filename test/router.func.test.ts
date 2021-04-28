@@ -58,11 +58,11 @@ describe("router functional tests", function () {
         let { status, data, headers } = res;
         console.log(inspect({ status, data, headers }));
 
-        strictEqual(headers['content-type'], "application/json; charset=utf-8");
-        strictEqual(headers['content-length'], "33");
+        strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+        strictEqual(headers['content-length'], "3");
         strictEqual(status, 400);
-        strictEqual(data.success, false);
-        strictEqual(data.message, "bla");
+        
+        strictEqual(data, "bla");
 
         FuncTestHelper(app, {
           url: `/api/blo`,
@@ -71,11 +71,11 @@ describe("router functional tests", function () {
           let { status, data, headers } = res;
           console.log(inspect({ status, data, headers }));
 
-          strictEqual(headers['content-type'], "application/json; charset=utf-8");
-          strictEqual(headers['content-length'], "33");
+          strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+          strictEqual(headers['content-length'], "3");
           strictEqual(status, 400);
-          strictEqual(data.success, false);
-          strictEqual(data.message, "blo");
+          
+          strictEqual(data, "blo");
 
           FuncTestHelper(app, {
             url: `/api/bli/blu/blubli`,
