@@ -37,7 +37,7 @@ export const ParseRequest = (options: ParseRequestOptions): Handler => {
       try {
         parseRequestPart("query", ctx, query);
       } catch (e) {
-        ctx.logger.error(`error parsing query %s`, inspect(body));
+        ctx.logger.error(`error parsing query %s`, inspect(ctx.query));
         throw e;
       }
 
@@ -45,7 +45,7 @@ export const ParseRequest = (options: ParseRequestOptions): Handler => {
       try {
         parseRequestPart("body", ctx, body);
       } catch (e) {
-        ctx.logger.error(`error parsing body %s`, inspect(body));
+        ctx.logger.error(`error parsing body %s`, inspect(ctx.body));
         throw e;
       }
       return true;
