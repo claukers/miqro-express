@@ -2,6 +2,7 @@ import { ParseOption, ParseOptionMap, ParseOptionsMode } from "@miqro/core";
 
 export * from "./proxyutils";
 export interface ParseOptions {
+  description?: string;
   options: ParseOption[] | ParseOptionMap;
   mode?: ParseOptionsMode;
   ignoreUndefined?: boolean;
