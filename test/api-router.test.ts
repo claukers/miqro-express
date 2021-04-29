@@ -38,6 +38,84 @@ describe("api-router functional tests", function () {
     app.use(middleware());
   });
 
+  it("root options with APITestHelper item", (done) => {
+    const app = new App();
+    app.use(middleware());
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }));
+    TestHelper(app, {
+      url: `/api/apiNameBla`,
+      method: "options",
+      query: {
+        type: "item"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "8");
+      strictEqual(status, 200);
+      
+      strictEqual(data.id, 1);
+      done();
+    });
+  });
+
+  it("root options with APITestHelper list", (done) => {
+    const app = new App();
+    app.use(middleware());
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }));
+    TestHelper(app, {
+      url: `/api/apiNameBla`,
+      method: "options",
+      query: {
+        type: "list"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "29");
+      strictEqual(status, 200);
+      
+      strictEqual(data.items[1].id, 2);
+      done();
+    });
+  });
+
+  it("root options with APITestHelper list", (done) => {
+    const app = new App();
+    app.use(middleware());
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }));
+    TestHelper(app, {
+      url: `/api/apiNameBla`,
+      method: "options",
+      query: {
+        type: "bad"
+      }
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "32");
+      strictEqual(status, 400);
+      
+      strictEqual(data, "ctx.results[0].items not defined");
+      done();
+    });
+  });
+
   it("root post with APITestHelper", (done) => {
     const app = new App();
     app.use(middleware());

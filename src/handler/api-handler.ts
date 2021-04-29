@@ -15,7 +15,7 @@ export interface APIHandlerArgs extends APIHandlerOptions {
 export interface APIHandlerOptions extends ParseRequestOptions {
   middleware?: Handler[];
   afterSession?: Handler[];
-  results?: ParseOptions;
+  results?: ParseOptions | ParseOptions[];
   responseHandler?: Handler;
   description?: string;
   session?: SessionHandlerOptions;

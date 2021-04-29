@@ -1,36 +1,42 @@
-import { Handler, Context, parseOptions, ParseOptionsError } from "@miqro/core";
+import { Handler, Context, parseOptions } from "@miqro/core";
 import { inspect } from "util";
-import { getParseOption, ParseOptions } from "./common";
+import { normalizeParseOptions, ParseOptions } from "./common";
 
 export interface ParseRequestOptions {
-  query?: ParseOptions | false;
+  query?: ParseOptions | false | ParseOptions[];
   // params?: ParseOptions | false;
-  body?: ParseOptions | false;
+  body?: ParseOptions | false | ParseOptions[];
 }
 
-const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, option: ParseOptions) => {
+const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, option: ParseOptions | ParseOptions[]): void => {
   const value = ctx[part] === undefined ? {} : ctx[part];
-  if (option.disableAsArray && value instanceof Array) {
-    throw new ParseOptionsError(`${part} cannot be an array`);
-  }
-  /*if (part === "params" && option.ignoreUndefined === undefined) {
-    option.ignoreUndefined = true
-  }*/
-  if (value instanceof Array) {
-    for (let i = 0; i < value.length; i++) {
-      (ctx[part] as any)[i] = parseOptions(`${part}[${i}]`, value[i], option.options, option.mode, option.ignoreUndefined) as any;
+  if (option instanceof Array) {
+    for (let i = 0; i < option.length; i++) {
+      const o = option[i];
+      try {
+        const parsed = parseOptions(`${part}`, value as any, o.options, o.mode, o.ignoreUndefined) as any;
+        ctx[part] = parsed;
+        ctx.logger.debug(`req.${part} parsed to [${inspect(ctx[part])}]`);
+        return;
+      } catch (e) {
+        if (i === option.length - 1) {
+          throw e;
+        } else {
+          continue;
+        }
+      }
     }
   } else {
     ctx[part] = parseOptions(`${part}`, value as any, option.options, option.mode, option.ignoreUndefined) as any;
+    ctx.logger.debug(`req.${part} parsed to [${inspect(ctx[part])}]`);
   }
-  ctx.logger.debug(`req.${part} parsed to [${inspect(ctx[part])}]`);
 }
 
 
 export const ParseRequest = (options: ParseRequestOptions): Handler => {
-  const query = getParseOption(options.query);
+  const query = normalizeParseOptions(options.query);
   // const params = getParseOption(options.params);
-  const body = getParseOption(options.body);
+  const body = normalizeParseOptions(options.body);
 
   return async (ctx: Context) => {
     try {
