@@ -13,17 +13,25 @@ lightweight module for api development using the native http module.
 
 ## quickstart
 
-```npm install @miqro/core --save```
+```
+npm init
+```
 
-```npm install @miqro/handlers --save```
+```
+npm install @miqro/core --save
+```
 
-```npm install miqro --save-dev```
+```
+npm install @miqro/handlers --save
+```
+
+```
+npm install miqro --save-dev
+```
 
 to use typescript 
 
-```npm install typescript --save-dev```
-
-and create a ```tsconfig.json```
+```npm install typescript --save-dev``` and create ```tsconfig.json```
 
 ```json
 {
@@ -54,14 +62,24 @@ and create a ```tsconfig.json```
 }
 ```
 
-```npx miqro new:main src_main```
+create a sample main file
 
-```npx miqro new:route src_api_health_get```
+```
+npx miqro new:main src_main
+```
+
+create a sample route
+
+```
+npx miqro new:route src_api_health_get
+```
+
+this will create a file at ```src/api/health/get.ts``` that will be mounted as ***GET /api/health***. See ```src/main.ts``` and look for the line refering to **APIRouter** to learn how it's mounted.
 
 to generate api documentation.
 
 ```
-npx miqro doc:md src/api/ /api api.md
+npx miqro doc:md src/api/ /api API.md
 ```
 
 or if you want a json
@@ -75,7 +93,7 @@ declare routes creating files in ```src/api/```
 APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with the name of the feature to **false**.
 
 ```
-API_HEALTH=false
+API_HEALTH_GET=false
 ```
 
 ## handlers
