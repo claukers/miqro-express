@@ -1,4 +1,4 @@
-import { Handler, Context, BadRequestError, checkEnvVariables, BAD_REQUEST } from "@miqro/core";
+import { Handler, Context, BadRequestError, checkEnvVariables } from "@miqro/core";
 import { DEFAULT_READ_BUFFER_LIMIT } from "./buffer";
 
 export const JSONParser = (options?: {
@@ -15,7 +15,7 @@ export const JSONParser = (options?: {
     type = options.type;
   } else {
     const [limitS, strictS, typeS] =
-      checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "false", "application/json"])
+      checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "true", "application/json"])
     strict = strictS === "true";
     limit = parseInt(limitS, 10);
     type = typeS;
@@ -38,7 +38,7 @@ export const JSONParser = (options?: {
       return true;
     } catch (e) {
       ctx.logger.error(e);
-      await ctx.end(BAD_REQUEST(`cannot parse body: ${e.message}`));
+      throw new BadRequestError();
     }
   };
 };
