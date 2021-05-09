@@ -8,8 +8,8 @@ export const TextParser = (options?: {
   let limit = DEFAULT_READ_BUFFER_LIMIT;
   let type = "plain/text";
   if (options) {
-    limit = options.limit;
-    type = options.type;
+    limit = options.limit !== undefined ? options.limit : limit;
+    type = options.type !== undefined ? options.type : type;
   } else {
     const [limitS, typeS] =
       checkEnvVariables(["BODY_TEXT_PARSER_LIMIT", "BODY_TEXT_PARSER_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "plain/text"]);

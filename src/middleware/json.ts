@@ -6,13 +6,13 @@ export const JSONParser = (options?: {
   strict: boolean;
   type: string;
 }): Handler => {
-  let strict = false;
+  let strict = true;
   let limit = DEFAULT_READ_BUFFER_LIMIT;
   let type = "application/json";
   if (options) {
-    strict = options.strict;
-    limit = options.limit;
-    type = options.type;
+    strict = options.strict !== undefined ? options.strict : strict;
+    limit = options.limit !== undefined ? options.limit : limit;
+    type = options.type !== undefined ? options.type : type;
   } else {
     const [limitS, strictS, typeS] =
       checkEnvVariables(["BODY_PARSER_LIMIT", "BODY_PARSER_STRICT", "BODY_PARSER_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "true", "application/json"])

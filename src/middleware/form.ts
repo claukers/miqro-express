@@ -9,8 +9,8 @@ export const URLEncodedParser = (options?: {
   let limit = DEFAULT_READ_BUFFER_LIMIT;
   let type = "application/x-www-form-urlencoded";
   if (options) {
-    limit = options.limit;
-    type = options.type;
+    limit = options.limit !== undefined ? options.limit : limit;
+    type = options.type !== undefined ? options.type : type;
   } else {
     const [limitS, typeS] =
       checkEnvVariables(["BODY_PARSER_URL_ENCODED_LIMIT", "BODY_PARSER_URL_ENCODED_TYPE"], [String(DEFAULT_READ_BUFFER_LIMIT), "application/x-www-form-urlencoded"]);
