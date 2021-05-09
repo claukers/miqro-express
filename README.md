@@ -11,65 +11,52 @@ lightweight module for api development using the native http module.
 - jwt token validation using **jsonwebtoken** module.
 - request parsing.
 
-quick start
+## quickstart
 
-```src/api/campaign/contact/post.js```
-```javascript
-...
-// [POST] /api/campaign/contact
-module.exports = {
-  description: "...",
-  query: {
-    options: ...,
-    ...
+```npm install @miqro/core --save```
+
+```npm install @miqro/handlers --save```
+
+```npm install miqro --save-dev```
+
+to use typescript 
+
+```npm install typescript --save-dev```
+
+and create a ```tsconfig.json```
+
+```json
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "strict": false,
+    "outDir": "./dist/",
+    "removeComments": true,
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2017",
+    "lib": [
+      "es2017"
+    ]
   },
-  body: {
-    options: ...,
-    ...
-  },
-  results: ...,
-  ...
-  handler: async (ctx) => {
-    return ...
-  }
+  "exclude": [
+    "node_modules",
+    "test"
+  ],
+  "include": [
+    "src"
+  ]
 }
 ```
 
-```src/api/health.js```
-```javascript
-...
-// [GET] /api/health
-module.exports = {
-  description: "...",
-  methods: ["get"],
-  path: "/health",
-  query: false,
-  body: false,
-  results: {
-    options: {
-      status: {
-        type: "enum",
-        enumValues: ["OK"],
-        required: true
-      }
-    },
-    mode: "remove_extra",
-    ...
-  },
-  ...
-  handler: async () => {
-    try {
-      await db.query({ query: "SELECT 1+1", values: [] });
-      return {
-        status: "OK"
-      };
-    } catch (e) {
-      logger.error(e);
-      throw new ParseOptionsError(`NOK`);
-    }
-  }
-}
-```
+```npx miqro new:main src_main```
+
+```npx miqro new:route src_api_health_get```
 
 to generate api documentation.
 
@@ -91,39 +78,12 @@ APIRouter is a FeatureRouter so to disable routes you can set an ENV VAR with th
 API_HEALTH=false
 ```
 
-```src/main.js```
-```javascript
-const http = require("http");
-const {App} = require("@miqro/core");
-const {middleware, APIRouter} = require("@miqro/handler");
-
-const app = new App();
-// setup default middleware (json,form,cookie,uuid,logger,etc)
-app.use(middleware());
-//app.use(ReadBuffer());
-//...
-//app.use(JSONBodyParser());
-/*app.get("/echo", async (ctx) => {
-  ctx.json(ctx.body);
-});*/
-/*const router = new Router();
-app.use(router);*/
-app.use(APIRouter({
-  dirname: apiPath,
-  ...
-}, logger));
-...
-const server = new http.createServer(app.listener); 
-server.listen(8080);
-//app.listen(8080);
-...
-```
-
 ## handlers
 
 ##### Router
 
 ```javascript
+import { Router } from "@miqro/core";
 ...
 const router = new Router();
 router.post("/echo", async (ctx) => {
@@ -214,16 +174,6 @@ app.use([
     }),
     ProxyResponseHandler()
 ])
-```
-
-##### FeatureRouter(...)
-
-```javascript
-// ONLY if FeatureToggle.isFeatureEnabled(...) is true the feature will be enabled in the router
-app.use(FeatureRouter({
-    features: ....
-    ....
-}, logger));
 ```
 
 ## ctx
