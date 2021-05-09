@@ -8,7 +8,7 @@ export const ReadBuffer = (options?: {
 }): Handler => {
   let limit = DEFAULT_READ_BUFFER_LIMIT;
   if (options) {
-    limit = options.limit;
+    limit = options.limit !== undefined ? options.limit : limit;
   } else {
     const [limitS] =
       checkEnvVariables(["READ_BUFFER_LIMIT"], [String(DEFAULT_READ_BUFFER_LIMIT)]);
