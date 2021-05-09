@@ -448,10 +448,10 @@ describe("api-router functional tests", function () {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
       strictEqual(headers['content-type'], "plain/text; charset=utf-8");
-      strictEqual(headers['content-length'], "18");
-      strictEqual(status, 401);
+      strictEqual(headers['content-length'], "8");
+      strictEqual(status, 403);
       
-      strictEqual(data, "No token provided!");
+      strictEqual(data, "NO TOKEN");
       done();
     });
   });
@@ -477,10 +477,10 @@ describe("api-router functional tests", function () {
       const { status, data, headers } = res;
       console.log({ status, data, headers });
       strictEqual(headers['content-type'], "plain/text; charset=utf-8");
-      strictEqual(headers['content-length'], "31");
+      strictEqual(headers['content-length'], "12");
       strictEqual(status, 401);
       
-      strictEqual(data, "Fail to authenticate token! bla");
+      strictEqual(data, "UNAUTHORIZED");
       done();
     });
   });

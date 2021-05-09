@@ -1,4 +1,4 @@
-import { Handler, Context, checkEnvVariables, parseOptions, UnAuthorizedError } from "@miqro/core";
+import { Handler, Context, checkEnvVariables, parseOptions, UnAuthorizedError, ForbiddenError } from "@miqro/core";
 import { ExtendedVerifyTokenService } from "../service";
 import { serialize as cookieSerialize } from "cookie";
 
@@ -109,18 +109,15 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
           throw new Error(`TOKEN_LOCATION=${tokenLocation} not supported use (header, query or cookie)`);
       }
       if (!token) {
-        const message = `No token provided!`;
-        // (logger as Logger).error(message);
-        throw new UnAuthorizedError(message);
+        ctx.logger.warn("No token provided!");
+        throw new ForbiddenError("NO TOKEN");
       } else {
         const session = await config.authService.verify({ token, ctx });
         if (!session) {
-          const message = `Fail to authenticate token [${token}]!`;
-          ctx.logger.warn(message);
-          throw new UnAuthorizedError(`Fail to authenticate token!`);
+          ctx.logger.warn("fail to authenticate token [%s]!", token);
+          throw new UnAuthorizedError();
         } else {
           if (tokenLocation === "cookie" && session.token !== token) {
-
             const newTokenCookie = String(session.token ? session.token : token);
             if (session.expires instanceof Date) {
               ctx.setHeader('Set-Cookie', cookieSerialize(tokenLocationName, String(newTokenCookie), {
@@ -140,16 +137,15 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
             }
           }
           ctx.session = session;
-          ctx.logger.debug(`request[${ctx.uuid}] Token [${token}] authenticated!`);
+          ctx.logger.debug("token [%s] authenticated!", token);
           return true;
         }
       }
     } catch (e) {
-      // (logger as Logger).error(`request[${req.uuid}] message[${e.message}] stack[${e.stack}]`);
-      if (e.name && e.name !== "Error") {
+      if(e.message === "NO TOKEN") {
         throw e;
       } else {
-        throw new UnAuthorizedError(`Fail to authenticate token!${e.message ? ` ${e.message}` : ""}`);
+        throw new UnAuthorizedError();
       }
     }
   };

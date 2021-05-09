@@ -1,4 +1,4 @@
-import { Handler, Context, checkEnvVariables, BAD_REQUEST } from "@miqro/core";
+import { Handler, Context, checkEnvVariables, BadRequestError } from "@miqro/core";
 import { DEFAULT_READ_BUFFER_LIMIT } from "./buffer";
 
 export const TextParser = (options?: {
@@ -28,7 +28,7 @@ export const TextParser = (options?: {
       return true;
     } catch (e) {
       ctx.logger.error(e);
-      await ctx.end(BAD_REQUEST(`cannot parse body: ${e.message}`));
+      throw new BadRequestError();
     }
   };
 };

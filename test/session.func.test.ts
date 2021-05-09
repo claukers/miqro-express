@@ -251,7 +251,7 @@ describe("session functional tests", () => {
               FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
                 try {
                   strictEqual(res.headers["content-type"], "plain/text; charset=utf-8");
-                  strictEqual(res.headers["content-length"], "27");
+                  strictEqual(res.headers["content-length"], "12");
                   strictEqual(res.status, 401);
                   strictEqual(finalHandler.callCount, 0);
                   strictEqual(authService.verify.callCount, 1);
@@ -266,7 +266,7 @@ describe("session functional tests", () => {
           })().then(done).catch(done);
         });
 
-        it(`createSessionHandler [${TOKENVARS.location}] no token is 401`, (done) => {
+        it(`createSessionHandler [${TOKENVARS.location}] no token is 403`, (done) => {
           (async () => {
             process.env.TOKEN_LOCATION = TOKENVARS.location;
             process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
@@ -290,8 +290,8 @@ describe("session functional tests", () => {
               FuncTestHelper(app, getRequestConfig(), (res) => {
                 try {
                   strictEqual(res.headers["content-type"], "plain/text; charset=utf-8");
-                  strictEqual(res.headers["content-length"], "18");
-                  strictEqual(res.status, 401);
+                  strictEqual(res.headers["content-length"], "8");
+                  strictEqual(res.status, 403);
                   strictEqual(finalHandler.callCount, 0);
                   strictEqual(authService.verify.callCount, 0);
                   strictEqual((res as any).headers["set-cookie"], undefined);
@@ -335,7 +335,7 @@ describe("session functional tests", () => {
                   const { status, data, headers } = res;
                   console.log({ status, data, headers });
                   strictEqual(res.headers["content-type"], "plain/text; charset=utf-8");
-                  strictEqual(res.headers["content-length"], "27");
+                  strictEqual(res.headers["content-length"], "12");
                   strictEqual(res.status, 401);
                   strictEqual(finalHandler.callCount, 0);
                   strictEqual(authService.verify.callCount, 1);

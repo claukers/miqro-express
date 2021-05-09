@@ -1,4 +1,4 @@
-import { Context, Handler, checkEnvVariables, BAD_REQUEST } from "@miqro/core";
+import { Context, Handler, checkEnvVariables, BadRequestError } from "@miqro/core";
 import { parse as queryParse } from "querystring";
 import { DEFAULT_READ_BUFFER_LIMIT } from "./buffer";
 
@@ -35,7 +35,7 @@ export const URLEncodedParser = (options?: {
       return true;
     } catch (e) {
       ctx.logger.error(e);
-      await ctx.end(BAD_REQUEST(`cannot parse body: ${e.message}`));
+      throw new BadRequestError();
     }
   };
 };
