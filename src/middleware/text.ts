@@ -23,7 +23,8 @@ export const TextParser = (options?: {
         const string = ctx.buffer.toString();
         ctx.body = string;
       } else if (isType && ctx.buffer && ctx.buffer.length > limit) {
-        ctx.logger.warn(`ctx.buffer.length ${ctx.buffer.length} > ${limit}. To accept this body set BODY_TEXT_PARSER_LIMIT to a higher value.`);
+        ctx.logger.error(`ctx.buffer.length ${ctx.buffer.length} > ${limit}. To accept this body set BODY_TEXT_PARSER_LIMIT to a higher value.`);
+        throw new BadRequestError();
       }
       return true;
     } catch (e) {

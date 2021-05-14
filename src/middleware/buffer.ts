@@ -1,4 +1,4 @@
-import { Handler, Context, checkEnvVariables } from "@miqro/core";
+import { Handler, Context, checkEnvVariables, BadRequestError } from "@miqro/core";
 import { gunzipSync } from "zlib";
 
 export const DEFAULT_READ_BUFFER_LIMIT = 1024 * 8 * 100;
@@ -32,8 +32,8 @@ export const ReadBuffer = (options?: {
           cLength += chunk.length;
           if (cLength > limit) {
             ctx.req.removeListener('end', endListener);
-            ctx.logger.warn(`ctx.buffer.length ${cLength} > ${limit}. To accept this body set READ_BUFFER_LIMIT to a higher value.`);
-            resolve(false);
+            ctx.logger.error(`ctx.buffer.length ${cLength} > ${limit}. To accept this body set READ_BUFFER_LIMIT to a higher value.`);
+            reject(new BadRequestError());
           }
           buffers.push(chunk);
         });
