@@ -38,10 +38,12 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
       const { name, ext } = parse(f);
       if (name !== "index" && ((ext === ".ts" || ext === ".js") && name.slice(-2) !== ".d")) {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        let route: APIRoute = require(join(dirname, name));
+        const filePath = join(dirname, name);
+        let route: APIRoute = require(filePath);
         if ((route as any).default && (route as any).__esModule === true) {
           route = (route as any).default;
         }
+        (route as any).___filePath = filePath + ext;
         let methods: Method[] = [name] as Method[];
         if (typeof route === "function") {
           route = {

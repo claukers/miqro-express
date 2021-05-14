@@ -51,21 +51,25 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
           logger.debug(`feature [${featureName}] enabled`);
           enabled.push(featureName);
           for (const method of methods) {
-            logger.info(`[${featureName}] on [${method.toUpperCase()}:${path}]`);
+            logger.info("%s", featureName);
+            logger.info("\t%s:%s", method.toUpperCase(), path);
+            if ((handlerOptions as any).apiHandlerOptions && (handlerOptions as any).apiHandlerOptions.___filePath) {
+              logger.info("\t%s", (handlerOptions as any).apiHandlerOptions.___filePath);
+            }
             router.use(implementation, path, method.toLocaleLowerCase() as Method);
           }
         } else {
-          logger.debug(`feature [${featureName}] disabled`);
+          logger.debug("feature [%s] disabled", featureName);
           disabled.push(featureName);
         }
       }
     }
   }
   if (enabled.length > 0) {
-    logger.debug(`enabled features [${enabled.join(",")}]`);
+    logger.debug("enabled features [%s]", enabled.join(","));
   }
   if (disabled.length > 0) {
-    logger.warn(`disabled features [${disabled.join(",")}]`);
+    logger.warn("disabled features [%s]", disabled.join(","));
     logger.warn(`to enable them just add the env var <feature>=true`);
   } else {
     logger.debug(`no features disabled`);
