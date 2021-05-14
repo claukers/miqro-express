@@ -10,7 +10,7 @@ export const ResultParser = (options: ParseOptions | ParseOptions[]): Handler =>
     } else {
       const index = ctx.results.length - 1;
       const lastResult = ctx.results[index];
-      ctx.logger.debug(`parsing lastResult[%s]`, inspect(lastResult));
+      ctx.logger.trace(`parsing lastResult[%s]`, inspect(lastResult));
       try {
         if (options instanceof Array) {
           for (let i = 0; i < options.length; i++) {
