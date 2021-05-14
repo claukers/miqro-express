@@ -25,18 +25,22 @@ export const ReadBuffer = (options?: {
           ctx.buffer = responseBuffer;
           resolve(true);
         };
-        ctx.req.on('error', err => {
+        const errorListener = (err: Error) => {
           reject(err);
-        });
-        ctx.req.on('data', chunk => {
+        };
+        const chunkListener = (chunk: Buffer) => {
           cLength += chunk.length;
           if (cLength > limit) {
+            ctx.req.removeListener('error', errorListener);
+            ctx.req.removeListener('data', chunkListener);
             ctx.req.removeListener('end', endListener);
             ctx.logger.error(`ctx.buffer.length ${cLength} > ${limit}. To accept this body set READ_BUFFER_LIMIT to a higher value.`);
             reject(new BadRequestError(`buffer.length ${ctx.buffer.length} > ${limit}`));
           }
           buffers.push(chunk);
-        });
+        };
+        ctx.req.on('error', errorListener);
+        ctx.req.on('data', chunkListener);
         ctx.req.on('end', endListener);
       } catch (e) {
         reject(e);
