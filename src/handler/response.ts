@@ -8,8 +8,7 @@ export const ResponseHandler = (): Handler =>
       return undefined;
     } else {
       const lastResult = ctx.results[ctx.results.length - 1];
-
-      ctx.logger.debug(`response with lastResult[${inspect(lastResult)}]`);
+      ctx.logger.debug("response [%s]", inspect(lastResult));
       if (lastResult !== undefined) {
         await ctx.json(lastResult);
       } else {

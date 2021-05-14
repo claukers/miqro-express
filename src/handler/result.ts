@@ -17,7 +17,7 @@ export const ResultParser = (options: ParseOptions | ParseOptions[]): Handler =>
             const o = options[i];
             try {
               const mappedResults = parseOptions(`ctx.results[${index}]`, lastResult, o.options, o.mode, o.ignoreUndefined);
-              ctx.logger.debug(`ctx.results[%s] mapped to %s`, index, inspect(mappedResults));
+              ctx.logger.trace(`ctx.results[%s] mapped to %s`, index, inspect(mappedResults));
               return mappedResults;
             } catch (e) {
               if (i === options.length - 1) {
@@ -29,7 +29,7 @@ export const ResultParser = (options: ParseOptions | ParseOptions[]): Handler =>
           }
         } else {
           const mappedResults = parseOptions(`ctx.results[${index}]`, lastResult, options.options, options.mode, options.ignoreUndefined);
-          ctx.logger.debug(`ctx.results[%s] mapped to %s`, index, inspect(mappedResults));
+          ctx.logger.trace(`ctx.results[%s] mapped to %s`, index, inspect(mappedResults));
           return mappedResults;
         }
       } catch (e) {
