@@ -12,6 +12,46 @@ Util.loadConfig();
 
 describe("handlers functional tests", function () {
   this.timeout(10000);
+  it("ErrorHandler catches BufferLimit as 400", (done) => {
+    const myFunc = () => {
+      throw new ParseOptionsError("myerror");
+    };
+    const app = new App();
+    process.env.FEATURE_TOGGLE_DISABLE_POWERED = "true";
+    process.env.FEATURE_TOGGLE_REQUEST_UUID = "true";
+    process.env.FEATURE_TOGGLE_MORGAN = "true";
+    process.env.FEATURE_TOGGLE_BODY_PARSER = "true";
+    process.env.BODY_PARSER_INFLATE = "true";
+    process.env.BODY_PARSER_LIMIT = "100kb";
+    process.env.READ_BUFFER_LIMIT = "1";
+    process.env.BODY_PARSER_STRICT = "true";
+    process.env.BODY_PARSER_TYPE = "application/json";
+    app.use(middleware());
+    app.post("/myFunc", myFunc);
+
+    FuncTestHelper(app, {
+
+      url: `/myFunc`,
+      method: "post",
+      data: {
+        bla: 1
+      }
+    }, ({ status, data, headers }) => {
+      console.log(inspect({
+        status,
+        headers,
+        data
+      }));
+      strictEqual(headers['content-type'], "plain/text; charset=utf-8");
+      strictEqual(headers['content-length'], "19");
+      strictEqual(status, 400);
+
+      strictEqual(data, "buffer.length 0 > 1");
+      delete process.env.READ_BUFFER_LIMIT;
+      done();
+    });
+
+  });
   it("ErrorHandler catches ParseOptionsError as 400", (done) => {
     const myFunc = () => {
       throw new ParseOptionsError("myerror");
@@ -41,7 +81,7 @@ describe("handlers functional tests", function () {
       strictEqual(headers['content-type'], "plain/text; charset=utf-8");
       strictEqual(headers['content-length'], "7");
       strictEqual(status, 400);
-      
+
       strictEqual(data, "myerror");
       done();
     });

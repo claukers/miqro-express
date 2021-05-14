@@ -33,7 +33,7 @@ export const ReadBuffer = (options?: {
           if (cLength > limit) {
             ctx.req.removeListener('end', endListener);
             ctx.logger.error(`ctx.buffer.length ${cLength} > ${limit}. To accept this body set READ_BUFFER_LIMIT to a higher value.`);
-            throw new BadRequestError(`ctx.buffer.length ${ctx.buffer.length} > ${limit}`);
+            reject(new BadRequestError(`buffer.length ${ctx.buffer.length} > ${limit}`));
           }
           buffers.push(chunk);
         });

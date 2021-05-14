@@ -31,7 +31,7 @@ export const URLEncodedParser = (options?: {
         }
       } else if (isType && ctx.buffer && ctx.buffer.length > limit) {
         ctx.logger.error(`ctx.buffer.length ${ctx.buffer.length} > ${limit}. To accept this body set BODY_PARSER_URL_ENCODED_LIMIT to a higher value.`);
-        throw new BadRequestError(`ctx.buffer.length ${ctx.buffer.length} > ${limit}`);
+        throw new BadRequestError(`buffer.length ${ctx.buffer.length} > ${limit}`);
       }
       return true;
     } catch (e) {
