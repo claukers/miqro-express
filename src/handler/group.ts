@@ -15,10 +15,10 @@ export const GroupPolicyHandler = (options: GroupPolicy): Handler => {
       } else {
         const result = await GroupPolicyValidator.validate(ctx.session, options, ctx.logger);
         if (result) {
-          ctx.logger.debug(`groups [${ctx && ctx.session && ctx.session.groups ? ctx.session.groups.join(",") : ""}] validated!`);
+          ctx.logger.debug("%sgroups validated!", ctx && ctx.session && ctx.session.groups ? `[${ctx.session.groups.join(",")}] ` : "");
           return true;
         } else {
-          ctx.logger.warn(`groups [${ctx && ctx.session && ctx.session.groups ? ctx.session.groups.join(",") : ""}] fail to validate!`);
+          ctx.logger.error("%sgroups fail to validate!", ctx && ctx.session && ctx.session.groups ? `[${ctx.session.groups.join(",")}] ` : "");
           throw new UnAuthorizedError(`Invalid session. You are not permitted to do this!`);
         }
       }

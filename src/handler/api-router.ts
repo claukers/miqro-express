@@ -26,7 +26,7 @@ export interface FeatureRouterWithAPIRouterOptions extends FeatureRouterOptions 
 
 export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterWithAPIRouterOptions = { features: {} }): FeatureRouterWithAPIRouterOptions => {
   try {
-    logger.debug(`loading routes from [${dirname}]`);
+    logger.trace("loading routes from [%s]", dirname);
     const files = readdirSync(dirname);
     const dirs = files.filter(f => lstatSync(join(dirname, f)).isDirectory());
     const methods = files.filter(f => !lstatSync(join(dirname, f)).isDirectory());

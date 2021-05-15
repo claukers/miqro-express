@@ -48,7 +48,7 @@ export const FeatureRouter = (options: FeatureRouterOptions, logger?: Logger): R
           throw new Error(`feature [${featureName}] no methods defined`);
         }
         if (isFeatureEnabled(featureName)) {
-          logger.debug(`feature [${featureName}] enabled`);
+          logger.trace(`feature [${featureName}] enabled`);
           enabled.push(featureName);
           for (const method of methods) {
             logger.info("%s", featureName);

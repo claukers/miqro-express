@@ -11,7 +11,7 @@ export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
         depth: 1
       })}]`);
       const response = await request(requestConfig);
-      ctx.logger.debug(`response[${inspect(response, {
+      ctx.logger.trace(`response[${inspect(response, {
         depth: 0
       })}]`);
       ctx.results.push(response);

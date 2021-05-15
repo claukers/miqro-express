@@ -7,7 +7,7 @@ export const HTMLResponseHandler = (): Handler =>
   async (ctx: Context) => {
     const results = ctx.results;
     const lastResult = results[results.length - 1];
-    ctx.logger.debug(`last result is [${lastResult}]`);
+    ctx.logger.trace(`last result is [${lastResult}]`);
     if (lastResult && typeof lastResult === "string" ||
       (
         (typeof lastResult.headers === "object" || lastResult.headers === undefined) &&
