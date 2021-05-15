@@ -67,7 +67,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
       switch (tokenVerifyLocation) {
         case "header":
           const tokenHeaderLocation = this.options.tokenLocationName;
-          ctx.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
+          ctx.logger.trace(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
           response = await this.getResponse({
             url,
             headers: {
@@ -78,7 +78,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           break;
         case "query":
           const tokenQueryLocation = this.options.tokenLocationName;
-          ctx.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
+          ctx.logger.trace(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
           response = await this.getResponse({
             url,
             query: {
@@ -89,7 +89,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           break;
         case "cookie":
           const tokenCookieLocation = this.options.tokenLocationName;
-          ctx.logger.debug(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
+          ctx.logger.trace(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
           response = await this.getResponse({
             url,
             method,
@@ -108,7 +108,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           ctx.logger.warn(`unauthorized token not valid [${token}]`);
           return null;
         } else {
-          ctx.logger.debug(`authorized token[${token}] with session[${inspect(session)}]`);
+          ctx.logger.trace("token [%s]authorized!", token);
 
           if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
             const tokenCookieLocation = this.options.tokenLocationName;

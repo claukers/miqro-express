@@ -137,7 +137,7 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
             }
           }
           ctx.session = session;
-          ctx.logger.debug("token [%s] authenticated!", token);
+          ctx.logger.debug("authenticated!");
           return true;
         }
       }

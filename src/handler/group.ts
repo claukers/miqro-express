@@ -15,7 +15,7 @@ export const GroupPolicyHandler = (options: GroupPolicy): Handler => {
       } else {
         const result = await GroupPolicyValidator.validate(ctx.session, options, ctx.logger);
         if (result) {
-          ctx.logger.debug("%sgroups validated!", ctx && ctx.session && ctx.session.groups ? `[${ctx.session.groups.join(",")}] ` : "");
+          ctx.logger.debug("groups validated!");
           return true;
         } else {
           ctx.logger.error("%sgroups fail to validate!", ctx && ctx.session && ctx.session.groups ? `[${ctx.session.groups.join(",")}] ` : "");
