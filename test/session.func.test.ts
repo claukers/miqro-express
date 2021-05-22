@@ -1,6 +1,6 @@
 import { describe, it, beforeEach } from "mocha";
 import { strictEqual } from "assert";
-import { TestHelper as FuncTestHelper, App, fake, RequestOptions } from "@miqro/core";
+import { TestHelper as FuncTestHelper, App, fake, RequestOptions, Context } from "@miqro/core";
 import { CookieParser, LoggerHandler } from "../src";
 import { inspect } from "util";
 
@@ -120,6 +120,65 @@ describe("session functional tests", () => {
 
           })().then(done).catch(done);
         });
+
+        if (useOptions) {
+          it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through with locationName and LocationPath as function`, (done) => {
+            (async () => {
+              process.env.TOKEN_LOCATION = TOKENVARS.location;
+              process.env.TOKEN_HEADER = useOptions ? undefined : TOKENVARS.locationRef;
+              process.env.TOKEN_QUERY = useOptions ? undefined : TOKENVARS.locationRef;
+              process.env.TOKEN_COOKIE = useOptions ? undefined : TOKENVARS.locationRef;
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
+              const { SessionHandler } = require("../src/");
+
+              const fakeToken = "FakeToken";
+              const fakeSession = {
+                token: fakeToken
+              };
+
+              const authService = {
+                verify: fake(async ({ token }: { token: any }) => {
+                  strictEqual(token, fakeToken);
+                  return fakeSession;
+                })
+              };
+              const finalHandler = fake(async (ctx: any) => {
+                strictEqual(ctx.session.token, fakeToken);
+                ctx.json(true);
+              });
+
+              app.get("/user", [SessionHandler({
+                authService, options: {
+                  tokenLocation: TOKENVARS.location,
+                  tokenLocationName: async (ctx: Context) => TOKENVARS.locationRef,
+                  setCookieOptions: {
+                    httpOnly: true,
+                    sameSite: "strict",
+                    secure: true,
+                    path: async (ctx: Context) => "/"
+                  }
+                }
+              }), finalHandler]);
+
+              await new Promise((resolve, reject) => {
+                FuncTestHelper(app, getRequestConfig(fakeToken), (res) => {
+                  try {
+                    strictEqual(res.headers["content-type"], "application/json; charset=utf-8");
+                    strictEqual(res.headers["content-length"], "4");
+                    strictEqual(res.status, 200);
+                    strictEqual(finalHandler.callCount, 1);
+                    strictEqual(authService.verify.callCount, 1);
+                    strictEqual((res as any).headers["set-cookie"], undefined);
+                    resolve(res);
+                  } catch (e) {
+                    reject(e);
+                  }
+                });
+              });
+
+            })().then(done).catch(done);
+          });
+        }
 
         it(`createSessionHandler [${TOKENVARS.location}] happy path allow pass through`, (done) => {
           (async () => {

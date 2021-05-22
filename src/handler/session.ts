@@ -15,11 +15,11 @@ export interface SessionHandlerOptions {
   authService: ExtendedVerifyTokenService;
   options?: {
     tokenLocation: "header" | "query" | "cookie";
-    tokenLocationName: string;
+    tokenLocationName: string | ((ctx: Context) => Promise<string>);
     setCookieOptions?: {
       httpOnly: boolean;
       secure: boolean;
-      path: string;
+      path: string | ((ctx: Context) => Promise<string>);
       sameSite: "lax" | "strict" | "none";
     }
   }
@@ -63,7 +63,7 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
   } else {
     config.options = parseOptions("options", config.options as any, [
       { name: "tokenLocation", required: true, type: "enum", enumValues: ["header", "query", "cookie"] },
-      { name: "tokenLocationName", required: true, type: "string", stringMinLength: 1 },
+      { name: "tokenLocationName", required: true, type: "any" },
       {
         name: "setCookieOptions", required: false, type: "nested", defaultValue: {
           httpOnly: DEFAULT_TOKEN_SET_COOKIE_HTTP_ONLY === "true",
@@ -75,7 +75,7 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
           options: [
             { name: "httpOnly", required: true, type: "boolean" },
             { name: "secure", required: true, type: "boolean" },
-            { name: "path", required: true, type: "string" },
+            { name: "path", required: true, type: "any" },
             { name: "sameSite", required: true, type: "enum", enumValues: ["lax", "strict", "none"] }
           ]
         }
@@ -94,16 +94,17 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
   const setCookieOptions = config.options.setCookieOptions;
   return async (ctx: Context) => {
     try {
+      const tlN = typeof tokenLocationName === "string" ? tokenLocationName : await tokenLocationName(ctx);
       let token = null;
       switch (tokenLocation) {
         case "header":
-          token = ctx.headers[(tokenLocationName).toLowerCase()] as string;
+          token = ctx.headers[(tlN).toLowerCase()] as string;
           break;
         case "query":
-          token = ctx.query[tokenLocationName] as string;
+          token = ctx.query[tlN] as string;
           break;
         case "cookie":
-          token = ctx.cookies[tokenLocationName] ? ctx.cookies[tokenLocationName] : undefined;
+          token = ctx.cookies[tlN] ? ctx.cookies[tlN] : undefined;
           break;
         default:
           throw new Error(`TOKEN_LOCATION=${tokenLocation} not supported use (header, query or cookie)`);
@@ -119,22 +120,19 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
         } else {
           if (tokenLocation === "cookie" && session.token !== token) {
             const newTokenCookie = String(session.token ? session.token : token);
-            if (session.expires instanceof Date) {
-              ctx.setHeader('Set-Cookie', cookieSerialize(tokenLocationName, String(newTokenCookie), {
-                httpOnly: setCookieOptions.httpOnly,
-                secure: setCookieOptions.secure,
-                path: setCookieOptions.path,
-                sameSite: setCookieOptions.sameSite,
-                expires: session.expires
-              }));
-            } else {
-              ctx.setHeader('Set-Cookie', cookieSerialize(tokenLocationName, String(newTokenCookie), {
-                httpOnly: setCookieOptions.httpOnly,
-                path: setCookieOptions.path,
-                secure: setCookieOptions.secure,
-                sameSite: setCookieOptions.sameSite
-              }));
-            }
+            const cookiePath = typeof setCookieOptions.path === "string" ? setCookieOptions.path : await setCookieOptions.path(ctx);
+            ctx.setHeader('Set-Cookie', cookieSerialize(tlN, String(newTokenCookie), session.expires instanceof Date ? {
+              httpOnly: setCookieOptions.httpOnly,
+              secure: setCookieOptions.secure,
+              path: cookiePath,
+              sameSite: setCookieOptions.sameSite,
+              expires: session.expires
+            } : {
+              httpOnly: setCookieOptions.httpOnly,
+              path: cookiePath,
+              secure: setCookieOptions.secure,
+              sameSite: setCookieOptions.sameSite
+            }));
           }
           ctx.session = session;
           ctx.logger.debug("authenticated!");
@@ -142,7 +140,7 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
         }
       }
     } catch (e) {
-      if(e.message === "NO TOKEN") {
+      if (e.message === "NO TOKEN") {
         throw e;
       } else {
         throw new UnAuthorizedError();
