@@ -18,7 +18,7 @@ export interface VerifyEndpointServiceOptions {
   url: string;
   method: string;
   tokenLocation: "header" | "query" | "cookie";
-  tokenLocationName: string;
+  tokenLocationName: string | ((ctx: Context) => Promise<string>);
 }
 
 export class VerifyEndpointService implements ExtendedVerifyTokenService {
@@ -53,7 +53,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
         { name: "url", required: true, type: "string", stringMinLength: 1 },
         { name: "method", required: true, type: "string", stringMinLength: 1 },
         { name: "tokenLocation", required: true, type: "enum", enumValues: ["header", "query", "cookie"] },
-        { name: "tokenLocationName", required: true, type: "string", stringMinLength: 1 }
+        { name: "tokenLocationName", required: true, type: "any" }
       ], "no_extra") as any;
     }
   }
@@ -66,7 +66,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
       const method = this.options.method;
       switch (tokenVerifyLocation) {
         case "header":
-          const tokenHeaderLocation = this.options.tokenLocationName;
+          const tokenHeaderLocation = typeof this.options.tokenLocationName === "string" ? this.options.tokenLocationName : await this.options.tokenLocationName(ctx);
           ctx.logger.trace(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_HEADER=[${tokenHeaderLocation}]`);
           response = await this.getResponse({
             url,
@@ -77,7 +77,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           }, ctx);
           break;
         case "query":
-          const tokenQueryLocation = this.options.tokenLocationName;
+          const tokenQueryLocation = typeof this.options.tokenLocationName === "string" ? this.options.tokenLocationName : await this.options.tokenLocationName(ctx);
           ctx.logger.trace(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_QUERY=[${tokenQueryLocation}]`);
           response = await this.getResponse({
             url,
@@ -88,7 +88,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           }, ctx);
           break;
         case "cookie":
-          const tokenCookieLocation = this.options.tokenLocationName;
+          const tokenCookieLocation = typeof this.options.tokenLocationName === "string" ? this.options.tokenLocationName : await this.options.tokenLocationName(ctx);
           ctx.logger.trace(`verifying [${token}] on TOKEN_VERIFY_ENDPOINT=[${process.env.TOKEN_VERIFY_ENDPOINT}] TOKEN_COOKIE=[${tokenCookieLocation}]`);
           response = await this.getResponse({
             url,
@@ -111,7 +111,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
           ctx.logger.trace("token [%s]authorized!", token);
 
           if (tokenVerifyLocation === "cookie" && response.headers["set-cookie"]) {
-            const tokenCookieLocation = this.options.tokenLocationName;
+            const tokenCookieLocation = typeof this.options.tokenLocationName === "string" ? this.options.tokenLocationName : await this.options.tokenLocationName(ctx);
             const cookies = response.headers["set-cookie"].map(c => cookieParse(c)).filter(c => c[tokenCookieLocation] !== undefined);
             if (cookies.length === 1) {
               session.token = cookies[0][tokenCookieLocation]; // replace token because token update via set-cookie
