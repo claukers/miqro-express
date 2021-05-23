@@ -25,7 +25,7 @@ export interface SessionHandlerOptions {
   }
 }
 
-export const SessionHandler = (config: SessionHandlerOptions): Handler => {
+export const SessionHandler = (config: SessionHandlerOptions): Handler<void> => {
   if (!config.options) {
     const tokenLocation = checkEnvVariables(["TOKEN_LOCATION"], [DEFAULT_TOKEN_LOCATION])[0];
     config.options = {
@@ -92,7 +92,7 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
   const tokenLocation = config.options.tokenLocation;
   const tokenLocationName = config.options.tokenLocationName;
   const setCookieOptions = config.options.setCookieOptions;
-  return async (ctx: Context) => {
+  return async (ctx: Context): Promise<void> => {
     try {
       const tlN = typeof tokenLocationName === "string" ? tokenLocationName : await tokenLocationName(ctx);
       let token = null;
@@ -136,7 +136,6 @@ export const SessionHandler = (config: SessionHandlerOptions): Handler => {
           }
           ctx.session = session;
           ctx.logger.debug("authenticated!");
-          return true;
         }
       }
     } catch (e) {

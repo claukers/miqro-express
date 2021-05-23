@@ -5,7 +5,7 @@ export const DEFAULT_READ_BUFFER_LIMIT = 1024 * 8 * 100;
 
 export const ReadBuffer = (options?: {
   limit: number;
-}): Handler => {
+}): Handler<void> => {
   let limit = DEFAULT_READ_BUFFER_LIMIT;
   if (options) {
     limit = options.limit !== undefined ? options.limit : limit;
@@ -14,8 +14,8 @@ export const ReadBuffer = (options?: {
       checkEnvVariables(["READ_BUFFER_LIMIT"], [String(DEFAULT_READ_BUFFER_LIMIT)]);
     limit = parseInt(limitS, 10);
   }
-  return async (ctx: Context) => {
-    return new Promise<boolean>((resolve, reject) => {
+  return async (ctx: Context): Promise<void> => {
+    return new Promise<void>((resolve, reject) => {
       try {
         let cLength = 0;
         const buffers: Buffer[] = [];
@@ -23,7 +23,7 @@ export const ReadBuffer = (options?: {
           const responseBuffer: Buffer = ctx.headers["content-encoding"] === "gzip" ?
             gunzipSync(Buffer.concat(buffers)) : Buffer.concat(buffers);
           ctx.buffer = responseBuffer;
-          resolve(true);
+          resolve();
         };
         const errorListener = (err: Error) => {
           reject(err);

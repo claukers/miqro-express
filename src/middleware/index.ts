@@ -7,6 +7,7 @@ import { TextParser } from "./text";
 import { LoggerHandler } from "./logger";
 import { TagResponse } from "./tag";
 import { UUIDHandler } from "./uuid";
+// import { CORSHandler } from "./cors";
 
 export * from "./logger";
 export * from "./json";
@@ -16,6 +17,7 @@ export * from "./tag";
 export * from "./cookie";
 export * from "./uuid";
 export * from "./buffer";
+// export * from "./cors";
 
 export const middleware = (): Handler[] => {
   const ret: Handler[] = [];
@@ -28,6 +30,9 @@ export const middleware = (): Handler[] => {
   if (FeatureToggle.isFeatureEnabled("TAG_RESPONSE", false)) {
     ret.push(TagResponse());
   }
+  /*if (FeatureToggle.isFeatureEnabled("CORS", true)) {
+    ret.push(CORSHandler());
+  }*/
   if (FeatureToggle.isFeatureEnabled("READ_BUFFER", true)) {
     ret.push(ReadBuffer());
   }

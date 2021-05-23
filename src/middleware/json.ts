@@ -5,7 +5,7 @@ export const JSONParser = (options?: {
   limit: number;
   strict: boolean;
   type: string;
-}): Handler => {
+}): Handler<void> => {
   let strict = true;
   let limit = DEFAULT_READ_BUFFER_LIMIT;
   let type = "application/json";
@@ -20,7 +20,7 @@ export const JSONParser = (options?: {
     limit = parseInt(limitS, 10);
     type = typeS;
   }
-  return async (ctx: Context) => {
+  return async (ctx: Context): Promise<void> => {
     try {
       const isType = ctx.body === undefined && ctx.headers["content-type"] ? ctx.headers["content-type"].toLocaleLowerCase().indexOf(type.toLocaleLowerCase()) !== -1 : false;
       if (isType && ctx.buffer && ctx.buffer.length <= limit) {
@@ -36,7 +36,6 @@ export const JSONParser = (options?: {
         ctx.logger.error(`ctx.buffer.length ${ctx.buffer.length} > ${limit}. To accept this body set BODY_PARSER_LIMIT to a higher value.`);
         throw new BadRequestError(`buffer.length ${ctx.buffer.length} > ${limit}`);
       }
-      return true;
     } catch (e) {
       ctx.logger.error(e);
       throw new BadRequestError();

@@ -2,8 +2,8 @@ import { Context, Handler, parseOptions } from "@miqro/core";
 import { inspect } from "util";
 import { ParseOptions } from "./common";
 
-export const ResultParser = (options: ParseOptions | ParseOptions[]): Handler =>
-  async (ctx: Context) => {
+export const ResultParser = (options: ParseOptions | ParseOptions[]): Handler<any> =>
+  async (ctx: Context): Promise<any> => {
     if (!ctx.results || ctx.results.length === 0) {
       ctx.logger.debug(`not parsing results`);
       return undefined;

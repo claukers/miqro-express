@@ -7,6 +7,7 @@ import { App, Context, Handler } from '@miqro/core';
 import { serialize as cookieSerialize } from "cookie";
 
 process.env.TOKEN_HEADER = "Authorization";
+console.trace = console.log;
 
 describe(`verifytokenendpointservice func tests`, () => {
   for (const useOptions of [false, true]) {

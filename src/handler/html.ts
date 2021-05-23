@@ -3,8 +3,8 @@ import { Context, Handler } from "@miqro/core";
 
 export type HTMLResponseResult = string | { status?: number; headers?: OutgoingHttpHeaders, body?: string; template: (ctx: Context) => Promise<string>; }
 
-export const HTMLResponseHandler = (): Handler =>
-  async (ctx: Context) => {
+export const HTMLResponseHandler = (): Handler<void> =>
+  async (ctx: Context): Promise<void> => {
     const results = ctx.results;
     const lastResult = results[results.length - 1];
     ctx.logger.trace(`last result is [${lastResult}]`);
@@ -27,7 +27,6 @@ export const HTMLResponseHandler = (): Handler =>
           headers,
           body: toSend
         });
-        return false;
       } else {
         throw new Error("html result from HTMLResponseResult not string so last result not valid");
       }

@@ -33,12 +33,12 @@ const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, op
 }
 
 
-export const ParseRequest = (options: ParseRequestOptions): Handler => {
+export const ParseRequest = (options: ParseRequestOptions): Handler<void> => {
   const query = normalizeParseOptions(options.query);
   // const params = getParseOption(options.params);
   const body = normalizeParseOptions(options.body);
 
-  return async (ctx: Context) => {
+  return async (ctx: Context): Promise<void> => {
     try {
       try {
         parseRequestPart("query", ctx, query);
@@ -54,7 +54,6 @@ export const ParseRequest = (options: ParseRequestOptions): Handler => {
         ctx.logger.error(`error parsing body %s`, inspect(ctx.body));
         throw e;
       }
-      return true;
     } catch (e) {
       ctx.logger.warn(`error parsing request: ${e.message}`);
       throw e;

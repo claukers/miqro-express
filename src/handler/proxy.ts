@@ -1,9 +1,9 @@
-import { Context, Handler, request } from "@miqro/core";
+import { Context, Handler, request, RequestResponse } from "@miqro/core";
 import { inspect } from "util";
 import { ProxyOptionsInterface } from "./common";
 
-export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
-  async (ctx) => {
+export const ProxyHandler = (options: ProxyOptionsInterface): Handler<RequestResponse> =>
+  async (ctx): Promise<RequestResponse> => {
     const resolver = options.proxyService;
     const requestConfig = await resolver.resolveRequest(ctx);
     try {
@@ -14,23 +14,21 @@ export const ProxyHandler = (options: ProxyOptionsInterface): Handler =>
       ctx.logger.trace(`response[${inspect(response, {
         depth: 0
       })}]`);
-      ctx.results.push(response);
-      return true;
+      return response;
     } catch (e) {
       ctx.logger.error(`Error connecting to endpoint in [${requestConfig.url}] [${e.message}]`);
       if (e.response) {
-        ctx.results.push(e.response);
-        return true;
+        return e.response;
       } else {
         throw e;
       }
     }
   }
 
-export const ProxyResponseHandler = (): Handler =>
-  async (ctx: Context) => {
+export const ProxyResponseHandler = (): Handler<void> =>
+  async (ctx: Context): Promise<void> => {
     if (!ctx.results || ctx.results.length === 0) {
-      return undefined;
+      throw new Error(`no response to send. Is your handler returning a value differente than boolean 'true|false' ?`);
     } else {
       const lastResult = ctx.results[ctx.results.length - 1];
       ctx.logger.debug(`response[${inspect(lastResult, {
