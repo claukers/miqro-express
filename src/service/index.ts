@@ -1,4 +1,3 @@
-import { inspect } from "util";
 import { parse as cookieParse } from "cookie";
 import { decode as jwtDecode } from "jsonwebtoken";
 import { Context, RequestOptions, Session, NoTokenSession, UnAuthorizedError, VerifyTokenService, RequestResponse, request, parseOptions, checkEnvVariables } from "@miqro/core";
