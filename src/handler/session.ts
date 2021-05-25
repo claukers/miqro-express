@@ -1,5 +1,4 @@
-import { Handler, Context, checkEnvVariables, parseOptions, UnAuthorizedError, ForbiddenError } from "@miqro/core";
-import { ExtendedVerifyTokenService } from "../service";
+import { Handler, Context, checkEnvVariables, parseOptions, UnAuthorizedError, ForbiddenError, VerifyTokenService } from "@miqro/core";
 import { serialize as cookieSerialize } from "cookie";
 
 const DEFAULT_TOKEN_LOCATION = "header";
@@ -12,7 +11,7 @@ const DEFAULT_TOKEN_SET_COOKIE_PATH = "/";
 const DEFAULT_TOKEN_SET_COOKIE_SAME_SITE = "strict";
 
 export interface SessionHandlerOptions {
-  authService: ExtendedVerifyTokenService;
+  authService: VerifyTokenService;
   options?: {
     tokenLocation: "header" | "query" | "cookie";
     tokenLocationName: string | ((ctx: Context) => Promise<string>);

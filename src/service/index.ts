@@ -7,12 +7,6 @@ const DEFAULT_TOKEN_HEADER = "Authorization";
 const DEFAULT_TOKEN_QUERY = "token";
 const DEFAULT_TOKEN_COOKIE = "Authorization";
 
-export interface ExtendedVerifyTokenServiceArgs { token: string, ctx: Context }
-
-export interface ExtendedVerifyTokenService extends VerifyTokenService {
-  verify(args: ExtendedVerifyTokenServiceArgs): Promise<Session | null>;
-}
-
 export interface VerifyEndpointServiceOptions {
   url: string;
   method: string;
@@ -20,7 +14,7 @@ export interface VerifyEndpointServiceOptions {
   tokenLocationName: string | ((ctx: Context) => Promise<string>);
 }
 
-export class VerifyEndpointService implements ExtendedVerifyTokenService {
+export class VerifyEndpointService implements VerifyTokenService {
 
   protected options: VerifyEndpointServiceOptions;
 
@@ -57,7 +51,7 @@ export class VerifyEndpointService implements ExtendedVerifyTokenService {
     }
   }
 
-  public async verify({ token, ctx }: ExtendedVerifyTokenServiceArgs): Promise<Session | null> {
+  public async verify({ token, ctx }: { token: string; ctx: Context }): Promise<Session | null> {
     try {
       let response = null;
       const tokenVerifyLocation = this.options.tokenLocation;
