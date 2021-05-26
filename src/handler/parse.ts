@@ -4,11 +4,11 @@ import { normalizeParseOptions, ParseOptions } from "./common";
 
 export interface ParseRequestOptions {
   query?: ParseOptions | false | ParseOptions[];
-  // params?: ParseOptions | false;
+  params?: ParseOptions | false;
   body?: ParseOptions | false | ParseOptions[];
 }
 
-const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, option: ParseOptions | ParseOptions[]): void => {
+const parseRequestPart = (part: "query" | "body" | "params", ctx: Context, option: ParseOptions | ParseOptions[]): void => {
   const value = ctx[part] === undefined ? {} : ctx[part];
   if (option instanceof Array) {
     for (let i = 0; i < option.length; i++) {
@@ -35,21 +35,33 @@ const parseRequestPart = (part: "query" | "body"/*| "params"*/, ctx: Context, op
 
 export const ParseRequest = (options: ParseRequestOptions): Handler<void> => {
   const query = normalizeParseOptions(options.query);
-  // const params = getParseOption(options.params);
+  const params = normalizeParseOptions(options.params);
   const body = normalizeParseOptions(options.body);
 
   return async (ctx: Context): Promise<void> => {
     try {
       try {
-        parseRequestPart("query", ctx, query);
+        if (options.query) {
+          parseRequestPart("query", ctx, query);
+        }
       } catch (e) {
         ctx.logger.error(`error parsing query %s`, inspect(ctx.query));
         throw e;
       }
 
-      // parseRequestPart("params", ctx, params);
       try {
-        parseRequestPart("body", ctx, body);
+        if (options.params) {
+          parseRequestPart("params", ctx, params);
+        }
+      } catch (e) {
+        ctx.logger.error(`error parsing params %s`, inspect(ctx.params));
+        throw e;
+      }
+
+      try {
+        if (options.body) {
+          parseRequestPart("body", ctx, body);
+        }
       } catch (e) {
         ctx.logger.error(`error parsing body %s`, inspect(ctx.body));
         throw e;

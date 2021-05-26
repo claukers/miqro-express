@@ -38,6 +38,67 @@ describe("api-router functional tests", function () {
     app.use(middleware());
   });
 
+  it("/params happy path with optional NOT set", (done) => {
+    const app = new App();
+    app.use(middleware());
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }));
+    TestHelper(app, {
+      url: `/api/apiNameBla/params/adklsj/asd`,
+      method: "POST"
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "49");
+      strictEqual(status, 200);
+
+      strictEqual(data.params.bla, "adklsj");
+      strictEqual(data.params.optionalParam, "asd");
+      TestHelper(app, {
+        url: `/api/apiNameBla/params/adklsj`,
+        method: "POST"
+      }, (res) => {
+        const { status, data, headers } = res;
+        console.log({ status, data, headers });
+        strictEqual(headers['content-type'], "application/json; charset=utf-8");
+        strictEqual(headers['content-length'], "27");
+        strictEqual(status, 200);
+
+        strictEqual(data.params.bla, "adklsj");
+        strictEqual(data.params.optionalParam, undefined);
+        done();
+      });
+    });
+  });
+
+  it("/params happy path with optional set", (done) => {
+    const app = new App();
+    app.use(middleware());
+    app.use(APIRouter({
+      dirname: resolve(__dirname, "apidata"),
+      apiName: "apiNameBla",
+      path: "/api/apiNameBla"
+    }));
+    TestHelper(app, {
+      url: `/api/apiNameBla/params/adklsj/asd`,
+      method: "POST"
+    }, (res) => {
+      const { status, data, headers } = res;
+      console.log({ status, data, headers });
+      strictEqual(headers['content-type'], "application/json; charset=utf-8");
+      strictEqual(headers['content-length'], "49");
+      strictEqual(status, 200);
+      
+      strictEqual(data.params.bla, "adklsj");
+      strictEqual(data.params.optionalParam, "asd");
+      done();
+    });
+  });
+
   it("root options with APITestHelper item", (done) => {
     const app = new App();
     app.use(middleware());
