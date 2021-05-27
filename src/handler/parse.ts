@@ -41,7 +41,7 @@ export const ParseRequest = (options: ParseRequestOptions): Handler<void> => {
   return async (ctx: Context): Promise<void> => {
     try {
       try {
-        if (options.query) {
+        if (options.query !== undefined) {
           parseRequestPart("query", ctx, query);
         }
       } catch (e) {
@@ -50,7 +50,7 @@ export const ParseRequest = (options: ParseRequestOptions): Handler<void> => {
       }
 
       try {
-        if (options.params) {
+        if (options.params !== undefined) {
           parseRequestPart("params", ctx, params);
         }
       } catch (e) {
@@ -59,7 +59,7 @@ export const ParseRequest = (options: ParseRequestOptions): Handler<void> => {
       }
 
       try {
-        if (options.body) {
+        if (options.body !== undefined) {
           parseRequestPart("body", ctx, body);
         }
       } catch (e) {
