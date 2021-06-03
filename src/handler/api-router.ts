@@ -122,8 +122,8 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
 
 export const APIRouter = (options: APIRouterOptions, logger?: Logger): Router => {
   const { dirname } = options;
-  const apiName = options.apiName ? options.apiName : basename(dirname);
-  const apiPath = options.path ? options.path : `/${apiName}`;
+  const apiName = options.apiName !== undefined ? options.apiName : basename(dirname);
+  const apiPath = options.path !== undefined ? options.path : `/${apiName}`;
   if (!logger) {
     logger = getLogger(`${apiName}`.toUpperCase());
   }
