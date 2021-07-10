@@ -1,7 +1,7 @@
 import { describe, it, beforeEach } from "mocha";
 import { strictEqual } from "assert";
-import { TestHelper as FuncTestHelper, App, fake, RequestOptions, Context } from "@miqro/core";
-import { CookieParser, LoggerHandler } from "../src";
+import { TestHelper as FuncTestHelper, App, fake, RequestOptions, Context, LoggerHandler } from "@miqro/core";
+import { CookieParser } from "../src";
 import { inspect } from "util";
 
 describe("session functional tests", () => {

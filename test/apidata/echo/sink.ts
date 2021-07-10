@@ -1,4 +1,4 @@
-import { FeatureHandler } from "../../../src/handler";
+import { FeatureHandler } from "@miqro/core";
 
 const echo: FeatureHandler = [
   async (ctx) => {

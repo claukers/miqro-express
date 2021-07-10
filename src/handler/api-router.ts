@@ -1,7 +1,6 @@
 import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
-import { Router, Method, getLogger, Logger, SimpleMap } from "@miqro/core";
-import { FeatureHandler, FeatureRouter, FeatureRouterOptions, FeatureRouterPathOptions } from "./feature-router";
+import { Router, Method, getLogger, Logger, SimpleMap, FeatureRouterPathOptions, FeatureRouterOptions, FeatureHandler, FeatureRouter } from "@miqro/core";
 import { APIHandler, APIHandlerArgs, APIHandlerOptions } from "./api-handler";
 
 export interface APIRoute extends APIHandlerArgs {
@@ -20,11 +19,9 @@ export interface FeatureAPIRouterPathOptions extends FeatureRouterPathOptions {
   apiHandlerOptions: APIHandlerOptions;
 }
 
-export interface FeatureRouterWithAPIRouterOptions extends FeatureRouterOptions {
-  features: SimpleMap<FeatureAPIRouterPathOptions>;
-}
+export type FeatureRouterWithAPIRouterOptions = FeatureRouterOptions<FeatureAPIRouterPathOptions>;
 
-export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterWithAPIRouterOptions = { features: {} }): FeatureRouterWithAPIRouterOptions => {
+export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname: string, basePath = "/", features: FeatureRouterWithAPIRouterOptions = {}): FeatureRouterWithAPIRouterOptions => {
   try {
     logger.trace("loading routes from [%s]", dirname);
     const files = readdirSync(dirname);
@@ -84,14 +81,13 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
               ...route,
               handler: realHandler
             });
-            features.features[newFeatureSubPath] = {
+            features[newFeatureSubPath] = {
               apiHandlerOptions: {
                 ...route
               },
               path: `${basePath}${p && p != "/" ? `${p}` : ""}`,
               methods,
-              handler: apiHandler,
-              identifier
+              handler: apiHandler
             };
           }
         } else {
@@ -102,14 +98,13 @@ export const traverseAPIRouteDir = (logger: Logger, featureName: string, dirname
             ...route,
             handler: realHandler
           });
-          features.features[newFeature] = {
+          features[newFeature] = {
             apiHandlerOptions: {
               ...route
             },
             path: `${basePath}${route.path && route.path != "/" ? `${route.path}` : ""}`,
             methods,
-            handler: apiHandler,
-            identifier
+            handler: apiHandler
           };
         }
       }

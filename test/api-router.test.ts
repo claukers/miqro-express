@@ -29,7 +29,7 @@ process.env.APINAMEBLA_PATCH__NAME = "true";
 process.env.APINAMEBLA_PATCH__BLA_NAME = "true";
 
 describe("api-router functional tests", function () {
-  this.timeout(2000);
+  this.timeout(20000);
 
   let app: App;
 

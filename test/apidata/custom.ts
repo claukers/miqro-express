@@ -1,4 +1,5 @@
-import { APIRoute, FeatureHandler, ResponseHandler } from "../../src/handler";
+import { FeatureHandler } from "@miqro/core";
+import { APIRoute, ResponseHandler } from "../../src/handler";
 
 const hello: FeatureHandler = [
   async (ctx) => {

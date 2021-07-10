@@ -1,8 +1,5 @@
-import { Handler, GroupPolicy } from "@miqro/core";
+import { Handler, GroupPolicy, FeatureHandler, ParseRequestOptions, GroupPolicyHandler, ParseRequest } from "@miqro/core";
 import { ParseOptions } from "./common";
-import { FeatureHandler } from "./feature-router";
-import { GroupPolicyHandler } from "./group";
-import { ParseRequest, ParseRequestOptions } from "./parse";
 import { ResponseHandler } from "./response";
 import { ResultParser } from "./result";
 import { SessionHandler, SessionHandlerOptions } from "./session";
