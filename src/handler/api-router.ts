@@ -1,6 +1,6 @@
 import { basename, join, parse, resolve } from "path";
 import { lstatSync, readdirSync } from "fs";
-import { Router, Method, getLogger, Logger, SimpleMap, FeatureRouterPathOptions, FeatureRouterOptions, FeatureHandler, FeatureRouter } from "@miqro/core";
+import { Router, Method, getLogger, Logger, FeatureRouterPathOptions, FeatureRouterOptions, FeatureHandler, FeatureRouter } from "@miqro/core";
 import { APIHandler, APIHandlerArgs, APIHandlerOptions } from "./api-handler";
 
 export interface APIRoute extends APIHandlerArgs {
