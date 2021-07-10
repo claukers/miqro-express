@@ -21,7 +21,7 @@
   "author": "claukers",
   "license": "ISC",
   "dependencies": {
-    "@miqro/core": "^1.1.0",
+    "@miqro/core": "^1.1.1",
     "cookie": "^0.4.1",
     "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"
